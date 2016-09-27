@@ -1,0 +1,97 @@
+﻿<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml" id="htmlTop">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="Content/bootstrap.css" rel="stylesheet" />
+    <link href="Content/bootstrap-theme.css" rel="stylesheet" />
+
+    <title data-bind="text: appName"></title>
+
+    <!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
+    <link href="css/default.css" rel="stylesheet" />
+
+</head>
+<body>
+
+    <div class="panel panel-default">
+        <div class="panel-heading bold" data-bind="text:appName"></div>
+        
+        <!-- Vy: spelet -->
+        <div class="panel-body" data-bind="visible:showGame">
+       
+            <h4 class="player selectedPlayer" data-bind="html:status"></h4>
+
+            <div class="float">
+                <canvas id="canvas" width="530" height="530"></canvas>
+            </div>
+
+            <div class="float " style="margin-left:20px;">
+
+                <div data-bind="foreach:players">
+                    <div class="player" data-bind="css:{selectedPlayer:$data==$root.currentPlayer()}">
+                        <div class="circle float ball" data-bind="style:{backgroundColor:Color}">&nbsp;</div>  <div style="margin-left:5px;" class="" data-bind="text:Name() +', Magneter:' +Drops()+', Poäng:'+ItemSum()"></div>
+                    </div>
+                </div>
+                <div>
+                    <button class="btn btn-default" data-bind="click:configureGame">Starta om</button>
+                </div>
+
+            </div>
+
+        </div>
+        
+        <!-- Vy: spelinställningar -->
+        <div class="panel-body" data-bind="visible:showNumPlayers">
+            <h4>Ange antal spelare och startmagneter</h4>
+            Antal spelare (2-6):<br />
+            <input type="number" class="formMargin form-control" min="2" max="6" data-bind="value:numPlayers" />
+           
+            Antal startmagneter (1-20):<br />
+            <input type="number" class="formMargin form-control" min="1" max="20" data-bind="value:numStartDrops" />
+           
+
+            <button class="btn btn-default" data-bind=" click:namePlayers">Namnge användare</button>
+
+        </div>
+        
+        <!-- Vy: namnge spelare -->
+        <div class="panel-body" data-bind="visible:showNamePlayers">
+            <h4>Namnge spelare</h4>
+            <div data-bind="foreach:players">
+
+                <div class="formMargin">
+                    <input type="text" class="form-control" data-bind="value:Name,click:function(){Name('');}" />
+                </div>
+            </div>
+
+            <button class="btn btn-default" data-bind="hasFocus:true,click:startGame">Starta spel</button>
+        </div>
+
+    </div>
+
+    <script src="Scripts/knockout-3.2.0.js"></script>
+    <script src="Scripts/jquery-2.1.1.js"></script>
+    <script src="Scripts/bootstrap.js"></script>
+    <script src="Scripts/CanvasDrawer.js"></script>
+    <script src="Scripts/RepellLogic.js"></script>
+    <script src="Scripts/RepellModels.js"></script>
+    <script src="Scripts/RepellViewModel.js"></script>
+    <script src="Scripts/main.js"></script>
+
+    <!-- Google Analytics: change UA-XXXXX-X to be your site's ID. -->
+    <!--<script>
+        (function(b,o,i,l,e,r){b.GoogleAnalyticsObject=l;b[l]||(b[l]=
+        function(){(b[l].q=b[l].q||[]).push(arguments)});b[l].l=+new Date;
+        e=o.createElement(i);r=o.getElementsByTagName(i)[0];
+        e.src='//www.google-analytics.com/analytics.js';
+        r.parentNode.insertBefore(e,r)}(window,document,'script','ga'));
+        ga('create','UA-XXXXX-X');ga('send','pageview');
+    </script>-->
+</body>
+</html>

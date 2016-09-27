@@ -17,7 +17,7 @@ var listener = io.listen(http);
 listener.sockets.on('connection', function(socket){
   socket.on('client_data', function(data){
     console.log(data.line);
-	 listener.sockets.emit('chat', {'line': data.line});	
+	 listener.sockets.emit('chat',data);	
   });
 });
 
