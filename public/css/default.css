@@ -1,0 +1,54 @@
+﻿body {
+    margin: 20px;
+}
+
+.bold {
+    font-weight: bold;
+}
+
+.selectedPlayer {
+    background-color: yellow;
+}
+
+.ball{
+border:1px solid #000000;
+margin-right:5px;
+}
+
+h4{
+margin-top:0px;
+}
+
+.player {
+    border-radius: 10px;
+    padding: 5px;
+	margin-bottom: 10px;
+}
+
+.circle {
+    border-radius: 7px;
+    width: 15px;
+    height: 15px;
+}
+
+.formMargin{
+	margin-bottom:10px;
+}
+
+.float {
+    float: left;
+}
+
+.clear {
+    clear: both;
+}
+
+
+.margin20px {
+    margin: 20px;
+}
+
+#canvas {
+    border: 1px solid #000000;
+
+}
