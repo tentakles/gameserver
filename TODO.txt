@@ -1,3 +1,5 @@
+DONE
+
 *inte ropa ut i förskott att spelet är slut
 *ta bort lila när spelet är slut
 *oavgjort
@@ -6,6 +8,8 @@
 *se till att shrinkpositionen går snabbare
 *rows och cols har fel namn
 *nollställa size animation om man fallar ut.
+
+TODO
 
 sortera på size (störst först) så att de ritas ovanför, på någe vis.
 animera utkastningen också, nu försvinner de bara.
