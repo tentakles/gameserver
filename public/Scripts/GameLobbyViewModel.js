@@ -21,40 +21,22 @@ function GameLobbyViewModel(socket) {
 
     //initierar vymodellen
     self.init = function () {	
-       socket.on('chat', function(data){
-	   self.chats.push(data);
-   // $('#chat').append('<div id="">'+data.line+'</div>');
-	// $('#chat').animate({ scrollTop: $('#chat').prop("scrollHeight") }, 500); 
-  });
-	 /*
-	 
-	   socket.on('chat', function(data){
-    $('#chat').append('<div id="">'+data.line+'</div>');
-	 $('#chat').animate({ scrollTop: $('#chat').prop("scrollHeight") }, 500); 
-  });
-
-  $(document).ready(function(){
-    $('#send').click(function(e){
-      socket.emit('client_data', {'line': $("#text").val()  });
-	  $("#text").val(""); 
-    });
-  });
-	 
-	 */
-	 
-	 
+		socket.on('chat', function(data){
+			self.chats.push(data);
+		// $('#chat').animate({ scrollTop: $('#chat').prop("scrollHeight") }, 500); 
+			}); 
     }
 
     self.init();	
 	
 	self.submitChat=function(){	
-	 socket.emit('client_data', {'line':self.chatRow(),'user':self.nickname() });	 
-	 self.chatRow("");
-	};
+		socket.emit('client_data', {'line':self.chatRow(),'user':self.nickname() });	 
+		self.chatRow("");
+		};
 	
 	self.submitNickname=function(){	
-	self.startMode(false);
-	self.lobbyMode(true);
-	}
+		self.startMode(false);
+		self.lobbyMode(true);
+		}
 }
 
