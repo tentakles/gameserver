@@ -1,0 +1,8 @@
+todo:
+##################			
+*kunna ladda in ui med $.load("fil.html") så man kan ha chat osv bredvid i main ui.
+flytta in saker i spelserver?
+göra saker asynkront?
+infoga tur ordning /kontrol av att rätt spelare kör etc?
+
+

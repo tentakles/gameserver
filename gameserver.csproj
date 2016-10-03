@@ -63,6 +63,11 @@
     <Content Include="public\fonts\glyphicons-halflings-regular.eot" />
     <Content Include="public\fonts\glyphicons-halflings-regular.ttf" />
     <Content Include="public\fonts\glyphicons-halflings-regular.woff" />
+    <Content Include="public\games\3inarow\game.html" />
+    <Content Include="public\games\3inarow\index.html" />
+    <Content Include="public\games\3inarow\Scripts\3inarow_logic.js" />
+    <Content Include="public\games\3inarow\Scripts\3inarow_ui.js" />
+    <Content Include="public\games\3inarow\todo.txt" />
     <Content Include="public\img\.gitignore" />
     <Content Include="public\Scripts\jquery-2.1.1.min.map" />
   </ItemGroup>
@@ -81,10 +86,6 @@
     <Content Include="public\Scripts\bootstrap.min.js" />
     <Content Include="public\Scripts\CanvasDrawer.js" />
     <Content Include="public\Scripts\GameLobbyViewModel.js" />
-    <None Include="Properties\Settings.settings">
-      <Generator>SettingsSingleFileGenerator</Generator>
-      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
-    </None>
     <None Include="public\Scripts\jquery-2.1.1.intellisense.js" />
     <Content Include="public\Scripts\jquery-2.1.1.js" />
     <Content Include="public\Scripts\jquery-2.1.1.min.js" />
@@ -100,11 +101,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Properties\Settings.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTimeSharedInput>True</DesignTimeSharedInput>
-      <DependentUpon>Settings.settings</DependentUpon>
-    </Compile>
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
