@@ -60,6 +60,7 @@
   <ItemGroup>
     <Content Include="public\Content\bootstrap-theme.css.map" />
     <Content Include="public\Content\bootstrap.css.map" />
+    <Content Include="public\css\lobby.css" />
     <Content Include="public\fonts\glyphicons-halflings-regular.eot" />
     <Content Include="public\fonts\glyphicons-halflings-regular.ttf" />
     <Content Include="public\fonts\glyphicons-halflings-regular.woff" />
