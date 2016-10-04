@@ -14,6 +14,7 @@ function GameLobbyViewModel(socket) {
     self.nickname = ko.observable("");
     self.chatRow = ko.observable("");
     self.chats = ko.observableArray([]);
+    self.games = ko.observableArray([]);
 
     /********************************************
     Initialisering
@@ -21,6 +22,8 @@ function GameLobbyViewModel(socket) {
 
     //initierar vymodellen
     self.init = function () {
+        //self.games(["hey", "loo", "there"]);
+        self.games.push({ name: 'spel1', available: '3/4' });
         socket.on('chat', function (data) {
             self.chats.push(data);
             $('#chatBox').animate({ scrollTop: $('#chatBox').prop("scrollHeight") }, 100);
@@ -29,11 +32,18 @@ function GameLobbyViewModel(socket) {
 
     self.init();
 
+    self.joinGame = function (item) {
+        alert('joinGame');
+    };
+
+    self.createGame = function () {
+        alert('createGame');
+    };
+
     self.submitChat = function () {
         socket.emit('client_data', { 'line': self.chatRow(), 'user': self.nickname() });
         self.chatRow("");
     };
-
 
     self.submitChatKeyPress = function (d, e) {
         if (e.keyCode == 13) {
