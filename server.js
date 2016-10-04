@@ -8,8 +8,7 @@ var port = 8001;
 var http = require('http').Server(app);
 
 var games = [];
-//games.push({ name: 'spel1', available: '3/4',joinable:true });
-//games.push({ name: 'spel2', available: '0/4', joinable: false });
+var internal_games = [];
 
 http.listen(port, function () {
     console.log('Gameserver listening on *:' + port);
@@ -31,9 +30,9 @@ listener.sockets.on('connection', function (socket) {
 
     socket.on('client_create_game', function (data) {
         console.log('client_create_game');
-        games.push({ name: data.name,password:data.password, available: 'N/A', joinable: true });
+        games.push({ name: data.name, needpassword: data.password ? true : false, available: 'N/A', joinable: true });
+        internal_games.push({ name: data.name, password: data.password});
         listener.sockets.emit('server_games', games);
     });
-
 });
 
