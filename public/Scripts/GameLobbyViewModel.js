@@ -19,6 +19,7 @@ function GameLobbyViewModel(socket) {
 
     self.chats = ko.observableArray([]);
     self.games = ko.observableArray([]);
+    self.gamePlayers = ko.observableArray([]);
 
     //modes
     self.lobbyMode = ko.observable(false);
@@ -43,10 +44,12 @@ function GameLobbyViewModel(socket) {
             self.games(data);
         });
 
-        socket.on('server_create_game_status', function (result) {
-            if (result) {
-                self.showGame(true);
-            }
+        socket.on('server_create_game_success', function (game) {
+            self.showGame(game, true);
+        });
+
+        socket.on('client_join_game_success', function (game) {
+            self.showGame(game, false);
         });
 
         socket.emit('client_games', {});
@@ -54,14 +57,17 @@ function GameLobbyViewModel(socket) {
 
     self.init();
 
-    self.showGame = function (isAdmin) {
+    self.showGame = function (game, isAdmin) {
+        self.gamePlayers(game.players);
+        self.gameName(game.name);
         self.createGameMode(false);
         self.gameLobbyMode(true);
         self.isAdmin(isAdmin);
+        self.gameMode(false);
     };
 
     self.joinGame = function (item) {
-        alert('joinGame');
+        socket.emit('client_join_game', { 'id': item.id });
     };
 
     self.cancelCreateGame = function () {
@@ -92,7 +98,7 @@ function GameLobbyViewModel(socket) {
         }
         return true;
     };
-    
+
     self.submitChatKeyPress = function (d, e) {
         if (e.keyCode == 13) {
             self.submitChat();

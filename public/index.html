@@ -32,7 +32,7 @@
     <div class="jumbotron" data-bind="visible:startMode">
         <h1>Enter nickname</h1>
         <div>
-            <input type="text" class="form-control" data-bind="textInput:nickname,event: {keypress: submitNicknameKeyPress}"/>
+            <input type="text" class="form-control" data-bind="textInput:nickname,event: {keypress: submitNicknameKeyPress}" />
         </div>
         <br>
         <div>
@@ -62,14 +62,14 @@
         <div class="col-sm-6" data-bind="visible:createGameMode">
             <h2>Create Game</h2>
             <div id="createGameBox" class="well">
-                
+
                 <div class="row">
                     <div class="col-sm-4">Game name</div>
                     <div class="col-sm-8">
-                        <input type="text" class="form-control" data-bind="value:createGameName"  />
+                        <input type="text" class="form-control" data-bind="value:createGameName" />
                     </div>
                 </div>
-                
+
                 <div class="row">
                     <div class="col-sm-4">Password (optional)</div>
                     <div class="col-sm-8">
@@ -87,8 +87,19 @@
 
         <div class="col-sm-6" data-bind="visible:gameLobbyMode">
             <h2 data-bind="text:'Welcome to ' + gameName()"></h2>
-            <div id="playersBox" class="well">
-                GAME
+            <div class=" col-sm-6">
+                <h3>Players</h3>
+                <div id="gamePlayersBox" class="well" data-bind="foreach:gamePlayers">
+                    <div data-bind="text:$data">
+
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-6">
+                <h3>Game Chat</h3>
+                <div class="well">
+                    skriv saker
+                </div>
             </div>
         </div>
 
