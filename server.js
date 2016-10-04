@@ -39,24 +39,27 @@ listener.sockets.on('connection', function (socket) {
     });
 
     socket.on('client_create_game', function (data) {
-
-        var game = { id: uuid.v4(), players: ["pelle", "olle", "pär"], name: data.name, needPassword: data.password ? true : false, available: 'N/A', joinable: true }
+        var game = { id: uuid.v4(), players: [data.playerName], name: data.name, needPassword: data.password ? true : false, available: 'N/A', joinable: true }
         console.log('client_create_game:' + game.id);
         games.push(game);
         internal_games.push({ name: data.name, password: data.password });
         listener.sockets.emit('server_games', games);
         socket.emit('server_create_game_success', game);
+        socket.join(game.id);
     });
 
     socket.on('client_join_game', function (request) {
         console.log('client_join_game');
         var game = getGameById(request.id);
+        game.players.push(request.playerName);
+        socket.join(game.id);
         if (game) {
-            socket.emit('client_join_game_success', game);
-        } else {
+            socket.emit('server_join_game_success', game);
+            listener.to(game.id).emit('server_game_update', game);
+        }
+        else {
             console.log('game not found: ' + request.id);
         }
-
     });
 
 });

@@ -45,11 +45,16 @@ function GameLobbyViewModel(socket) {
         });
 
         socket.on('server_create_game_success', function (game) {
-            self.showGame(game, true);
+            self.enterGame(game, true);
         });
 
-        socket.on('client_join_game_success', function (game) {
-            self.showGame(game, false);
+        socket.on('server_join_game_success', function (game) {
+            self.enterGame(game, false);
+        });
+
+        socket.on('server_game_update', function (game) {
+            self.gamePlayers(game.players);
+            self.gameName(game.name);
         });
 
         socket.emit('client_games', {});
@@ -57,7 +62,7 @@ function GameLobbyViewModel(socket) {
 
     self.init();
 
-    self.showGame = function (game, isAdmin) {
+    self.enterGame = function (game, isAdmin) {
         self.gamePlayers(game.players);
         self.gameName(game.name);
         self.createGameMode(false);
@@ -67,7 +72,7 @@ function GameLobbyViewModel(socket) {
     };
 
     self.joinGame = function (item) {
-        socket.emit('client_join_game', { 'id': item.id });
+        socket.emit('client_join_game', { 'id': item.id, 'playerName': self.nickname() });
     };
 
     self.cancelCreateGame = function () {
@@ -76,7 +81,7 @@ function GameLobbyViewModel(socket) {
     };
 
     self.doCreateGame = function () {
-        socket.emit('client_create_game', { 'name': self.createGameName(), 'password': self.createGamePassword() });
+        socket.emit('client_create_game', { 'playerName':self.nickname() ,'name': self.createGameName(), 'password': self.createGamePassword() });
     };
 
     self.createGame = function () {

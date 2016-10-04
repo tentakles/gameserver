@@ -71,6 +71,7 @@
     <Content Include="public\games\3inarow\todo.txt" />
     <Content Include="public\img\.gitignore" />
     <Content Include="public\Scripts\jquery-2.1.1.min.map" />
+    <Content Include="todo.txt" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="public\Content\bootstrap-theme.css" />
@@ -96,7 +97,7 @@
     <Content Include="public\games\repo\Scripts\RepellLogic.js" />
     <Content Include="public\games\repo\Scripts\RepellModels.js" />
     <Content Include="public\games\repo\Scripts\RepellViewModel.js" />
-    <Content Include="TODO.txt" />
+    <Content Include="public\games\repo\todo.txt" />
     <Content Include="server.js" />
   </ItemGroup>
   <ItemGroup>
