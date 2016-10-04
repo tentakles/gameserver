@@ -48,7 +48,8 @@
             <h2>Games</h2>
             <div id="gameBox" class="well" data-bind="foreach:games">
                 <div class="col-sm-5" data-bind="text:name"></div>
-                <div class="col-sm-4" data-bind="text:available"></div>
+                <div class="col-sm-3" data-bind="text:available"></div>
+                <div class="col-sm-1"><span class="glyphicon glyphicon-lock" data-bind="visible:needPassword"></span></div>
                 <div class="col-sm-3">
                     <button type="button" class="btn btn-default btn-sm" data-bind="click:$parent.joinGame,enable:joinable">Join</button>
                 </div>
@@ -81,6 +82,13 @@
             <div class="col-sm-6 col-sm-offset-3">
                 <button type="button" class="btn btn-default btn-lg" data-bind="click:cancelCreateGame">Cancel</button>
                 <button type="button" class="btn btn-primary btn-lg" data-bind="click:doCreateGame">Create</button>
+            </div>
+        </div>
+
+        <div class="col-sm-6" data-bind="visible:gameLobbyMode">
+            <h2 data-bind="text:'Welcome to ' + gameName()"></h2>
+            <div id="playersBox" class="well">
+                GAME
             </div>
         </div>
 

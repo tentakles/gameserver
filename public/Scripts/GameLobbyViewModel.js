@@ -11,7 +11,9 @@ function GameLobbyViewModel(socket) {
 
     self.nickname = ko.observable("");
     self.chatRow = ko.observable("");
-    
+    self.gameName = ko.observable("");
+    self.isAdmin = ko.observable(false);
+
     self.createGameName = ko.observable("");
     self.createGamePassword = ko.observable("");
 
@@ -24,6 +26,7 @@ function GameLobbyViewModel(socket) {
     self.lobbyMode = ko.observable(false);
     self.gameMode = ko.observable(false);
     self.createGameMode = ko.observable(false);
+    self.gameLobbyMode = ko.observable(false);
 
     /********************************************
     Initialisering
@@ -31,8 +34,6 @@ function GameLobbyViewModel(socket) {
 
     //initierar vymodellen
     self.init = function () {
-        //self.games(["hey", "loo", "there"]);
-        //self.games.push({ name: 'spel1', available: '3/4' });
         socket.on('server_chat', function (data) {
             self.chats.push(data);
             $('#chatBox').animate({ scrollTop: $('#chatBox').prop("scrollHeight") }, 100);
@@ -42,15 +43,27 @@ function GameLobbyViewModel(socket) {
             self.games(data);
         });
 
+        socket.on('server_create_game_status', function (result) {
+            if (result) {
+                self.showGame(true);
+            }
+        });
+
         socket.emit('client_games', {});
     }
 
     self.init();
 
+    self.showGame = function (isAdmin) {
+        self.createGameMode(false);
+        self.gameLobbyMode(true);
+        self.isAdmin(isAdmin);
+    };
+
     self.joinGame = function (item) {
         alert('joinGame');
     };
-    
+
     self.cancelCreateGame = function () {
         self.createGameMode(false);
         self.gameMode(true);
@@ -63,7 +76,7 @@ function GameLobbyViewModel(socket) {
     self.createGame = function () {
         self.createGameName("");
         self.createGamePassword("");
-        
+
         self.createGameMode(true);
         self.gameMode(false);
     };
