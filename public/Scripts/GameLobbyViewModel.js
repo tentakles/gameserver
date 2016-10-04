@@ -73,6 +73,13 @@ function GameLobbyViewModel(socket) {
         self.chatRow("");
     };
 
+    self.submitNicknameKeyPress = function (d, e) {
+        if (e.keyCode == 13) {
+            self.submitNickname();
+        }
+        return true;
+    };
+    
     self.submitChatKeyPress = function (d, e) {
         if (e.keyCode == 13) {
             self.submitChat();

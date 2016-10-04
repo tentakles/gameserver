@@ -32,7 +32,7 @@
     <div class="jumbotron" data-bind="visible:startMode">
         <h1>Enter nickname</h1>
         <div>
-            <input type="text" class="form-control" data-bind="value:nickname"></input>
+            <input type="text" class="form-control" data-bind="textInput:nickname,event: {keypress: submitNicknameKeyPress}"/>
         </div>
         <br>
         <div>
