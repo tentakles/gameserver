@@ -10,7 +10,7 @@ function try_move() {
         game.init();
     }
 
-    var id = $(this).attr('id')
+    var id = $(this).attr('id');
     var coords = id.split("_");
 
     if (!game.can_move(coords[0], coords[1])) {
@@ -18,17 +18,19 @@ function try_move() {
     }
     $(this).html(game.currentPlayer).hide().fadeIn("slow");
 	var result = game.move(coords[0], coords[1]);    
-    if (result == game.RESULT_DRAW) {
+    if (result === game.RESULT_DRAW) {
         needsRestart = true;
         $("#result").addClass("highlight");
         $("#result").html("Table full. Nobody wins");
+		game.switchPlayers();
     }
-    else if (result == game.RESULT_WIN) {
+    else if (result === game.RESULT_WIN) {
         needsRestart = true;
         $("#result").addClass("highlight");
         $("#result").html(game.currentPlayer + " wins!");
+		game.switchPlayers();
     }
-    else if (result == game.RESULT_ILLEGAL) {
+    else if (result === game.RESULT_ILLEGAL) {
         alert("Illegal move! This should not happen?");
     }
     else {
@@ -38,7 +40,7 @@ function try_move() {
 
 $(function () {
     var config = {
-        size: 6,
+        size: 3,
         numToWin: 3
     };
 

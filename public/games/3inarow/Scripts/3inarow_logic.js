@@ -11,7 +11,7 @@ function threeinarow(config) {
     self.currentPlayer = self.player1;
     self.grid = [];
 
-    self.check_diag = function (x, y) {
+    self.check_diag = function (y, x) {
         var numInARow = 0;
 
         for (var i = 0; i < config.size; i++) {
@@ -31,7 +31,7 @@ function threeinarow(config) {
         return false;
     }
 
-    self.check_reverse_diag = function (x, y) {
+    self.check_reverse_diag = function (y, x) {
         var numInARow = 0;
 
         while (true) {
@@ -99,7 +99,7 @@ function threeinarow(config) {
         //check diagonals
         for (var row = 0; row < config.size; row++) {
             for (var col = 0; col < config.size; col++) {
-                if (self.check_diag(col, row) || self.check_reverse_diag(col, row)) {
+                if (self.check_diag(row, col) || self.check_reverse_diag(row, col)) {
                     return self.RESULT_WIN;
                 }
             }
@@ -111,20 +111,24 @@ function threeinarow(config) {
     self.can_move = function (y, x) {
         return self.grid[y][x] == "";
     }
+	
+	self.switchPlayers=function(){				
+	if (self.currentPlayer == self.player1)
+		self.currentPlayer = self.player2;
+	else
+		self.currentPlayer = self.player1;	
+	}
 
     self.move = function (y, x) {
         if (self.can_move(y, x)) {
             self.grid[y][x] = self.currentPlayer;
             var result = self.check_win(y, x);
-
+			
             if (result == self.RESULT_DRAW || result == self.RESULT_WIN) {
                 return result;
             }
-
-            if (self.currentPlayer == self.player1)
-                self.currentPlayer = self.player2;
-            else
-                self.currentPlayer = self.player1;
+			
+			self.switchPlayers();
 
             return result;
         }
