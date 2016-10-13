@@ -11,6 +11,7 @@ function GameLobbyViewModel(socket) {
 
     self.nickname = ko.observable("");
     self.chatRow = ko.observable("");
+    self.gameChatRow = ko.observable("");
     self.gameName = ko.observable("");
     self.isAdmin = ko.observable(false);
 
@@ -18,6 +19,7 @@ function GameLobbyViewModel(socket) {
     self.createGamePassword = ko.observable("");
 
     self.chats = ko.observableArray([]);
+    self.gameChats = ko.observableArray([]);
     self.games = ko.observableArray([]);
     self.gamePlayers = ko.observableArray([]);
 
@@ -40,12 +42,18 @@ function GameLobbyViewModel(socket) {
             $('#chatBox').animate({ scrollTop: $('#chatBox').prop("scrollHeight") }, 100);
         });
 
+        socket.on('server_game_chat', function (data) {
+            self.gameChats.push(data);
+            $('#gameChatBox').animate({ scrollTop: $('#gameChatBox').prop("scrollHeight") }, 100);
+        });
+
         socket.on('server_games', function (data) {
             self.games(data);
         });
 
         socket.on('server_create_game_success', function (game) {
             self.enterGame(game, true);
+
         });
 
         socket.on('server_join_game_success', function (game) {
@@ -69,6 +77,7 @@ function GameLobbyViewModel(socket) {
         self.gameLobbyMode(true);
         self.isAdmin(isAdmin);
         self.gameMode(false);
+        self.title('Welcome to game "' + game.name + '"');
     };
 
     self.joinGame = function (item) {
@@ -81,7 +90,7 @@ function GameLobbyViewModel(socket) {
     };
 
     self.doCreateGame = function () {
-        socket.emit('client_create_game', { 'playerName':self.nickname() ,'name': self.createGameName(), 'password': self.createGamePassword() });
+        socket.emit('client_create_game', { 'playerName': self.nickname(), 'name': self.createGameName(), 'password': self.createGamePassword() });
     };
 
     self.createGame = function () {
@@ -97,13 +106,6 @@ function GameLobbyViewModel(socket) {
         self.chatRow("");
     };
 
-    self.submitNicknameKeyPress = function (d, e) {
-        if (e.keyCode == 13) {
-            self.submitNickname();
-        }
-        return true;
-    };
-
     self.submitChatKeyPress = function (d, e) {
         if (e.keyCode == 13) {
             self.submitChat();
@@ -111,11 +113,33 @@ function GameLobbyViewModel(socket) {
         return true;
     };
 
+    self.submitGameChat = function () {
+        socket.emit('client_game_chat', { 'line': self.gameChatRow(), 'user': self.nickname() });
+        self.gameChatRow("");
+    };
+
+    self.submitGameChatKeyPress = function (d, e) {
+        if (e.keyCode == 13) {
+            self.submitGameChat();
+        }
+        return true;
+    };
+
+    self.submitNicknameKeyPress = function (d, e) {
+        if (e.keyCode == 13) {
+            self.submitNickname();
+        }
+        return true;
+    };
+
+
+
     self.submitNickname = function () {
         self.createGameMode(false);
         self.startMode(false);
         self.lobbyMode(true);
         self.gameMode(true);
+        self.title('Welcome ' + self.nickname());
     }
 }
 

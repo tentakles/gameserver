@@ -29,8 +29,26 @@ var listener = io.listen(http);
 
 listener.sockets.on('connection', function (socket) {
     socket.on('client_chat', function (data) {
-        console.log(data.line);
+        if (!data.line || !data.line.trim())
+            return;
         listener.sockets.emit('server_chat', data);
+    });
+
+    socket.on('client_game_chat', function (data) {
+        if (!data.line || !data.line.trim())
+            return;
+        for (var i = 0; i < games.length; i++) {
+            var game = games[i];
+            for (var j = 0; j < game.players.length; j++) {
+                //console.log(game.players[j]);
+                if (game.players[j] === data.user) {
+                    console.log('server_game_chat')
+                    listener.to(game.id).emit('server_game_chat', data);
+                    return;
+                }
+            }
+        }
+        //listener.sockets.emit('server_chat', data);
     });
 
     socket.on('client_games', function () {
@@ -47,6 +65,7 @@ listener.sockets.on('connection', function (socket) {
         socket.emit('server_create_game_success', game);
         socket.join(game.id);
     });
+
 
     socket.on('client_join_game', function (request) {
         console.log('client_join_game');
