@@ -11,13 +11,17 @@ var uuid = require('node-uuid');
 var games = [];
 var internal_games = [];
 
-function getGameById(id) {
-    for (var i = 0; i < games.length; i++) {
-        if (games[i].id === id) {
-            return games[i];
+function getListItemByParam(param,paramName,list) {
+    for (var i = 0; i < list.length; i++) {
+        if (list[i][paramName] === param) {
+            return list[i];
         }
     }
     return null;
+}
+
+function getGameById(id) {
+	return getListItemByParam(id,"id",games);
 }
 
 http.listen(port, function () {

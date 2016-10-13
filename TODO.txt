@@ -3,8 +3,10 @@
 ############
 TODO
 
-implementera "game chat"
+*implementera "game chat"
 implementera lämna spel
+
+visa upp antal personer i ett spel
 
 hantera / kolla upp "leave" / "reload"
 
