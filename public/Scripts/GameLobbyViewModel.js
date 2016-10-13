@@ -38,8 +38,29 @@ function GameLobbyViewModel(socket) {
     Initialisering
     *********************************************/
 
+    self.game = null;
+
+    self.gameEvent = function (event) {
+        socket.emit('client_game_event', { 'user': self.nickname(), event: event });
+        //   alert("forward game event here!");
+    }
+
     //initierar vymodellen
     self.init = function () {
+
+        socket.on('server_game_event', function (data) {
+            if (self.game) {
+                self.game.event(data);
+            }
+        });
+
+        socket.on('server_game_start', function (gameType) {
+          //  alert("OMG MEN HEJE!!!!");
+
+            $("#gameWrapper").load(gameType.url);
+
+        });
+
         socket.on('server_chat', function (data) {
             self.chats.push(data);
             $('#chatBox').animate({ scrollTop: $('#chatBox').prop("scrollHeight") }, 100);
@@ -154,7 +175,7 @@ function GameLobbyViewModel(socket) {
 
     self.startGame = function () {
         var game = self.selectedGame();
-        $("#gameWrapper").load(game.url);
+        socket.emit('client_game_start', { 'user': self.nickname(), game: game.name });
     }
 
     self.leaveGame = function () {

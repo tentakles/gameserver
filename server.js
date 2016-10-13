@@ -11,7 +11,7 @@ var uuid = require('node-uuid');
 var games = [];
 var internal_games = [];
 var gameTypes = [
-    { name: '3-in-a-row', url: 'games/3inarow/game.html', minPlayers: 2, maxPlayers: 2 },
+    { name: '3-in-a-row', url: 'games/3inarow/game.html',code:'./public/games/3inarow/Scripts/3inarow_logic.js', minPlayers: 2, maxPlayers: 2 },
     { name: 'Repello', url: 'games/repo/game.html', minPlayers: 2, maxPlayers: 6 }
     ];
 
@@ -71,6 +71,36 @@ listener.sockets.on('connection', function (socket) {
         if (!data.line || !data.line.trim())
             return;
         listener.sockets.emit('server_chat', data);
+    });
+
+    socket.on('client_game_event', function (data) {
+       // console.log("client_game_event");
+
+        var game = getGameByUser(data.user);
+        var result = game.instance.move(data.event);
+
+        console.log("game move result:");
+        console.log(result);
+
+        //console.log(data);
+    });
+
+    socket.on('client_game_start', function (data) {
+
+        console.log("client_game_start:" + data.game);
+        var gameType = getListItemByParam(data.game, "name", gameTypes);
+        console.log("code url:" + gameType.code);
+        var game = getGameByUser(data.user);
+        var gameEnviroment = require(gameType.code);
+
+        var config = {
+            size: 3,
+            numToWin: 3
+        };
+        game.instance = new gameEnviroment.game(config);
+        game.instance.init();
+        
+        listener.to(game.id).emit('server_game_start', gameType);
     });
 
     socket.on('client_game_chat', function (data) {

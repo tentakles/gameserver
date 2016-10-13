@@ -16,11 +16,11 @@
     <script src="Scripts/GameLobbyViewModel.js"></script>
 
     <script type="text/javascript">
-        var viewModel;
+        var gameLobby;
         function initViewModel() {
             var socket = io.connect();
-            viewModel = new GameLobbyViewModel(socket);
-            ko.applyBindings(viewModel, document.getElementById("htmlTop"));
+            gameLobby = new GameLobbyViewModel(socket);
+            ko.applyBindings(gameLobby, document.getElementById("htmlTop"));
         }
         $(function () {
             initViewModel();

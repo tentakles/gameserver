@@ -2,14 +2,14 @@
 *implementera "game chat"
 *implementera lämna spel
 *visa upp antal personer i ett spel
+*admin: kunna välja spel
+*admin: kunna starta spel
 
 ############
 TODO
 ############
 
-admin: kunna välja spel
-user: kunna se valt spel
-admin: kunna starta spel
+user: kunna se valt spel, särskilt på lobbyskärmen som listar alla spel
 implementera 3inarow som multiplayer
 göra snyggare design i lobby
 implementera password för Join spel
@@ -17,6 +17,8 @@ implementera password för Join spel
 ############
 NEXT SCOBY HAX
 ############
+
+installera node debuggern för visual studio
 göra ännu ännu snyggare
 implementera maxgräns på ett spel
 hantera / kolla upp "leave" / "reload"

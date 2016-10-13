@@ -1,4 +1,4 @@
-function threeinarow(config) {
+exports.game = function game(config) {
     var self = this;
 
     self.RESULT_DRAW = 0;
@@ -150,3 +150,5 @@ function threeinarow(config) {
         }
     }
 }
+
+
