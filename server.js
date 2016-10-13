@@ -10,8 +10,12 @@ var uuid = require('node-uuid');
 
 var games = [];
 var internal_games = [];
+var gameTypes = [
+    { name: '3-in-a-row', url: 'games/3inarow/game.html', minPlayers: 2, maxPlayers: 2 },
+    { name: 'Repello', url: 'games/repo/game.html', minPlayers: 2, maxPlayers: 6 }
+    ];
 
-function getListItemByParam(param,paramName,list) {
+function getListItemByParam(param, paramName, list) {
     for (var i = 0; i < list.length; i++) {
         if (list[i][paramName] === param) {
             return list[i];
@@ -21,7 +25,18 @@ function getListItemByParam(param,paramName,list) {
 }
 
 function getGameById(id) {
-	return getListItemByParam(id,"id",games);
+    return getListItemByParam(id, "id", games);
+}
+
+function getGameByUser(user) {
+    for (var i = 0; i < games.length; i++) {
+        var game = games[i];
+        for (var j = 0; j < game.players.length; j++) {
+            if (game.players[j] === user)
+                return game;
+        }
+    }
+    return null;
 }
 
 http.listen(port, function () {
@@ -32,6 +47,26 @@ app.use(express.static('public'));
 var listener = io.listen(http);
 
 listener.sockets.on('connection', function (socket) {
+
+    socket.on('client_game_leave', function (data) {
+        console.log("Player left game:" + data.user);
+
+        var game = getGameByUser(data.user);
+        if (game) {
+            socket.leave(game.id);
+            var index = game.players.indexOf(data.user);
+            game.players.splice(index, 1);
+
+            if (game.players.length === 0) {
+                var gameIndex = games.indexOf(game);
+                games.splice(gameIndex, 1);
+            }
+
+            listener.to(game.id).emit('server_game_update', game);
+            listener.sockets.emit('server_games', games);
+        }
+    });
+
     socket.on('client_chat', function (data) {
         if (!data.line || !data.line.trim())
             return;
@@ -41,23 +76,21 @@ listener.sockets.on('connection', function (socket) {
     socket.on('client_game_chat', function (data) {
         if (!data.line || !data.line.trim())
             return;
-        for (var i = 0; i < games.length; i++) {
-            var game = games[i];
-            for (var j = 0; j < game.players.length; j++) {
-                //console.log(game.players[j]);
-                if (game.players[j] === data.user) {
-                    console.log('server_game_chat')
-                    listener.to(game.id).emit('server_game_chat', data);
-                    return;
-                }
-            }
+        var game = getGameByUser(data.user);
+        if (game) {
+            console.log('server_game_chat')
+            listener.to(game.id).emit('server_game_chat', data);
         }
-        //listener.sockets.emit('server_chat', data);
     });
 
     socket.on('client_games', function () {
         console.log('client_games');
         socket.emit('server_games', games);
+    });
+
+    socket.on('client_game_types', function () {
+        console.log('client_game_types');
+        socket.emit('server_game_types', gameTypes);
     });
 
     socket.on('client_create_game', function (data) {
@@ -70,7 +103,6 @@ listener.sockets.on('connection', function (socket) {
         socket.join(game.id);
     });
 
-
     socket.on('client_join_game', function (request) {
         console.log('client_join_game');
         var game = getGameById(request.id);
@@ -79,6 +111,7 @@ listener.sockets.on('connection', function (socket) {
         if (game) {
             socket.emit('server_join_game_success', game);
             listener.to(game.id).emit('server_game_update', game);
+            listener.sockets.emit('server_games', games);
         }
         else {
             console.log('game not found: ' + request.id);

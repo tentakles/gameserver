@@ -3,3 +3,7 @@
     height: 300px;
     overflow-y: auto;
 }
+
+#gameWrapper {
+    margin-top: 10px;
+}

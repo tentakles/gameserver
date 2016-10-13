@@ -1,22 +1,24 @@
 ﻿DONE
+*implementera "game chat"
+*implementera lämna spel
+*visa upp antal personer i ett spel
 
 ############
 TODO
-
-*implementera "game chat"
-implementera lämna spel
-
-visa upp antal personer i ett spel
-
-hantera / kolla upp "leave" / "reload"
+############
 
 admin: kunna välja spel
 user: kunna se valt spel
-
 admin: kunna starta spel
-
 implementera 3inarow som multiplayer
-
 göra snyggare design i lobby
-
 implementera password för Join spel
+
+############
+NEXT SCOBY HAX
+############
+göra ännu ännu snyggare
+implementera maxgräns på ett spel
+hantera / kolla upp "leave" / "reload"
+knyta "User" till socketen, genom att ha ett emit typ "client_enter_nickname", och sen ta bort "user" ur alla anrop och slå upp det på socketen istället.
+socket leave måste hanteras, så att man går ut ur spelen när man laddar om sidan

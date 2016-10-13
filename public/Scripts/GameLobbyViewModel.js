@@ -15,6 +15,8 @@ function GameLobbyViewModel(socket) {
     self.gameName = ko.observable("");
     self.isAdmin = ko.observable(false);
 
+    self.selectedGame = ko.observable(null);
+
     self.createGameName = ko.observable("");
     self.createGamePassword = ko.observable("");
 
@@ -22,6 +24,7 @@ function GameLobbyViewModel(socket) {
     self.gameChats = ko.observableArray([]);
     self.games = ko.observableArray([]);
     self.gamePlayers = ko.observableArray([]);
+    self.gameTypes = ko.observableArray([]);
 
     //modes
     self.lobbyMode = ko.observable(false);
@@ -51,9 +54,12 @@ function GameLobbyViewModel(socket) {
             self.games(data);
         });
 
+        socket.on('server_game_types', function (data) {
+            self.gameTypes(data);
+        });
+
         socket.on('server_create_game_success', function (game) {
             self.enterGame(game, true);
-
         });
 
         socket.on('server_join_game_success', function (game) {
@@ -65,7 +71,8 @@ function GameLobbyViewModel(socket) {
             self.gameName(game.name);
         });
 
-        socket.emit('client_games', {});
+        socket.emit('client_games');
+        socket.emit('client_game_types');
     }
 
     self.init();
@@ -132,14 +139,28 @@ function GameLobbyViewModel(socket) {
         return true;
     };
 
-
-
     self.submitNickname = function () {
+        self.enterLobby();
+    }
+
+    self.enterLobby = function () {
         self.createGameMode(false);
         self.startMode(false);
         self.lobbyMode(true);
         self.gameMode(true);
+        self.gameLobbyMode(false);
         self.title('Welcome ' + self.nickname());
+    }
+
+    self.startGame = function () {
+        var game = self.selectedGame();
+        $("#gameWrapper").load(game.url);
+    }
+
+    self.leaveGame = function () {
+        socket.emit('client_game_leave', { 'user': self.nickname() });
+        self.enterLobby();
+        $("#gameWrapper").html("");
     }
 }
 
