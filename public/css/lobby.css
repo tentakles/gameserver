@@ -1,5 +1,5 @@
 ﻿
-#createGameBox, #gameBox, #gamePlayersBox, #chatBox {
+#createGameBox, #gameBox, #gamePlayersBox, #chatBox, #gameChatBox {
     height: 300px;
     overflow-y: auto;
 }
