@@ -111,8 +111,8 @@ listener.sockets.on('connection', function (socket) {
         var gameEnviroment = require(gameType.code);
 
         var config = {
-            size: 4,
-            numToWin: 3
+            size: 5,
+            numToWin: 4
         };
         game.instance = new gameEnviroment.game(config, game.players);
         var result= game.instance.init();

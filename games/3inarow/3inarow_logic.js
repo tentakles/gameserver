@@ -141,7 +141,8 @@ exports.game = function game(config, players) {
             var response = { result: result, x: x, y: y, lastPlayer: self.currentPlayer };
             if (result === self.RESULT_DRAW || result === self.RESULT_WIN) {
                 var initResponse = self.init();
-                response.currentPlayer = initResponse.currentPlayer;
+                self.switchPlayers();
+                response.currentPlayer = players[self.currentPlayerIndex] + " (" + self.currentPlayer + ")";
                 return response;
             }
 
