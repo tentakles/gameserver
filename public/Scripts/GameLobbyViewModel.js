@@ -45,20 +45,20 @@ function GameLobbyViewModel(socket) {
         //   alert("forward game event here!");
     }
 
+    self.registerGameEventCallback = function (callback) {
+        self.gameEventCallback = callback;
+    }
+
     //initierar vymodellen
     self.init = function () {
 
         socket.on('server_game_event', function (data) {
-            if (self.game) {
-                self.game.event(data);
-            }
+            if (self.gameEventCallback)
+                self.gameEventCallback(data);
         });
 
         socket.on('server_game_start', function (gameType) {
-          //  alert("OMG MEN HEJE!!!!");
-
             $("#gameWrapper").load(gameType.url);
-
         });
 
         socket.on('server_chat', function (data) {

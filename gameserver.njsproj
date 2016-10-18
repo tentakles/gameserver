@@ -1,0 +1,125 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{b6ffbfe5-4e77-4643-9625-43287709efe7}</ProjectGuid>
+    <ProjectHome />
+    <ProjectView>ShowAllFiles</ProjectView>
+    <StartupFile>server.js</StartupFile>
+    <WorkingDirectory>.</WorkingDirectory>
+    <OutputPath>.</OutputPath>
+    <ProjectTypeGuids>{3AF33F2E-1136-4D97-BBB7-1795711AC8B8};{349c5851-65df-11da-9384-00065b846f21};{9092AA53-FB77-4645-B42D-1CCCA6BD08BD}</ProjectTypeGuids>
+    <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">11.0</VisualStudioVersion>
+    <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
+    <NodejsPort>8001</NodejsPort>
+    <StartWebBrowser>True</StartWebBrowser>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)' == 'Debug'" />
+  <PropertyGroup Condition="'$(Configuration)' == 'Release'" />
+  <ItemGroup>
+    <Content Include="TODO.txt" />
+    <Content Include="package.json" />
+    <Compile Include="server.js" />
+    <Content Include="public\index.html" />
+    <Content Include="public\Content\bootstrap-theme.css" />
+    <Content Include="public\Content\bootstrap-theme.min.css" />
+    <Content Include="public\Content\bootstrap.css" />
+    <Content Include="public\Content\bootstrap.min.css" />
+    <Content Include="public\css\lobby.css" />
+    <Content Include="public\css\main.css" />
+    <Content Include="public\css\normalize.css" />
+    <Content Include="public\fonts\glyphicons-halflings-regular.svg" />
+    <Compile Include="public\Scripts\bootstrap.js" />
+    <Compile Include="public\Scripts\bootstrap.min.js" />
+    <Compile Include="public\Scripts\CanvasDrawer.js" />
+    <Compile Include="public\Scripts\GameLobbyViewModel.js" />
+    <Compile Include="public\Scripts\jquery-2.1.1.intellisense.js" />
+    <Compile Include="public\Scripts\jquery-2.1.1.js" />
+    <Compile Include="public\Scripts\jquery-2.1.1.min.js" />
+    <Compile Include="public\Scripts\knockout-3.2.0.debug.js" />
+    <Compile Include="public\Scripts\knockout-3.2.0.js" />
+    <Content Include="public\games\3inarow\todo.txt" />
+    <Content Include="public\games\3inarow\game.html" />
+    <Content Include="public\games\3inarow\index.html" />
+    <Content Include="public\games\repo\todo.txt" />
+    <Content Include="public\games\repo\index.html" />
+    <Compile Include="public\games\3inarow\Scripts\3inarow_logic.js" />
+    <Compile Include="public\games\3inarow\Scripts\3inarow_ui.js" />
+    <Content Include="public\games\repo\css\default.css" />
+    <Compile Include="public\games\repo\Scripts\main.js" />
+    <Compile Include="public\games\repo\Scripts\RepellLogic.js" />
+    <Compile Include="public\games\repo\Scripts\RepellModels.js" />
+    <Compile Include="public\games\repo\Scripts\RepellViewModel.js" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Properties" />
+    <Folder Include="public" />
+    <Folder Include="public\Content" />
+    <Folder Include="public\css" />
+    <Folder Include="public\fonts" />
+    <Folder Include="public\games" />
+    <Folder Include="public\games\3inarow" />
+    <Folder Include="public\games\3inarow\Scripts" />
+    <Folder Include="public\games\repo" />
+    <Folder Include="public\games\repo\css" />
+    <Folder Include="public\games\repo\Scripts" />
+    <Folder Include="public\img" />
+    <Folder Include="public\Scripts" />
+    <Folder Include="typings\" />
+    <Folder Include="typings\globals\" />
+    <Folder Include="typings\globals\express\" />
+    <Folder Include="typings\globals\node-uuid\" />
+    <Folder Include="typings\globals\node\" />
+    <Folder Include="typings\globals\socket.io\" />
+  </ItemGroup>
+  <ItemGroup>
+    <TypeScriptCompile Include="typings\globals\express\index.d.ts" />
+    <TypeScriptCompile Include="typings\globals\node-uuid\index.d.ts" />
+    <TypeScriptCompile Include="typings\globals\node\index.d.ts" />
+    <TypeScriptCompile Include="typings\globals\socket.io\index.d.ts" />
+    <TypeScriptCompile Include="typings\index.d.ts" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.Common.targets" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <!--Do not delete the following Import Project.  While this appears to do nothing it is a marker for setting TypeScript properties before our import that depends on them.-->
+  <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\TypeScript\Microsoft.TypeScript.targets" Condition="False" />
+  <Import Project="$(VSToolsPath)\Node.js Tools\Microsoft.NodejsTools.targets" />
+  <ProjectExtensions>
+    <VisualStudio>
+      <FlavorProperties GUID="{349c5851-65df-11da-9384-00065b846f21}">
+        <WebProjectProperties>
+          <UseIIS>False</UseIIS>
+          <AutoAssignPort>True</AutoAssignPort>
+          <DevelopmentServerPort>0</DevelopmentServerPort>
+          <DevelopmentServerVPath>/</DevelopmentServerVPath>
+          <IISUrl>http://localhost:48022/</IISUrl>
+          <NTLMAuthentication>False</NTLMAuthentication>
+          <UseCustomServer>True</UseCustomServer>
+          <CustomServerUrl>http://localhost:1337</CustomServerUrl>
+          <SaveServerSettingsInUserFile>False</SaveServerSettingsInUserFile>
+        </WebProjectProperties>
+      </FlavorProperties>
+      <FlavorProperties GUID="{349c5851-65df-11da-9384-00065b846f21}" User="">
+        <WebProjectProperties>
+          <StartPageUrl>
+          </StartPageUrl>
+          <StartAction>CurrentPage</StartAction>
+          <AspNetDebugging>True</AspNetDebugging>
+          <SilverlightDebugging>False</SilverlightDebugging>
+          <NativeDebugging>False</NativeDebugging>
+          <SQLDebugging>False</SQLDebugging>
+          <ExternalProgram>
+          </ExternalProgram>
+          <StartExternalURL>
+          </StartExternalURL>
+          <StartCmdLineArguments>
+          </StartCmdLineArguments>
+          <StartWorkingDirectory>
+          </StartWorkingDirectory>
+          <EnableENC>False</EnableENC>
+          <AlwaysStartWebServerOnDebug>False</AlwaysStartWebServerOnDebug>
+        </WebProjectProperties>
+      </FlavorProperties>
+    </VisualStudio>
+  </ProjectExtensions>
+</Project>

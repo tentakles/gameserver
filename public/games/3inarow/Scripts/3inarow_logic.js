@@ -111,29 +111,34 @@ exports.game = function game(config) {
     self.can_move = function (y, x) {
         return self.grid[y][x] == "";
     }
-	
-	self.switchPlayers=function(){				
-	if (self.currentPlayer == self.player1)
-		self.currentPlayer = self.player2;
-	else
-		self.currentPlayer = self.player1;	
-	}
 
-    self.move = function (y, x) {
+    self.switchPlayers = function () {
+        if (self.currentPlayer == self.player1)
+            self.currentPlayer = self.player2;
+        else
+            self.currentPlayer = self.player1;
+    }
+
+    self.move = function (event) {
+        var y = event.y;
+        var x = event.x;
         if (self.can_move(y, x)) {
             self.grid[y][x] = self.currentPlayer;
             var result = self.check_win(y, x);
-			
+            var response = { result: result, x: x, y: y, currentPlayer: self.currentPlayer };
             if (result == self.RESULT_DRAW || result == self.RESULT_WIN) {
-                return result;
+                self.init();
+                return response;
             }
-			
-			self.switchPlayers();
-
-            return result;
+            console.log(response.currentPlayer);
+            self.switchPlayers();
+            
+            response.currentPlayer = self.currentPlayer;
+            console.log(response.currentPlayer);
+            return response;
         }
         else {
-            return self.RESULT_ILLEGAL;
+            return { result: self.RESULT_ILLEGAL };
         }
     }
 

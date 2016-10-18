@@ -11,9 +11,9 @@ var uuid = require('node-uuid');
 var games = [];
 var internal_games = [];
 var gameTypes = [
-    { name: '3-in-a-row', url: 'games/3inarow/game.html',code:'./public/games/3inarow/Scripts/3inarow_logic.js', minPlayers: 2, maxPlayers: 2 },
+    { name: '3-in-a-row', url: 'games/3inarow/game.html', code: './public/games/3inarow/Scripts/3inarow_logic.js', minPlayers: 2, maxPlayers: 2 },
     { name: 'Repello', url: 'games/repo/game.html', minPlayers: 2, maxPlayers: 6 }
-    ];
+];
 
 function getListItemByParam(param, paramName, list) {
     for (var i = 0; i < list.length; i++) {
@@ -74,14 +74,14 @@ listener.sockets.on('connection', function (socket) {
     });
 
     socket.on('client_game_event', function (data) {
-       // console.log("client_game_event");
+        // console.log("client_game_event");
 
         var game = getGameByUser(data.user);
         var result = game.instance.move(data.event);
 
-        console.log("game move result:");
-        console.log(result);
-
+        //console.log("game move result:");
+        //console.log(result);
+        listener.to(game.id).emit('server_game_event', result);
         //console.log(data);
     });
 
@@ -99,7 +99,7 @@ listener.sockets.on('connection', function (socket) {
         };
         game.instance = new gameEnviroment.game(config);
         game.instance.init();
-        
+
         listener.to(game.id).emit('server_game_start', gameType);
     });
 
@@ -124,6 +124,9 @@ listener.sockets.on('connection', function (socket) {
     });
 
     socket.on('client_create_game', function (data) {
+        if (!data.name) {
+            return;
+        }
         var game = { id: uuid.v4(), players: [data.playerName], name: data.name, needPassword: data.password ? true : false, available: 'N/A', joinable: true }
         console.log('client_create_game:' + game.id);
         games.push(game);

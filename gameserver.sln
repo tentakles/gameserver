@@ -1,9 +1,9 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2013
-VisualStudioVersion = 12.0.31101.0
+# Visual Studio 14
+VisualStudioVersion = 14.0.25420.1
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "gameserver", "gameserver.csproj", "{54842925-BCE9-4074-AF58-17E1BF36D5D0}"
+Project("{9092AA53-FB77-4645-B42D-1CCCA6BD08BD}") = "gameserver", "gameserver.njsproj", "{B6FFBFE5-4E77-4643-9625-43287709EFE7}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -11,10 +11,10 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{54842925-BCE9-4074-AF58-17E1BF36D5D0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{54842925-BCE9-4074-AF58-17E1BF36D5D0}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{54842925-BCE9-4074-AF58-17E1BF36D5D0}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{54842925-BCE9-4074-AF58-17E1BF36D5D0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B6FFBFE5-4E77-4643-9625-43287709EFE7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B6FFBFE5-4E77-4643-9625-43287709EFE7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B6FFBFE5-4E77-4643-9625-43287709EFE7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B6FFBFE5-4E77-4643-9625-43287709EFE7}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
