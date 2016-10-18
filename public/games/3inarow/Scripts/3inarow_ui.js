@@ -6,7 +6,19 @@ var RESULT_WIN = 1;
 var RESULT_CONTINUE = 2;
 var RESULT_ILLEGAL = 3;
 
+
+function restart() {
+    $("#result").removeClass("highlight");
+    $("#result").html("");
+    $("td").html("");
+    needsRestart = false;
+}
+
 function game_event(event) {
+    if (needsRestart) {
+        restart();
+    }
+
     var resultBox = $("#result").html("");
 
     if (event.x && event.y) {
@@ -37,10 +49,7 @@ function game_event(event) {
 
 function try_move() {
     if (needsRestart) {
-        $("#result").removeClass("highlight");
-        $("#result").html("");
-        $("td").html("");
-        needsRestart = false;
+        restart();
     }
 
     var id = $(this).attr('id');

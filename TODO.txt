@@ -13,6 +13,9 @@
 TODO
 ############
 
+
+planen nollställs inte för forlöoraren??
+
 kunna se valt spel för ickeadmins i spel, samt på lobbyskärmen som listar alla spel
 man ska kunna se i listan vem som är Admin.
 personer som ej startar spelet skall ej kunna skiccka "start game" eller se ui för att starta spel
