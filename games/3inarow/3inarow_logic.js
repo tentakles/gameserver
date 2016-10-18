@@ -1,4 +1,4 @@
-exports.game = function game(config) {
+exports.game = function game(config, players) {
     var self = this;
 
     self.RESULT_DRAW = 0;
@@ -9,6 +9,7 @@ exports.game = function game(config) {
     self.player1 = "X";
     self.player2 = "O";
     self.currentPlayer = self.player1;
+    self.currentPlayerIndex = 0;
     self.grid = [];
 
     self.check_diag = function (y, x) {
@@ -18,12 +19,12 @@ exports.game = function game(config) {
             if (!self.grid[i + y] || !self.grid[i + y][i + x]) {
                 return false;
             }
-            if (self.grid[i + y][i + x] != self.currentPlayer) {
+            if (self.grid[i + y][i + x] !== self.currentPlayer) {
                 numInARow = 0;
                 continue;
             }
             numInARow++;
-            if (numInARow == config.numToWin) {
+            if (numInARow === config.numToWin) {
                 return true;
             }
         }
@@ -42,12 +43,12 @@ exports.game = function game(config) {
             x++;
             y--;
 
-            if (val != self.currentPlayer) {
+            if (val !== self.currentPlayer) {
                 numInARow = 0;
                 continue;
             }
             numInARow++;
-            if (numInARow == config.numToWin) {
+            if (numInARow === config.numToWin) {
                 return true;
             }
         }
@@ -60,24 +61,24 @@ exports.game = function game(config) {
         var numEmpty = 0;
         for (var i = 0; i < config.size; i++) {
             for (var j = 0; j < config.size; j++) {
-                if (self.grid[i][j] == "")
+                if (self.grid[i][j] === "")
                     numEmpty++;
             }
         }
-        if (numEmpty == 0) {
+        if (numEmpty === 0) {
             return self.RESULT_DRAW;
         }
 
         var numInARow = 0;
         //check col
         for (var i = 0; i < config.size; i++) {
-            if (self.grid[y][i] != self.currentPlayer) {
+            if (self.grid[y][i] !== self.currentPlayer) {
                 numInARow = 0;
                 continue;
             }
             numInARow++;
 
-            if (numInARow == config.numToWin) {
+            if (numInARow === config.numToWin) {
                 return self.RESULT_WIN;
             }
         }
@@ -85,13 +86,13 @@ exports.game = function game(config) {
         numInARow = 0;
         //check row
         for (var i = 0; i < config.size; i++) {
-            if (self.grid[i][x] != self.currentPlayer) {
+            if (self.grid[i][x] !== self.currentPlayer) {
                 numInARow = 0;
                 continue;
             }
             numInARow++;
 
-            if (numInARow == config.numToWin) {
+            if (numInARow === config.numToWin) {
                 return self.RESULT_WIN;
             }
         }
@@ -109,36 +110,48 @@ exports.game = function game(config) {
     }
 
     self.can_move = function (y, x) {
-        return self.grid[y][x] == "";
+        return self.grid[y][x] === "";
     }
 
     self.switchPlayers = function () {
-        if (self.currentPlayer == self.player1)
+        if (self.currentPlayerIndex === players.length - 1)
+            self.currentPlayerIndex = 0;
+        else self.currentPlayerIndex++;
+
+        if (self.currentPlayer === self.player1)
             self.currentPlayer = self.player2;
         else
             self.currentPlayer = self.player1;
     }
 
-    self.move = function (event) {
+    self.move = function (event, player) {
         var y = event.y;
         var x = event.x;
+
+        var illegalResponse = {
+            result: self.RESULT_ILLEGAL, sendOnlyToPlayer: true, currentPlayer: players[self.currentPlayerIndex] + " (" + self.currentPlayer + ")"
+        };
+
+        if (player !== players[self.currentPlayerIndex])
+            return illegalResponse;
+
         if (self.can_move(y, x)) {
             self.grid[y][x] = self.currentPlayer;
             var result = self.check_win(y, x);
-            var response = { result: result, x: x, y: y, currentPlayer: self.currentPlayer };
-            if (result == self.RESULT_DRAW || result == self.RESULT_WIN) {
-                self.init();
+            var response = { result: result, x: x, y: y, lastPlayer: self.currentPlayer };
+            if (result === self.RESULT_DRAW || result === self.RESULT_WIN) {
+                var initResponse = self.init();
+                response.currentPlayer = initResponse.currentPlayer;
                 return response;
             }
-            console.log(response.currentPlayer);
+
             self.switchPlayers();
-            
-            response.currentPlayer = self.currentPlayer;
-            console.log(response.currentPlayer);
+            response.currentPlayer = players[self.currentPlayerIndex] + " (" + self.currentPlayer + ")";
+
             return response;
         }
         else {
-            return { result: self.RESULT_ILLEGAL };
+            return illegalResponse;
         }
     }
 
@@ -153,6 +166,8 @@ exports.game = function game(config) {
                 self.grid[y][x] = "";
             }
         }
+
+        return { currentPlayer: players[self.currentPlayerIndex] + " (" + self.currentPlayer + ")" };
     }
 }
 

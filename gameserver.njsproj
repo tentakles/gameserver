@@ -44,7 +44,7 @@
     <Content Include="public\games\3inarow\index.html" />
     <Content Include="public\games\repo\todo.txt" />
     <Content Include="public\games\repo\index.html" />
-    <Compile Include="public\games\3inarow\Scripts\3inarow_logic.js" />
+    <Compile Include="games\3inarow\3inarow_logic.js" />
     <Compile Include="public\games\3inarow\Scripts\3inarow_ui.js" />
     <Content Include="public\games\repo\css\default.css" />
     <Compile Include="public\games\repo\Scripts\main.js" />
@@ -53,6 +53,8 @@
     <Compile Include="public\games\repo\Scripts\RepellViewModel.js" />
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="games\" />
+    <Folder Include="games\3inarow\" />
     <Folder Include="Properties" />
     <Folder Include="public" />
     <Folder Include="public\Content" />

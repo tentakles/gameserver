@@ -4,23 +4,26 @@
 *visa upp antal personer i ett spel
 *admin: kunna välja spel
 *admin: kunna starta spel
+*knyta "User" till socketen, genom att ha ett emit typ "client_enter_nickname", och sen ta bort "user" ur alla anrop och slå upp det på socketen istället.
+*installera node debuggern för visual studio
+*implementera 3inarow som multiplayer
+	*visa nuvarande spelare när spelet slutar (och när spelet börjar)
 
 ############
 TODO
 ############
 
-user: kunna se valt spel, särskilt på lobbyskärmen som listar alla spel
-implementera 3inarow som multiplayer
-göra snyggare design i lobby
+kunna se valt spel för ickeadmins i spel, samt på lobbyskärmen som listar alla spel
+man ska kunna se i listan vem som är Admin.
+personer som ej startar spelet skall ej kunna skiccka "start game" eller se ui för att starta spel
+bugg i 3inarow som kollar om spelplanen är full innan någon vunnit.
+iomplementera min och max num of players
+implementera "property array" av config
 implementera password för Join spel
-
-############
-NEXT SCOBY HAX
-############
-
-installera node debuggern för visual studio
-göra ännu ännu snyggare
+highlighta i "Players list"  vem som är nuvarande spelare
 implementera maxgräns på ett spel
 hantera / kolla upp "leave" / "reload"
-knyta "User" till socketen, genom att ha ett emit typ "client_enter_nickname", och sen ta bort "user" ur alla anrop och slå upp det på socketen istället.
 socket leave måste hanteras, så att man går ut ur spelen när man laddar om sidan
+
+göra snyggare design
+

@@ -41,24 +41,25 @@ function GameLobbyViewModel(socket) {
     self.game = null;
 
     self.gameEvent = function (event) {
-        socket.emit('client_game_event', { 'user': self.nickname(), event: event });
-        //   alert("forward game event here!");
+        socket.emit('client_game_event', { event: event });
     }
 
-    self.registerGameEventCallback = function (callback) {
-        self.gameEventCallback = callback;
+    self.registerGame = function (startCallback, eventCallback) {
+        startCallback(self.currentGame.config);
+        eventCallback(self.currentGame.result);
+        self.gameEventCallback = eventCallback;
     }
 
     //initierar vymodellen
     self.init = function () {
-
         socket.on('server_game_event', function (data) {
             if (self.gameEventCallback)
                 self.gameEventCallback(data);
         });
 
-        socket.on('server_game_start', function (gameType) {
-            $("#gameWrapper").load(gameType.url);
+        socket.on('server_game_start', function (game) {
+            self.currentGame = game;
+            $("#gameWrapper").load(game.gameType.url);
         });
 
         socket.on('server_chat', function (data) {
@@ -77,6 +78,13 @@ function GameLobbyViewModel(socket) {
 
         socket.on('server_game_types', function (data) {
             self.gameTypes(data);
+        });
+
+        socket.on('server_nickname_response', function (response) {
+            if (response.result === true)
+                self.enterLobby();
+            else
+                alert("Can not enter lobby! Check nickname.");
         });
 
         socket.on('server_create_game_success', function (game) {
@@ -109,7 +117,7 @@ function GameLobbyViewModel(socket) {
     };
 
     self.joinGame = function (item) {
-        socket.emit('client_join_game', { 'id': item.id, 'playerName': self.nickname() });
+        socket.emit('client_join_game', { 'id': item.id });
     };
 
     self.cancelCreateGame = function () {
@@ -118,7 +126,7 @@ function GameLobbyViewModel(socket) {
     };
 
     self.doCreateGame = function () {
-        socket.emit('client_create_game', { 'playerName': self.nickname(), 'name': self.createGameName(), 'password': self.createGamePassword() });
+        socket.emit('client_create_game', { 'name': self.createGameName(), 'password': self.createGamePassword() });
     };
 
     self.createGame = function () {
@@ -130,7 +138,7 @@ function GameLobbyViewModel(socket) {
     };
 
     self.submitChat = function () {
-        socket.emit('client_chat', { 'line': self.chatRow(), 'user': self.nickname() });
+        socket.emit('client_chat', self.chatRow());
         self.chatRow("");
     };
 
@@ -142,26 +150,26 @@ function GameLobbyViewModel(socket) {
     };
 
     self.submitGameChat = function () {
-        socket.emit('client_game_chat', { 'line': self.gameChatRow(), 'user': self.nickname() });
+        socket.emit('client_game_chat', self.gameChatRow());
         self.gameChatRow("");
     };
 
     self.submitGameChatKeyPress = function (d, e) {
-        if (e.keyCode == 13) {
+        if (e.keyCode === 13) {
             self.submitGameChat();
         }
         return true;
     };
 
     self.submitNicknameKeyPress = function (d, e) {
-        if (e.keyCode == 13) {
+        if (e.keyCode === 13) {
             self.submitNickname();
         }
         return true;
     };
 
     self.submitNickname = function () {
-        self.enterLobby();
+        socket.emit('client_nickname_submit', { 'nickname': self.nickname() });
     }
 
     self.enterLobby = function () {
@@ -175,11 +183,11 @@ function GameLobbyViewModel(socket) {
 
     self.startGame = function () {
         var game = self.selectedGame();
-        socket.emit('client_game_start', { 'user': self.nickname(), game: game.name });
+        socket.emit('client_game_start', { game: game.name });
     }
 
     self.leaveGame = function () {
-        socket.emit('client_game_leave', { 'user': self.nickname() });
+        socket.emit('client_game_leave');
         self.enterLobby();
         $("#gameWrapper").html("");
     }
