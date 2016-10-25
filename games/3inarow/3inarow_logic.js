@@ -57,18 +57,6 @@ exports.game = function game(config, players) {
 
     self.check_win = function (y, x) {
 
-        //check draw
-        var numEmpty = 0;
-        for (var i = 0; i < config.size; i++) {
-            for (var j = 0; j < config.size; j++) {
-                if (self.grid[i][j] === "")
-                    numEmpty++;
-            }
-        }
-        if (numEmpty === 0) {
-            return self.RESULT_DRAW;
-        }
-
         var numInARow = 0;
         //check col
         for (var i = 0; i < config.size; i++) {
@@ -104,6 +92,18 @@ exports.game = function game(config, players) {
                     return self.RESULT_WIN;
                 }
             }
+        }
+
+        //check draw
+        var numEmpty = 0;
+        for (var i = 0; i < config.size; i++) {
+            for (var j = 0; j < config.size; j++) {
+                if (self.grid[i][j] === "")
+                    numEmpty++;
+            }
+        }
+        if (numEmpty === 0) {
+            return self.RESULT_DRAW;
         }
 
         return self.RESULT_CONTINUE;

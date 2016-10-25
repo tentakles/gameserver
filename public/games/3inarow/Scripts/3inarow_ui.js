@@ -6,7 +6,6 @@ var RESULT_WIN = 1;
 var RESULT_CONTINUE = 2;
 var RESULT_ILLEGAL = 3;
 
-
 function restart() {
     $("#result").removeClass("highlight");
     $("#result").html("");
