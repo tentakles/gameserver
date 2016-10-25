@@ -11,8 +11,12 @@ var uuid = require('node-uuid');
 var games = [];
 var internal_games = [];
 var gameTypes = [
-    { name: '3-in-a-row', url: 'games/3inarow/game.html', code: './games/3inarow/3inarow_logic.js', minPlayers: 2, maxPlayers: 2 },
-    { name: 'Repello', url: 'games/repo/game.html', minPlayers: 2, maxPlayers: 6 }
+    {
+        name: '3-in-a-row', url: 'games/3inarow/game.html', config: { size: 5, numToWin: 4 }, code: './games/3inarow/3inarow_logic.js', minPlayers: 2, maxPlayers: 2
+    },
+    { name: 'Repello', url: 'games/repo/game.html', minPlayers: 2, maxPlayers: 6 },
+    { name: 'bomberman', url: 'games/bomberman/game.html', config: { rows: 7, cols: 9 }, code: './games/bomberman/bomberman_logic.js', minPlayers: 2, maxPlayers: 4 }
+
 ];
 
 function getListItemByParam(param, paramName, list) {
@@ -110,14 +114,11 @@ listener.sockets.on('connection', function (socket) {
         var game = getGameByUser(socket.nickname);
         var gameEnviroment = require(gameType.code);
 
-        var config = {
-            size: 5,
-            numToWin: 4
-        };
-        game.instance = new gameEnviroment.game(config, game.players);
-        var result= game.instance.init();
 
-        var response = { gameType: gameType, config: config, result:result };
+        game.instance = new gameEnviroment.game(gameType.config, game.players);
+        var result = game.instance.init();
+
+        var response = { gameType: gameType, config: gameType.config, result: result };
 
         listener.to(game.id).emit('server_game_start', response);
     });

@@ -18,8 +18,12 @@
   <PropertyGroup Condition="'$(Configuration)' == 'Debug'" />
   <PropertyGroup Condition="'$(Configuration)' == 'Release'" />
   <ItemGroup>
+    <Content Include="public\games\bomberman\game.html" />
+    <Content Include="public\games\bomberman\index.html" />
     <Content Include="TODO.txt" />
     <Content Include="package.json" />
+    <Compile Include="games\bomberman\bomberman_logic.js" />
+    <Compile Include="public\games\bomberman\Scripts\bomberman_ui.js" />
     <Compile Include="server.js" />
     <Content Include="public\index.html" />
     <Content Include="public\Content\bootstrap-theme.css" />
@@ -55,6 +59,7 @@
   <ItemGroup>
     <Folder Include="games\" />
     <Folder Include="games\3inarow\" />
+    <Folder Include="games\bomberman\" />
     <Folder Include="Properties" />
     <Folder Include="public" />
     <Folder Include="public\Content" />
@@ -63,6 +68,8 @@
     <Folder Include="public\games" />
     <Folder Include="public\games\3inarow" />
     <Folder Include="public\games\3inarow\Scripts" />
+    <Folder Include="public\games\bomberman\" />
+    <Folder Include="public\games\bomberman\Scripts\" />
     <Folder Include="public\games\repo" />
     <Folder Include="public\games\repo\css" />
     <Folder Include="public\games\repo\Scripts" />
