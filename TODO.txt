@@ -8,25 +8,26 @@
 *installera node debuggern för visual studio
 *implementera 3inarow som multiplayer
 	*visa nuvarande spelare när spelet slutar (och när spelet börjar)
-
+*planen nollställs inte för forlöoraren??
+*bugg i 3inarow som kollar om spelplanen är full innan någon vunnit.
+*vart skall config för spel kommaa från? från spelarrayen eller spelet självt? bestäm och implementera.
 ############
-TODO
+TODO server
 ############
-
-
-planen nollställs inte för forlöoraren??
 
 kunna se valt spel för ickeadmins i spel, samt på lobbyskärmen som listar alla spel
 man ska kunna se i listan vem som är Admin.
 personer som ej startar spelet skall ej kunna skiccka "start game" eller se ui för att starta spel
-bugg i 3inarow som kollar om spelplanen är full innan någon vunnit.
-iomplementera min och max num of players
+implementera min och max num of players
 implementera "property array" av config
 implementera password för Join spel
 highlighta i "Players list"  vem som är nuvarande spelare
-implementera maxgräns på ett spel
-hantera / kolla upp "leave" / "reload"
-socket leave måste hanteras, så att man går ut ur spelen när man laddar om sidan
-
+socket leave /reload(?) måste hanteras, så att man går ut ur spelen när man laddar om sidan
 göra snyggare design
 
+############
+Todo bomberman
+############
+
+kunna skicka ut event inifrån spelet (explosion)
+implementera explosion så att folk dör och förstörbara block förstörs

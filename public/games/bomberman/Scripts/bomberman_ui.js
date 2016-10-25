@@ -6,13 +6,23 @@ var ACTION_MOVE_DOWN = 2;
 var ACTION_MOVE_LEFT = 3;
 var ACTION_PLACE_BOMB = 4;
 
+var config = null;
+var columns = null;
 
 function restart() {
 
 }
 
 function game_event(event) {
+    debugger;
 
+    for (var r = 0; r < config.rows; r++) {
+        for (var c = 0; c < config.cols; c++) {
+            var i = (r * config.cols) + c;
+            $(columns[i]).html(event.grid[r][c]);
+           // var col = $("#" + r + "_" + c).html(event.grid[r][c]);
+        }
+    }
 }
 
 function try_move(action) {
@@ -22,8 +32,8 @@ function try_move(action) {
     gameLobby.gameEvent(data);
 }
 
-function setup_game(config) {
-
+function setup_game(conf) {
+    config = conf;
     var gamegrid = "<table>";
     for (var r = 0; r < config.rows; r++) {
         gamegrid += "<tr>";
@@ -37,8 +47,10 @@ function setup_game(config) {
 
     $("#game").html(gamegrid);
 
+    columns = $("#game").find("td");
+
     $("#game").focus();
-    $("#game").keydown(function (event) {
+    $("#game").keyup(function (event) {
         switch (event.which) {
             case 32:
                 try_move(ACTION_PLACE_BOMB);
