@@ -11,6 +11,7 @@ exports.game = function game(config, players) {
 
     self.OBJECT_EMPTY = ' ';
     self.OBJECT_BOMB = '@';
+    self.OBJECT_DESTRUCTIBLE_BLOCK = '$';
 
     self.playerData = {};
 
@@ -21,6 +22,11 @@ exports.game = function game(config, players) {
         var result = false;
 
         var playerObj = self.playerData[player];
+
+        if (!playerObj.isAlive) {
+            console.log(player + " is dead :(");
+            return false;
+        }
 
         if (event.action === self.ACTION_PLACE_BOMB && playerObj.bombs > 0) {
             self.grid[playerObj.row][playerObj.col] += self.OBJECT_BOMB;
@@ -104,9 +110,31 @@ exports.game = function game(config, players) {
         return result;
     }
 
-    self.explosion = function (event) {
+    self.handleExplosionOnPosition = function (row, col) {
+        if (self.grid[row] && (self.grid[row][col] === self.OBJECT_DESTRUCTIBLE_BLOCK))
+            self.grid[row][col] = self.OBJECT_EMPTY;
 
+        for (var i = 0; i < players.length; i++) {
+
+            var player = self.playerData[players[i]];
+            if (self.grid[row] && self.grid[row][col] && self.grid[row][col].indexOf(player.char) > -1) {
+                self.grid[row][col] = self.grid[row][col].replace(player.char, ' ');
+                player.isAlive = false;
+            }
+        }
+    }
+
+    self.explosion = function (event) {
         self.grid[event.row][event.col] = self.grid[event.row][event.col].replace(self.OBJECT_BOMB, ' ');
+
+        for (var i = 1; i <= event.size; i++) {
+            self.handleExplosionOnPosition(event.row, event.col);
+            self.handleExplosionOnPosition(event.row, event.col + 1);
+            self.handleExplosionOnPosition(event.row, event.col - 1);
+            self.handleExplosionOnPosition(event.row + 1, event.col);
+            self.handleExplosionOnPosition(event.row - 1, event.col);
+        }
+
     };
 
     self.move = function (event, player) {
@@ -131,14 +159,22 @@ exports.game = function game(config, players) {
             [' ', ' ', '$', '$', '$', '$', '$', ' ', ' ']];
 
         var playerData = [
-            { char: 'A', row: 0, col: 0, bombs: 1, bombStrength: 1 },
-            { char: 'B', row: 6, col: 8, bombs: 1, bombStrength: 1 },
-            { char: 'C', row: 6, col: 0, bombs: 1, bombStrength: 1 },
-            { char: 'D', row: 0, col: 8, bombs: 1, bombStrength: 1 }
+            { char: 'A', startRow: 0, startCol: 0 },
+            { char: 'B', startRow: 6, startCol: 8 },
+            { char: 'C', startRow: 6, startCol: 0 },
+            { char: 'D', startRow: 0, startCol: 8 }
         ];
 
         for (var i = 0; i < players.length; i++) {
             playerData[i].name = players[i];
+            playerData[i].wins = 0;
+            playerData[i].bombs = 1;
+            playerData[i].bombStrength = 1;
+            playerData[i].isAlive = true;
+
+            playerData[i].row = playerData[i].startRow;
+            playerData[i].col = playerData[i].startCol;
+
             self.playerData[players[i]] = playerData[i];
             self.grid[playerData[i].row][playerData[i].col] = playerData[i].char;
         }

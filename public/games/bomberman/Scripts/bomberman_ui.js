@@ -15,15 +15,25 @@ function restart() {
 }
 
 function game_event(event) {
-
+    var i;
     if (event.type === EVENT_TYPE_EXPLOSION) {
+        var affectedTiles = "#" + event.row + "_" + event.col;
 
+        for (i = 1; i <= event.size; i++) {
+            affectedTiles += ", #" + event.row + "_" + (event.col + i);
+            affectedTiles += ", #" + event.row + "_" + (event.col - i);
+            affectedTiles += ", #" + (event.row + i)  + "_" + event.col;
+            affectedTiles += ", #" + (event.row - i) + "_" + event.col;
+        }
+
+        $(affectedTiles).addClass("explosion");
+
+        setTimeout(function () { $(affectedTiles).removeClass("explosion"); }, 1000);
     }
-
 
     for (var r = 0; r < config.rows; r++) {
         for (var c = 0; c < config.cols; c++) {
-            var i = (r * config.cols) + c;
+            i = (r * config.cols) + c;
             $(columns[i]).html(event.grid[r][c]);
             // var col = $("#" + r + "_" + c).html(event.grid[r][c]);
         }

@@ -31,3 +31,12 @@ Todo bomberman
 
 kunna skicka ut event inifrån spelet (explosion)
 implementera explosion så att folk dör och förstörbara block förstörs
+
+ha en räknare i playerData , availableBombs, som minskas med 1 varje gång man lägger en bomb, men ökas igen när bomben exploderar.
+	den ska initialt vara 1.
+	man skall bara kunna lägga en ny bomb om avialbleBombs >0
+	man skall kunna hitta en powerup, som ökar availablebombs med 1
+	att lägga bomber skall inte vara beroende av någon delay,
+	man skalll ej kunna lägga 2 eller fler bomber på samma plats
+	
+implementera poängräkning, skriva in i config hur många vinster som krävs i ett set	
