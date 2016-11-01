@@ -5,6 +5,7 @@ var ACTION_MOVE_RIGHT = 1;
 var ACTION_MOVE_DOWN = 2;
 var ACTION_MOVE_LEFT = 3;
 var ACTION_PLACE_BOMB = 4;
+var EVENT_TYPE_EXPLOSION = 0;
 
 var config = null;
 var columns = null;
@@ -14,15 +15,20 @@ function restart() {
 }
 
 function game_event(event) {
-    debugger;
+
+    if (event.type === EVENT_TYPE_EXPLOSION) {
+
+    }
+
 
     for (var r = 0; r < config.rows; r++) {
         for (var c = 0; c < config.cols; c++) {
             var i = (r * config.cols) + c;
             $(columns[i]).html(event.grid[r][c]);
-           // var col = $("#" + r + "_" + c).html(event.grid[r][c]);
+            // var col = $("#" + r + "_" + c).html(event.grid[r][c]);
         }
     }
+
 }
 
 function try_move(action) {

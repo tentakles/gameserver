@@ -7,18 +7,37 @@ exports.game = function game(config, players) {
     self.ACTION_MOVE_LEFT = 3;
     self.ACTION_PLACE_BOMB = 4;
 
+    self.EVENT_TYPE_EXPLOSION = 0;
+
     self.OBJECT_EMPTY = ' ';
     self.OBJECT_BOMB = '@';
 
     self.playerData = {};
 
-    self.actionDelay = 500;
+    self.actionDelay = 300;
     self.explosionDelay = 2000;
 
     self.try_move = function (event, player) {
         var result = false;
 
         var playerObj = self.playerData[player];
+
+        if (event.action === self.ACTION_PLACE_BOMB && playerObj.bombs > 0) {
+            self.grid[playerObj.row][playerObj.col] += self.OBJECT_BOMB;
+
+            var bombRow = playerObj.row;
+            var bombCol = playerObj.col;
+
+            playerObj.bombs -= 1;
+            setTimeout(function () {
+                var event = { grid: self.grid, type: self.EVENT_TYPE_EXPLOSION, row: bombRow, col: bombCol, size: playerObj.bombStrength };
+                self.explosion(event);
+                self.eventCallback(event, self.gameId);
+                playerObj.bombs += 1;
+            }, self.explosionDelay);
+
+            return true;
+        }
 
         if (playerObj.date) {
             var now = new Date();
@@ -80,22 +99,15 @@ exports.game = function game(config, players) {
                     self.grid[playerObj.row][playerObj.col] = playerObj.char;
                 }
                 break;
-            case self.ACTION_PLACE_BOMB:
-                self.grid[playerObj.row][playerObj.col] += self.OBJECT_BOMB;
-                console.log("W U NO BOMBU: " + self.grid[playerObj.row][playerObj.col]);
 
-                var bombRow = playerObj.row;
-                var bombCol = playerObj.col;
-                
-                setTimeout(function () {
-                    console.log("HEJ " + bombRow + " " + bombCol);
-                }, self.explosionDelay);
-
-                result = true;
-                break;
         }
         return result;
     }
+
+    self.explosion = function (event) {
+
+        self.grid[event.row][event.col] = self.grid[event.row][event.col].replace(self.OBJECT_BOMB, ' ');
+    };
 
     self.move = function (event, player) {
         // console.log(event.action);
@@ -103,7 +115,10 @@ exports.game = function game(config, players) {
         return { grid: self.grid, cancelEvent: !canMove };
     }
 
-    self.init = function () {
+    self.init = function (eventCallback, gameId) {
+
+        self.gameId = gameId;
+        self.eventCallback = eventCallback;
 
         //create internal state grid
         self.grid = [
@@ -116,10 +131,10 @@ exports.game = function game(config, players) {
             [' ', ' ', '$', '$', '$', '$', '$', ' ', ' ']];
 
         var playerData = [
-            { char: 'A', row: 0, col: 0 },
-            { char: 'B', row: 6, col: 8 },
-            { char: 'C', row: 6, col: 0 },
-            { char: 'D', row: 0, col: 8 }
+            { char: 'A', row: 0, col: 0, bombs: 1, bombStrength: 1 },
+            { char: 'B', row: 6, col: 8, bombs: 1, bombStrength: 1 },
+            { char: 'C', row: 6, col: 0, bombs: 1, bombStrength: 1 },
+            { char: 'D', row: 0, col: 8, bombs: 1, bombStrength: 1 }
         ];
 
         for (var i = 0; i < players.length; i++) {

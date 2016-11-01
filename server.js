@@ -108,6 +108,11 @@ listener.sockets.on('connection', function (socket) {
             listener.to(game.id).emit('server_game_event', result);
     });
 
+    function sendGameEvent(data, gameId) {
+
+        listener.to(gameId).emit('server_game_event', data);
+    }
+
     socket.on('client_game_start', function (data) {
         console.log("client_game_start:" + data.game + " by: " + socket.nickname);
         var gameType = getListItemByParam(data.game, "name", gameTypes);
@@ -117,7 +122,7 @@ listener.sockets.on('connection', function (socket) {
 
 
         game.instance = new gameEnviroment.game(gameType.config, game.players);
-        var result = game.instance.init();
+        var result = game.instance.init(sendGameEvent, game.id);
 
         var response = { gameType: gameType, config: gameType.config, result: result };
 
