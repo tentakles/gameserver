@@ -11,32 +11,61 @@
 *planen nollställs inte för forlöoraren??
 *bugg i 3inarow som kollar om spelplanen är full innan någon vunnit.
 *vart skall config för spel kommaa från? från spelarrayen eller spelet självt? bestäm och implementera.
+*skriva in i config hur många vinster som krävs i ett set.
+*kunna skicka ut event inifrån spelet (explosion)
+*implementera explosion så att folk dör och förstörbara block förstörs
+*ha en räknare i playerData , availableBombs, som minskas med 1 varje gång man lägger en bomb, men ökas igen när bomben exploderar.
+	*den ska initialt vara 1.
+	*man skall bara kunna lägga en ny bomb om avialbleBombs >0
+	*man skall kunna hitta en powerup, som ökar availablebombs med 1
+	*att lägga bomber skall inte vara beroende av någon delay,
+	
 ############
 TODO server
 ############
 
+players array skall bli ett komplext objekt istället för strängar
+		lägg till isAdmin
+		lägg till wins
+flytta val av spel till create game skärmen
+hantera admin leave från lobby
+		ge vidare admin till annan spelare 
 kunna se valt spel för ickeadmins i spel, samt på lobbyskärmen som listar alla spel
 man ska kunna se i listan vem som är Admin.
 personer som ej startar spelet skall ej kunna skiccka "start game" eller se ui för att starta spel
 implementera min och max num of players
+		inte kunna starta spel med fler eller färre än min/max
+		visuell indikation av min/max i spel listan (2/2 osv)
+		visuell indikation av min/max i spel lobbyn, start knapp utgråad tills min/max spelare är uppfyllt
 implementera "property array" av config
 implementera password för Join spel
 highlighta i "Players list"  vem som är nuvarande spelare
 socket leave /reload(?) måste hanteras, så att man går ut ur spelen när man laddar om sidan
 göra snyggare design
+skriva server events i spel chat (såsom joins och leaves, kanske vem som vunnit)
 
 ############
 Todo bomberman
 ############
 
-kunna skicka ut event inifrån spelet (explosion)
-implementera explosion så att folk dör och förstörbara block förstörs
+Skriva spel händelser i spel chatten
+	spelare vunnit omgång
+	spelare vunnit set
+	spelare dör
+	spel oavgjort
 
-ha en räknare i playerData , availableBombs, som minskas med 1 varje gång man lägger en bomb, men ökas igen när bomben exploderar.
-	den ska initialt vara 1.
-	man skall bara kunna lägga en ny bomb om avialbleBombs >0
-	man skall kunna hitta en powerup, som ökar availablebombs med 1
-	att lägga bomber skall inte vara beroende av någon delay,
-	man skalll ej kunna lägga 2 eller fler bomber på samma plats
+implementera poängräkning,
+	Öka wins när en spelare är sist kvar på banan
+	resetta banan efter draw/win
+Ersätta chars med tex gifar
+man skall ej kunna lägga 2 eller fler bomber på samma plats
+man skall dö när man går in i pågående explosion
+kedje explosion av bomber
+	hantera på klientsidan närliggande bomber
+implementera powerups
+	mer bomber
+	större explosion
+	snabbare gång 
+Kunna gå igenom spelare
 	
-implementera poängräkning, skriva in i config hur många vinster som krävs i ett set	
+ 
