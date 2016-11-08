@@ -129,10 +129,10 @@ exports.game = function game(config, players) {
         var x = event.x;
 
         var illegalResponse = {
-            result: self.RESULT_ILLEGAL, sendOnlyToPlayer: true, currentPlayer: players[self.currentPlayerIndex] + " (" + self.currentPlayer + ")"
+            result: self.RESULT_ILLEGAL, sendOnlyToPlayer: true, currentPlayer: players[self.currentPlayerIndex].name + " (" + self.currentPlayer + ")"
         };
 
-        if (player !== players[self.currentPlayerIndex])
+        if (player !== players[self.currentPlayerIndex].name)
             return illegalResponse;
 
         if (self.can_move(y, x)) {
@@ -141,13 +141,17 @@ exports.game = function game(config, players) {
             var response = { result: result, x: x, y: y, lastPlayer: self.currentPlayer };
             if (result === self.RESULT_DRAW || result === self.RESULT_WIN) {
                 var initResponse = self.init();
+
+                if(result===self.RESULT_WIN)
+                    players[self.currentPlayerIndex].wins++;
+
                 self.switchPlayers();
-                response.currentPlayer = players[self.currentPlayerIndex] + " (" + self.currentPlayer + ")";
+                response.currentPlayer = players[self.currentPlayerIndex].name + " (" + self.currentPlayer + ")";
                 return response;
             }
 
             self.switchPlayers();
-            response.currentPlayer = players[self.currentPlayerIndex] + " (" + self.currentPlayer + ")";
+            response.currentPlayer = players[self.currentPlayerIndex].name + " (" + self.currentPlayer + ")";
 
             return response;
         }
@@ -168,7 +172,7 @@ exports.game = function game(config, players) {
             }
         }
 
-        return { currentPlayer: players[self.currentPlayerIndex] + " (" + self.currentPlayer + ")" };
+        return { currentPlayer: players[self.currentPlayerIndex].name + " (" + self.currentPlayer + ")" };
     }
 }
 

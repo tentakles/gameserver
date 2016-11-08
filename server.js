@@ -11,7 +11,7 @@ var uuid = require('node-uuid');
 var games = [];
 var internal_games = [];
 var gameTypes = [
-    { name: 'bomberman', url: 'games/bomberman/game.html', config: { rows: 7, cols: 9, numToWin: 3  }, code: './games/bomberman/bomberman_logic.js', minPlayers: 2, maxPlayers: 4 },
+    { name: 'bomberman', url: 'games/bomberman/game.html', config: { rows: 7, cols: 9, numToWin: 3 }, code: './games/bomberman/bomberman_logic.js', minPlayers: 2, maxPlayers: 4 },
     { name: '3-in-a-row', url: 'games/3inarow/game.html', config: { size: 5, numToWin: 4 }, code: './games/3inarow/3inarow_logic.js', minPlayers: 2, maxPlayers: 2 },
     { name: 'Repello', url: 'games/repo/game.html', minPlayers: 2, maxPlayers: 6 }
 ];
@@ -33,7 +33,7 @@ function getGameByUser(user) {
     for (var i = 0; i < games.length; i++) {
         var game = games[i];
         for (var j = 0; j < game.players.length; j++) {
-            if (game.players[j] === user)
+            if (game.players[j].name === user)
                 return game;
         }
     }
@@ -54,9 +54,20 @@ listener.sockets.on('connection', function (socket) {
         var game = getGameByUser(socket.nickname);
         if (game) {
             socket.leave(game.id);
-            var index = game.players.indexOf(socket.nickname);
-            game.players.splice(index, 1);
 
+            var player;
+            for (var i = 0; i < game.players.length; i++) {
+                if (game.players[i].name === socket.nickname) {
+                    player = game.players[i];
+                    break;
+                }
+            }
+
+            if (player) {
+                var index = game.players.indexOf(player);
+                game.players.splice(index, 1);
+            }
+            
             if (game.players.length === 0) {
                 var gameIndex = games.indexOf(game);
                 games.splice(gameIndex, 1);
@@ -113,13 +124,13 @@ listener.sockets.on('connection', function (socket) {
         listener.to(gameId).emit('server_game_event', data);
     }
 
-    socket.on('client_game_start', function (data) {
-        console.log("client_game_start:" + data.game + " by: " + socket.nickname);
-        var gameType = getListItemByParam(data.game, "name", gameTypes);
-        console.log("code url:" + gameType.code);
+    socket.on('client_game_start', function () {
         var game = getGameByUser(socket.nickname);
-        var gameEnviroment = require(gameType.code);
+        var gameType = getListItemByParam(game.gameName, "name", gameTypes);
+        console.log("client_game_start:" + game.gameName + " by: " + socket.nickname);
+        console.log("code url:" + gameType.code);
 
+        var gameEnviroment = require(gameType.code);
 
         game.instance = new gameEnviroment.game(gameType.config, game.players);
         var result = game.instance.init(sendGameEvent, game.id);
@@ -143,7 +154,10 @@ listener.sockets.on('connection', function (socket) {
         if (!data.name) {
             return;
         }
-        var game = { id: uuid.v4(), players: [socket.nickname], name: data.name, needPassword: data.password ? true : false, available: 'N/A', joinable: true }
+
+        var players = [{ name: socket.nickname,wins:0,isAdmin:true }];
+
+        var game = { id: uuid.v4(), players: players, name: data.name, needPassword: data.password ? true : false, available: 'N/A', joinable: true, gameName: data.gameName }
         console.log('client_create_game:' + game.id);
         games.push(game);
         internal_games.push({ name: data.name, password: data.password });
@@ -155,7 +169,7 @@ listener.sockets.on('connection', function (socket) {
     socket.on('client_join_game', function (request) {
         console.log('client_join_game');
         var game = getGameById(request.id);
-        game.players.push(socket.nickname);
+        game.players.push({ name: socket.nickname, wins: 0, isAdmin: false });
         socket.join(game.id);
         if (game) {
             socket.emit('server_join_game_success', game);

@@ -113,7 +113,7 @@ function GameLobbyViewModel(socket) {
         self.gameLobbyMode(true);
         self.isAdmin(isAdmin);
         self.gameMode(false);
-        self.title('Welcome to game "' + game.name + '"');
+        self.title('Welcome to game "' + game.name + '", selected game: ' +game.gameName);
     };
 
     self.joinGame = function (item) {
@@ -126,13 +126,17 @@ function GameLobbyViewModel(socket) {
     };
 
     self.doCreateGame = function () {
-        socket.emit('client_create_game', { 'name': self.createGameName(), 'password': self.createGamePassword() });
+        socket.emit('client_create_game', {
+            'name': self.createGameName(),
+            'password': self.createGamePassword(),
+            'gameName': self.selectedGame().name
+        });
     };
 
     self.createGame = function () {
         self.createGameName("");
         self.createGamePassword("");
-
+        self.selectedGame(undefined);
         self.createGameMode(true);
         self.gameMode(false);
     };
@@ -143,7 +147,7 @@ function GameLobbyViewModel(socket) {
     };
 
     self.submitChatKeyPress = function (d, e) {
-        if (e.keyCode == 13) {
+        if (e.keyCode === 13) {
             self.submitChat();
         }
         return true;
@@ -182,8 +186,7 @@ function GameLobbyViewModel(socket) {
     }
 
     self.startGame = function () {
-        var game = self.selectedGame();
-        socket.emit('client_game_start', { game: game.name });
+        socket.emit('client_game_start');
     }
 
     self.leaveGame = function () {

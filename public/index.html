@@ -45,14 +45,32 @@
 
         <div class="col-sm-8" data-bind="visible:gameMode">
             <h2>Games</h2>
-            <div id="gameBox" class="well" data-bind="foreach:games">
-                <div class="col-sm-5" data-bind="text:name"></div>
-                <div class="col-sm-3" data-bind="text:players.length"></div>
-                <div class="col-sm-1"><span class="glyphicon glyphicon-lock" data-bind="visible:needPassword"></span></div>
-                <div class="col-sm-3">
-                    <button type="button" class="btn btn-default btn-sm" data-bind="click:$parent.joinGame,enable:joinable">Join</button>
+            <div id="gameBox" class="well">
+
+                <div class="row">
+                    <div class="col-sm-3"><b>Game name</b>
+                    </div>
+
+                    <div class="col-sm-3">
+                        <b>Game type</b>
+                    </div>
+
+                    <div class="col-sm-2" ><b>Players</b></div>
+                    <div class="col-sm-2"><b>Password</b></div>
+                    <div class="col-sm-2"><b></b></div>
                 </div>
-            </div>
+
+                <div data-bind="foreach:games" class="row">
+                    <div class="col-sm-3" data-bind="text:name"></div>
+                    <div class="col-sm-3" data-bind="text:gameName"></div>
+                    <div class="col-sm-2" data-bind="text:players.length"></div>
+                    <div class="col-sm-2"><span class="glyphicon glyphicon-lock" data-bind="visible:needPassword"></span></div>
+                    <div class="col-sm-2">
+                        <button type="button" class="pull-right btn btn-default btn-sm" data-bind="click:$parent.joinGame,enable:joinable">Join</button>
+                    </div>
+                </div>
+
+                </div>
             <div class="col-sm-4">
                 <button type="button" class="btn btn-default btn-lg" data-bind="click:createGame">Create</button>
             </div>
@@ -70,11 +88,19 @@
                 </div>
 
                 <div class="row">
-                    <div class="col-sm-4">Password (optional)</div>
+                    <div class="col-sm-4">Game</div>
                     <div class="col-sm-8">
-                        <input type="text" class="form-control" data-bind="value:createGamePassword" />
+                        <select class="form-control" data-bind="options:gameTypes,value:selectedGame,optionsText:'name'"></select>
                     </div>
                 </div>
+                
+                <div class="row">
+                    <div class="col-sm-4">Password (optional)</div>
+                    <div class="col-sm-8">
+                        <input type="text" class="form-control" data-bind="value:createGamePassword"/>
+                    </div>
+                </div>
+                
             </div>
 
             <div class="col-sm-6 col-sm-offset-3">
@@ -88,7 +114,8 @@
                 <h2>Players</h2>
                 <div id="gamePlayersBox" class="well">
                     <div class="row">
-                        <div class="col-sm-6 ">
+                        
+                        <div class="col-sm-5 col-sm-offset-1">
                             <b>Name</b>
                         </div>
                         <div class="col-sm-6">
@@ -97,9 +124,11 @@
                     </div>
                     <div data-bind="foreach:gamePlayers">
                         <div class="row">
-                            <div class="col-sm-6" data-bind="text:$data">
+
+                            <div class="col-sm-1"><img src="img/admin.png" data-bind="visible:isAdmin"/></div>
+                            <div class="col-sm-5" data-bind="text:name">
                             </div>
-                            <div class="col-sm-6" data-bind="text:0">
+                            <div class="col-sm-6" data-bind="text:wins">
                             </div>
                         </div>
                     </div>
@@ -107,10 +136,6 @@
 
                 <div class="col-sm-4">
                     <button type="button" class="btn btn-default btn-lg" data-bind="click:leaveGame">Leave</button>
-                </div>
-
-                <div class="col-sm-4">
-                    <select class="form-control" data-bind="options:gameTypes,value:selectedGame,optionsText:'name'"></select>
                 </div>
 
                 <div class="col-sm-4">
@@ -143,7 +168,7 @@
                     <div class="col-sm-8" data-bind="text:line"></div>
                 </div>
             </div>
-            <div class="col-sm-8"><input type="text" class="form-control" data-bind="textInput:chatRow, event: {keypress: submitChatKeyPress}"></input></div>
+            <div class="col-sm-8"><input type="text" class="form-control" data-bind="textInput:chatRow, event: {keypress: submitChatKeyPress}"/></div>
             <div class="col-sm-4">
                 <button type="button" class="btn btn-default btn-lg" data-bind="click:submitChat">Send</button>
             </div>

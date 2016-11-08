@@ -20,6 +20,7 @@
   <ItemGroup>
     <Content Include="public\games\bomberman\game.html" />
     <Content Include="public\games\bomberman\index.html" />
+    <Content Include="public\img\admin.png" />
     <Content Include="TODO.txt" />
     <Content Include="package.json" />
     <Compile Include="games\bomberman\bomberman_logic.js" />

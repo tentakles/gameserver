@@ -19,18 +19,22 @@
 	*man skall bara kunna lägga en ny bomb om avialbleBombs >0
 	*man skall kunna hitta en powerup, som ökar availablebombs med 1
 	*att lägga bomber skall inte vara beroende av någon delay,
-	
+*flytta val av spel till create game skärmen	
+*kunna se valt spel i spel, samt på lobbyskärmen som listar alla spel
+
+*players array skall bli ett komplext objekt istället för strängar
+		*lägg till isAdmin
+		*lägg till wins
+
 ############
 TODO server
 ############
 
-players array skall bli ett komplext objekt istället för strängar
-		lägg till isAdmin
-		lägg till wins
-flytta val av spel till create game skärmen
+kör server_game_update när t.ex. wins uppdateras.
+
 hantera admin leave från lobby
 		ge vidare admin till annan spelare 
-kunna se valt spel för ickeadmins i spel, samt på lobbyskärmen som listar alla spel
+
 man ska kunna se i listan vem som är Admin.
 personer som ej startar spelet skall ej kunna skiccka "start game" eller se ui för att starta spel
 implementera min och max num of players
@@ -48,20 +52,22 @@ skriva server events i spel chat (såsom joins och leaves, kanske vem som vunnit
 Todo bomberman
 ############
 
+borken explosion algoz up in dis muthafucka 
+
 Skriva spel händelser i spel chatten
 	spelare vunnit omgång
 	spelare vunnit set
 	spelare dör
-	spel oavgjort
+	spel o avgjort
 
-implementera poängräkning,
+implementera poäng räkning,
 	Öka wins när en spelare är sist kvar på banan
 	resetta banan efter draw/win
 Ersätta chars med tex gifar
 man skall ej kunna lägga 2 eller fler bomber på samma plats
 man skall dö när man går in i pågående explosion
 kedje explosion av bomber
-	hantera på klientsidan närliggande bomber
+	hantera på klientsidan när liggande bomber
 implementera powerups
 	mer bomber
 	större explosion
