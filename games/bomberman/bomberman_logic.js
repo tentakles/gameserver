@@ -1,5 +1,9 @@
-exports.game = function game(config, players) {
+exports.game = function game(config, players, eventCallback, gameUpdateCallback, gameId) {
     var self = this;
+
+    self.gameId = gameId;
+    self.eventCallback = eventCallback;
+    self.gameUpdateCallback = gameUpdateCallback;
 
     self.ACTION_MOVE_UP = 0;
     self.ACTION_MOVE_RIGHT = 1;
@@ -116,7 +120,7 @@ exports.game = function game(config, players) {
 
         for (var i = 0; i < players.length; i++) {
 
-            var player = self.playerData[players[i]];
+            var player = self.playerData[players[i].name];
             if (self.grid[row] && self.grid[row][col] && self.grid[row][col].indexOf(player.char) > -1) {
                 self.grid[row][col] = self.grid[row][col].replace(player.char, ' ');
                 player.isAlive = false;
@@ -143,11 +147,7 @@ exports.game = function game(config, players) {
         return { grid: self.grid, cancelEvent: !canMove };
     }
 
-    self.init = function (eventCallback, gameId) {
-
-        self.gameId = gameId;
-        self.eventCallback = eventCallback;
-
+    self.init = function () {
         //create internal state grid
         self.grid = [
             [' ', ' ', '$', '$', '$', '$', '$', ' ', ' '],
@@ -166,7 +166,7 @@ exports.game = function game(config, players) {
         ];
 
         for (var i = 0; i < players.length; i++) {
-            playerData[i].name = players[i];
+            playerData[i].name = players[i].name;
             playerData[i].wins = 0;
             playerData[i].bombs = 1;
             playerData[i].bombStrength = 1;
@@ -175,7 +175,7 @@ exports.game = function game(config, players) {
             playerData[i].row = playerData[i].startRow;
             playerData[i].col = playerData[i].startCol;
 
-            self.playerData[players[i]] = playerData[i];
+            self.playerData[players[i].name] = playerData[i];
             self.grid[playerData[i].row][playerData[i].col] = playerData[i].char;
         }
 

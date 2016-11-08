@@ -67,7 +67,7 @@ listener.sockets.on('connection', function (socket) {
                 var index = game.players.indexOf(player);
                 game.players.splice(index, 1);
             }
-            
+
             if (game.players.length === 0) {
                 var gameIndex = games.indexOf(game);
                 games.splice(gameIndex, 1);
@@ -106,7 +106,6 @@ listener.sockets.on('connection', function (socket) {
     });
 
     socket.on('client_game_event', function (data) {
-
         var game = getGameByUser(socket.nickname);
         var result = game.instance.move(data.event, socket.nickname);
 
@@ -120,24 +119,31 @@ listener.sockets.on('connection', function (socket) {
     });
 
     function sendGameEvent(data, gameId) {
-
         listener.to(gameId).emit('server_game_event', data);
+    }
+
+    function sendGameUpdate(gameId) {
+        var game = getGameById(gameId);
+        listener.to(game.id).emit('server_game_update', game);
     }
 
     socket.on('client_game_start', function () {
         var game = getGameByUser(socket.nickname);
-        var gameType = getListItemByParam(game.gameName, "name", gameTypes);
-        console.log("client_game_start:" + game.gameName + " by: " + socket.nickname);
-        console.log("code url:" + gameType.code);
+        var player = getListItemByParam(socket.nickname, "name", game.players)
+        if (player && player.isAdmin) {
+            var gameType = getListItemByParam(game.gameName, "name", gameTypes);
+            console.log("client_game_start:" + game.gameName + " by: " + socket.nickname);
+            console.log("code url:" + gameType.code);
 
-        var gameEnviroment = require(gameType.code);
+            var gameEnviroment = require(gameType.code);
 
-        game.instance = new gameEnviroment.game(gameType.config, game.players);
-        var result = game.instance.init(sendGameEvent, game.id);
+            game.instance = new gameEnviroment.game(gameType.config, game.players, sendGameEvent, sendGameUpdate, game.id);
+            var result = game.instance.init();
 
-        var response = { gameType: gameType, config: gameType.config, result: result };
+            var response = { gameType: gameType, config: gameType.config, result: result };
 
-        listener.to(game.id).emit('server_game_start', response);
+            listener.to(game.id).emit('server_game_start', response);
+        }
     });
 
     socket.on('client_games', function () {
@@ -154,8 +160,7 @@ listener.sockets.on('connection', function (socket) {
         if (!data.name) {
             return;
         }
-
-        var players = [{ name: socket.nickname,wins:0,isAdmin:true }];
+        var players = [{ name: socket.nickname, wins: 0, isAdmin: true }];
 
         var game = { id: uuid.v4(), players: players, name: data.name, needPassword: data.password ? true : false, available: 'N/A', joinable: true, gameName: data.gameName }
         console.log('client_create_game:' + game.id);
@@ -169,6 +174,13 @@ listener.sockets.on('connection', function (socket) {
     socket.on('client_join_game', function (request) {
         console.log('client_join_game');
         var game = getGameById(request.id);
+        if (game.needPassword) {
+            var internal_game = getListItemByParam(game.name, "name", internal_games);
+            if (request.password !== internal_game.password) {
+                socket.emit('server_join_game_fail');
+                return;
+            }
+        }
         game.players.push({ name: socket.nickname, wins: 0, isAdmin: false });
         socket.join(game.id);
         if (game) {

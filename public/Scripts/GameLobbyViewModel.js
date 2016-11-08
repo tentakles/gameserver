@@ -113,11 +113,16 @@ function GameLobbyViewModel(socket) {
         self.gameLobbyMode(true);
         self.isAdmin(isAdmin);
         self.gameMode(false);
-        self.title('Welcome to game "' + game.name + '", selected game: ' +game.gameName);
+        self.title('Welcome to game "' + game.name + '", selected game: ' + game.gameName);
     };
 
-    self.joinGame = function (item) {
-        socket.emit('client_join_game', { 'id': item.id });
+    self.joinGame = function (game) {
+        if (game.needPassword) {
+            var password = prompt("Needs Passwordzzz");
+            socket.emit('client_join_game', { 'id': game.id, 'password': password });
+        }
+        else
+            socket.emit('client_join_game', { 'id': game.id });
     };
 
     self.cancelCreateGame = function () {

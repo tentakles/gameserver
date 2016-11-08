@@ -21,28 +21,30 @@
 	*att lägga bomber skall inte vara beroende av någon delay,
 *flytta val av spel till create game skärmen	
 *kunna se valt spel i spel, samt på lobbyskärmen som listar alla spel
-
 *players array skall bli ett komplext objekt istället för strängar
 		*lägg till isAdmin
 		*lägg till wins
+*man ska kunna se i listan vem som är Admin.
+*kör server_game_update när t.ex. wins uppdateras.
+*personer som ej startar spelet skall ej kunna skiccka "start game" eller se ui för att starta spel
+		*implementera på klient
+		*implementera på server
 
 ############
 TODO server
 ############
 
-kör server_game_update när t.ex. wins uppdateras.
+implementera password för Join spel
+		klientsida
+		*serversida
 
-hantera admin leave från lobby
-		ge vidare admin till annan spelare 
-
-man ska kunna se i listan vem som är Admin.
-personer som ej startar spelet skall ej kunna skiccka "start game" eller se ui för att starta spel
 implementera min och max num of players
 		inte kunna starta spel med fler eller färre än min/max
 		visuell indikation av min/max i spel listan (2/2 osv)
 		visuell indikation av min/max i spel lobbyn, start knapp utgråad tills min/max spelare är uppfyllt
 implementera "property array" av config
-implementera password för Join spel
+hantera admin leave från lobby
+		ge vidare admin till annan spelare 
 highlighta i "Players list"  vem som är nuvarande spelare
 socket leave /reload(?) måste hanteras, så att man går ut ur spelen när man laddar om sidan
 göra snyggare design

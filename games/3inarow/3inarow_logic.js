@@ -1,5 +1,9 @@
-exports.game = function game(config, players) {
+exports.game = function game(config, players, eventCallback, gameUpdateCallback, gameId) {
     var self = this;
+
+    self.gameId = gameId;
+    self.eventCallback = eventCallback;
+    self.gameUpdateCallback = gameUpdateCallback;
 
     self.RESULT_DRAW = 0;
     self.RESULT_WIN = 1;
@@ -142,8 +146,10 @@ exports.game = function game(config, players) {
             if (result === self.RESULT_DRAW || result === self.RESULT_WIN) {
                 var initResponse = self.init();
 
-                if(result===self.RESULT_WIN)
+                if (result === self.RESULT_WIN) {
                     players[self.currentPlayerIndex].wins++;
+                    self.gameUpdateCallback(self.gameId);
+                }
 
                 self.switchPlayers();
                 response.currentPlayer = players[self.currentPlayerIndex].name + " (" + self.currentPlayer + ")";
