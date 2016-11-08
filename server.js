@@ -40,6 +40,10 @@ function getGameByUser(user) {
     return null;
 }
 
+function updateGameState(game) {
+    game.joinable = game.players.length < game.gameType.maxPlayers;
+}
+
 http.listen(port, function () {
     console.log('Gameserver listening on *:' + port);
 });
@@ -72,7 +76,7 @@ listener.sockets.on('connection', function (socket) {
                 var gameIndex = games.indexOf(game);
                 games.splice(gameIndex, 1);
             }
-
+            updateGameState(game);
             listener.to(game.id).emit('server_game_update', game);
             listener.sockets.emit('server_games', games);
         }
@@ -124,14 +128,15 @@ listener.sockets.on('connection', function (socket) {
 
     function sendGameUpdate(gameId) {
         var game = getGameById(gameId);
+        updateGameState(game);
         listener.to(game.id).emit('server_game_update', game);
     }
 
     socket.on('client_game_start', function () {
         var game = getGameByUser(socket.nickname);
-        var player = getListItemByParam(socket.nickname, "name", game.players)
-        if (player && player.isAdmin) {
-            var gameType = getListItemByParam(game.gameName, "name", gameTypes);
+        var player = getListItemByParam(socket.nickname, "name", game.players);
+        if (player && player.isAdmin && game.players.length <= game.gameType.maxPlayers) {
+            var gameType = game.gameType;
             console.log("client_game_start:" + game.gameName + " by: " + socket.nickname);
             console.log("code url:" + gameType.code);
 
@@ -162,7 +167,9 @@ listener.sockets.on('connection', function (socket) {
         }
         var players = [{ name: socket.nickname, wins: 0, isAdmin: true }];
 
-        var game = { id: uuid.v4(), players: players, name: data.name, needPassword: data.password ? true : false, available: 'N/A', joinable: true, gameName: data.gameName }
+        var gameType = getListItemByParam(data.gameName, "name", gameTypes);
+        var game = { id: uuid.v4(), players: players, name: data.name, needPassword: data.password ? true : false, available: 'N/A', gameType: gameType };
+        updateGameState(game);
         console.log('client_create_game:' + game.id);
         games.push(game);
         internal_games.push({ name: data.name, password: data.password });
@@ -185,6 +192,7 @@ listener.sockets.on('connection', function (socket) {
         socket.join(game.id);
         if (game) {
             socket.emit('server_join_game_success', game);
+            updateGameState(game);
             listener.to(game.id).emit('server_game_update', game);
             listener.sockets.emit('server_games', games);
         }

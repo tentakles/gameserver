@@ -30,24 +30,32 @@
 		*implementera på klient
 		*implementera på server
 
+*implementera password för Join spel
+		*klientsida
+		*serversida
+*visuell indikation av spelare/max i spel listan (2/2 osv)
+*inte kunna starta spel med fler än max
+	*	ënforca på server
+	*	enfirca på klient
 ############
 TODO server
 ############
 
-implementera password för Join spel
-		klientsida
-		*serversida
+inte kunna starta spel med färre än min
+	ënforca på server
+	enfirca på klient		
+		
+		
+visuell indikation av min/max i spel lobbyn, start knapp utgråad tills min/max spelare är uppfyllt'
 
-implementera min och max num of players
-		inte kunna starta spel med fler eller färre än min/max
-		visuell indikation av min/max i spel listan (2/2 osv)
-		visuell indikation av min/max i spel lobbyn, start knapp utgråad tills min/max spelare är uppfyllt
 implementera "property array" av config
 hantera admin leave från lobby
 		ge vidare admin till annan spelare 
 highlighta i "Players list"  vem som är nuvarande spelare
 socket leave /reload(?) måste hanteras, så att man går ut ur spelen när man laddar om sidan
 göra snyggare design
+	kunna trycka enter + få rätt fokus i passsword dialog
+	tydligare avgränsning i chattar mellan namn och meddelande
 skriva server events i spel chat (såsom joins och leaves, kanske vem som vunnit)
 
 ############

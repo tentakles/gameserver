@@ -13,6 +13,8 @@ function GameLobbyViewModel(socket) {
     self.chatRow = ko.observable("");
     self.gameChatRow = ko.observable("");
     self.gameName = ko.observable("");
+    self.gamePassword = ko.observable("");
+
     self.isAdmin = ko.observable(false);
 
     self.selectedGame = ko.observable(null);
@@ -39,6 +41,10 @@ function GameLobbyViewModel(socket) {
     *********************************************/
 
     self.game = null;
+
+    self.joinGameWithPassword = function () {
+        socket.emit('client_join_game', { 'id': self.lastGameId, 'password': self.gamePassword() });
+    }
 
     self.gameEvent = function (event) {
         socket.emit('client_game_event', { event: event });
@@ -113,13 +119,14 @@ function GameLobbyViewModel(socket) {
         self.gameLobbyMode(true);
         self.isAdmin(isAdmin);
         self.gameMode(false);
-        self.title('Welcome to game "' + game.name + '", selected game: ' + game.gameName);
+        self.title('Welcome to game "' + game.name + '", selected game: ' + game.gameType.name);
     };
 
     self.joinGame = function (game) {
         if (game.needPassword) {
-            var password = prompt("Needs Passwordzzz");
-            socket.emit('client_join_game', { 'id': game.id, 'password': password });
+            self.lastGameId = game.id;
+            self.gamePassword("");
+            $('#passwordModal').modal();
         }
         else
             socket.emit('client_join_game', { 'id': game.id });
