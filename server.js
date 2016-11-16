@@ -111,6 +111,10 @@ listener.sockets.on('connection', function (socket) {
 
     socket.on('client_game_event', function (data) {
         var game = getGameByUser(socket.nickname);
+
+        if (!game)
+            return;
+
         var result = game.instance.move(data.event, socket.nickname);
 
         if (result.cancelEvent)

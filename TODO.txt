@@ -45,6 +45,15 @@
 
 *visuell indikation av min/max i spel lobbyn, start knapp utgråad tills min/max spelare är uppfyllt'
 
+*handle broken "explosion algorithm"
+
+*implementera poäng räkning,
+	*Öka wins när en spelare är sist kvar på banan
+	*resetta banan efter draw/win
+
+*refaktorisera alla olika move riktningar för spelaren i try_move
+*hantera draw state
+
 ############
 TODO server
 ############
@@ -63,26 +72,29 @@ skriva server events i spel chat (såsom joins och leaves, kanske vem som vunnit
 Todo bomberman
 ############
 
-borken explosion algoz up in dis muthafucka 
+Kunna gå igenom spelare
+	kolla på fler olika conditions när man får gå i metod: can_move_to_pos, 
 
 Skriva spel händelser i spel chatten
 	spelare vunnit omgång
 	spelare vunnit set
 	spelare dör
 	spel o avgjort
+	Events skall gå i väg inifrån spelet, ny eventCallback för chatloggen avsändare, "game"
 
-implementera poäng räkning,
-	Öka wins när en spelare är sist kvar på banan
-	resetta banan efter draw/win
+skriva om timeouts på explosioner så att servern skickar när explosionen är slut istället.
+
+implementera powerups
+	mer bomber
+	större explosion
+	snabbare gång 
+		
 Ersätta chars med tex gifar
 man skall ej kunna lägga 2 eller fler bomber på samma plats
 man skall dö när man går in i pågående explosion
 kedje explosion av bomber
 	hantera på klientsidan när liggande bomber
-implementera powerups
-	mer bomber
-	större explosion
-	snabbare gång 
-Kunna gå igenom spelare
+
+
 	
  

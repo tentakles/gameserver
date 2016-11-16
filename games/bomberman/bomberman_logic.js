@@ -16,11 +16,30 @@ exports.game = function game(config, players, eventCallback, gameUpdateCallback,
     self.OBJECT_EMPTY = ' ';
     self.OBJECT_BOMB = '@';
     self.OBJECT_DESTRUCTIBLE_BLOCK = '$';
+    self.OBJECT_INDESTRUCTIBLE_BLOCK = '#';
 
     self.playerData = {};
 
     self.actionDelay = 300;
     self.explosionDelay = 2000;
+    self.restartDelay = 3000;
+    self.gameResettingState = false;
+
+    self.bombExplosions = [];
+
+    self.update_pos_after_move = function (playerObj, rowDelta, colDelta) {
+        var resultObj = self.OBJECT_EMPTY;
+        if (self.grid[playerObj.row][playerObj.col].includes(self.OBJECT_BOMB))
+            resultObj = self.OBJECT_BOMB;
+        self.grid[playerObj.row][playerObj.col] = resultObj;
+        playerObj.row += rowDelta;
+        playerObj.col += colDelta;
+        self.grid[playerObj.row][playerObj.col] = playerObj.char;
+    }
+
+    self.can_move_to_pos = function (row, col) {
+        return self.grid[row][col] === self.OBJECT_EMPTY;
+    }
 
     self.try_move = function (event, player) {
         var result = false;
@@ -28,7 +47,7 @@ exports.game = function game(config, players, eventCallback, gameUpdateCallback,
         var playerObj = self.playerData[player];
 
         if (!playerObj.isAlive) {
-            console.log(player + " is dead :(");
+            console.log(player + " is dead, cannot move");
             return false;
         }
 
@@ -39,12 +58,14 @@ exports.game = function game(config, players, eventCallback, gameUpdateCallback,
             var bombCol = playerObj.col;
 
             playerObj.bombs -= 1;
-            setTimeout(function () {
+            var explosionId = setTimeout(function () {
                 var event = { grid: self.grid, type: self.EVENT_TYPE_EXPLOSION, row: bombRow, col: bombCol, size: playerObj.bombStrength };
                 self.explosion(event);
                 self.eventCallback(event, self.gameId);
                 playerObj.bombs += 1;
             }, self.explosionDelay);
+
+            self.bombExplosions.push(explosionId);
 
             return true;
         }
@@ -66,50 +87,29 @@ exports.game = function game(config, players, eventCallback, gameUpdateCallback,
 
         switch (event.action) {
             case self.ACTION_MOVE_UP:
-                if (playerObj.row > 0 && self.grid[playerObj.row - 1][playerObj.col] === self.OBJECT_EMPTY) {
+                if (playerObj.row > 0 && self.can_move_to_pos(playerObj.row - 1, playerObj.col)) {
                     result = true;
-                    var resultObj = self.OBJECT_EMPTY;
-                    if (self.grid[playerObj.row][playerObj.col].includes(self.OBJECT_BOMB))
-                        resultObj = self.OBJECT_BOMB;
-                    self.grid[playerObj.row][playerObj.col] = resultObj;
-                    playerObj.row -= 1;
-                    self.grid[playerObj.row][playerObj.col] = playerObj.char;
+                    self.update_pos_after_move(playerObj, -1, 0);
                 }
                 break;
             case self.ACTION_MOVE_DOWN:
-                if (playerObj.row < config.rows - 1 && self.grid[playerObj.row + 1][playerObj.col] === self.OBJECT_EMPTY) {
+                if (playerObj.row < config.rows - 1 && self.can_move_to_pos(playerObj.row + 1, playerObj.col)) {
                     result = true;
-                    var resultObj = self.OBJECT_EMPTY;
-                    if (self.grid[playerObj.row][playerObj.col].includes(self.OBJECT_BOMB))
-                        resultObj = self.OBJECT_BOMB;
-                    self.grid[playerObj.row][playerObj.col] = resultObj;
-                    playerObj.row += 1;
-                    self.grid[playerObj.row][playerObj.col] = playerObj.char;
+                    self.update_pos_after_move(playerObj, 1, 0);
                 }
                 break;
             case self.ACTION_MOVE_RIGHT:
-                if (playerObj.col < config.cols - 1 && self.grid[playerObj.row][playerObj.col + 1] === self.OBJECT_EMPTY) {
+                if (playerObj.col < config.cols - 1 && self.can_move_to_pos(playerObj.row, playerObj.col+1)) {
                     result = true;
-                    var resultObj = self.OBJECT_EMPTY;
-                    if (self.grid[playerObj.row][playerObj.col].includes(self.OBJECT_BOMB))
-                        resultObj = self.OBJECT_BOMB;
-                    self.grid[playerObj.row][playerObj.col] = resultObj;
-                    playerObj.col += 1;
-                    self.grid[playerObj.row][playerObj.col] = playerObj.char;
+                    self.update_pos_after_move(playerObj, 0, 1);
                 }
                 break;
             case self.ACTION_MOVE_LEFT:
-                if (playerObj.col > 0 && self.grid[playerObj.row][playerObj.col - 1] === self.OBJECT_EMPTY) {
+                if (playerObj.col > 0 && self.can_move_to_pos(playerObj.row, playerObj.col-1)) {
                     result = true;
-                    var resultObj = self.OBJECT_EMPTY;
-                    if (self.grid[playerObj.row][playerObj.col].includes(self.OBJECT_BOMB))
-                        resultObj = self.OBJECT_BOMB;
-                    self.grid[playerObj.row][playerObj.col] = resultObj;
-                    playerObj.col -= 1;
-                    self.grid[playerObj.row][playerObj.col] = playerObj.char;
+                    self.update_pos_after_move(playerObj, 0, -1);
                 }
                 break;
-
         }
         return result;
     }
@@ -126,28 +126,74 @@ exports.game = function game(config, players, eventCallback, gameUpdateCallback,
                 player.isAlive = false;
             }
         }
+
+        return !(self.grid[row] && (self.grid[row][col] === self.OBJECT_INDESTRUCTIBLE_BLOCK));
     }
 
     self.explosion = function (event) {
         self.grid[event.row][event.col] = self.grid[event.row][event.col].replace(self.OBJECT_BOMB, ' ');
 
-        for (var i = 1; i <= event.size; i++) {
-            self.handleExplosionOnPosition(event.row, event.col);
-            self.handleExplosionOnPosition(event.row, event.col + 1);
-            self.handleExplosionOnPosition(event.row, event.col - 1);
-            self.handleExplosionOnPosition(event.row + 1, event.col);
-            self.handleExplosionOnPosition(event.row - 1, event.col);
+        var goLeft = true;
+        var goRight = true;
+        var goUp = true;
+        var goDown = true;
+        var i;
+
+        self.handleExplosionOnPosition(event.row, event.col);
+
+        for (i = 1; i <= event.size; i++) {
+            if (goLeft)
+                goLeft = self.handleExplosionOnPosition(event.row, event.col - i);
+            if (goRight)
+                goRight = self.handleExplosionOnPosition(event.row, event.col + i);
+            if (goDown)
+                goDown = self.handleExplosionOnPosition(event.row + i, event.col);
+            if (goUp)
+                goUp = self.handleExplosionOnPosition(event.row - i, event.col);
         }
 
+        var numPlayersAlive = 0;
+        var lastPlayerAlive = null;
+        for (i = 0; i < players.length; i++) {
+            if (self.playerData[players[i].name].isAlive) {
+                numPlayersAlive++;
+                lastPlayerAlive = players[i];
+            }
+        }
+
+        if (numPlayersAlive <= 1) {
+            self.gameResettingState = true;
+            for (i = 0; i < self.bombExplosions.length; i++) {
+                clearTimeout(self.bombExplosions[i]);
+            }
+            self.bombExplosions = [];
+            //somebody won
+            setTimeout(function () {
+                if (numPlayersAlive === 1)
+                    lastPlayerAlive.wins++;
+                self.gameUpdateCallback(self.gameId);
+                self.init();
+                var event = { grid: self.grid };
+                self.eventCallback(event, self.gameId);
+            }, self.restartDelay);
+        }
     };
 
     self.move = function (event, player) {
         // console.log(event.action);
+
+        if (self.gameResettingState)
+            return { cancelEvent: true };
+
         var canMove = self.try_move(event, player);
         return { grid: self.grid, cancelEvent: !canMove };
     }
 
     self.init = function () {
+
+        var i;
+        self.gameResettingState = false;
+
         //create internal state grid
         self.grid = [
             [' ', ' ', '$', '$', '$', '$', '$', ' ', ' '],
@@ -165,11 +211,11 @@ exports.game = function game(config, players, eventCallback, gameUpdateCallback,
             { char: 'D', startRow: 0, startCol: 8 }
         ];
 
-        for (var i = 0; i < players.length; i++) {
+        for (i = 0; i < players.length; i++) {
             playerData[i].name = players[i].name;
             playerData[i].wins = 0;
             playerData[i].bombs = 1;
-            playerData[i].bombStrength = 1;
+            playerData[i].bombStrength = 4;
             playerData[i].isAlive = true;
 
             playerData[i].row = playerData[i].startRow;
