@@ -14,6 +14,9 @@ function GameLobbyViewModel(socket) {
     self.gameChatRow = ko.observable("");
     self.gameName = ko.observable("");
     self.gamePassword = ko.observable("");
+    self.gameTypeName = ko.observable("");
+    self.gameMaxPlayers = ko.observable(0);
+    self.gameMinPlayers = ko.observable(0);
 
     self.isAdmin = ko.observable(false);
 
@@ -41,6 +44,17 @@ function GameLobbyViewModel(socket) {
     *********************************************/
 
     self.game = null;
+
+    self.numPlayers = ko.computed(function () {
+        var result = self.gamePlayers().length + "/" + self.gameMaxPlayers();
+        if (self.gamePlayers().length < self.gameMinPlayers())
+            result += " (min " + self.gameMinPlayers() + ")";
+        return result;
+    });
+
+    self.canStartGame = ko.computed(function () {
+        return self.gamePlayers().length >= self.gameMinPlayers() && self.gamePlayers().length <= self.gameMaxPlayers();
+    });
 
     self.joinGameWithPassword = function () {
         socket.emit('client_join_game', { 'id': self.lastGameId, 'password': self.gamePassword() });
@@ -104,6 +118,8 @@ function GameLobbyViewModel(socket) {
         socket.on('server_game_update', function (game) {
             self.gamePlayers(game.players);
             self.gameName(game.name);
+            self.gameMaxPlayers(game.gameType.maxPlayers);
+            self.gameMinPlayers(game.gameType.minPlayers);
         });
 
         socket.emit('client_games');
@@ -115,11 +131,14 @@ function GameLobbyViewModel(socket) {
     self.enterGame = function (game, isAdmin) {
         self.gamePlayers(game.players);
         self.gameName(game.name);
+        self.gameMaxPlayers(game.gameType.maxPlayers);
+        self.gameMinPlayers(game.gameType.minPlayers);
+        self.gameTypeName(game.gameType.name);
         self.createGameMode(false);
         self.gameLobbyMode(true);
         self.isAdmin(isAdmin);
         self.gameMode(false);
-        self.title('Welcome to game "' + game.name + '", selected game: ' + game.gameType.name);
+        self.title('Welcome to game "' + game.name + '"');
     };
 
     self.joinGame = function (game) {

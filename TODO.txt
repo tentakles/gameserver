@@ -34,19 +34,20 @@
 		*klientsida
 		*serversida
 *visuell indikation av spelare/max i spel listan (2/2 osv)
-*inte kunna starta spel med fler än max
+
+* inte kunna joina spel med fler än max
 	*	ënforca på server
 	*	enfirca på klient
+
+*inte kunna starta spel med färre än min/max
+	* ënforca på server
+	* enfirca på klient	
+
+*visuell indikation av min/max i spel lobbyn, start knapp utgråad tills min/max spelare är uppfyllt'
+
 ############
 TODO server
 ############
-
-inte kunna starta spel med färre än min
-	ënforca på server
-	enfirca på klient		
-		
-		
-visuell indikation av min/max i spel lobbyn, start knapp utgråad tills min/max spelare är uppfyllt'
 
 implementera "property array" av config
 hantera admin leave från lobby
