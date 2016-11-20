@@ -1,9 +1,11 @@
-exports.game = function game(config, players, eventCallback, gameUpdateCallback, gameId) {
+exports.game = function game(gameId, config, players, sendGameEvent, sendGameUpdate, sendGameChat) {
     var self = this;
 
     self.gameId = gameId;
-    self.eventCallback = eventCallback;
-    self.gameUpdateCallback = gameUpdateCallback;
+
+    self.sendGameEvent = sendGameEvent;
+    self.sendGameUpdate = sendGameUpdate;
+    self.sendGameChat = sendGameChat;
 
     self.RESULT_DRAW = 0;
     self.RESULT_WIN = 1;
@@ -148,7 +150,25 @@ exports.game = function game(config, players, eventCallback, gameUpdateCallback,
 
                 if (result === self.RESULT_WIN) {
                     players[self.currentPlayerIndex].wins++;
-                    self.gameUpdateCallback(self.gameId);
+                    if (players[self.currentPlayerIndex].wins == config.matchLength) {
+                        var message = players[self.currentPlayerIndex].name + " (" + self.currentPlayer + ") Wins game!";
+                        self.sendGameChat(self.gameId, message, true);
+
+                        for (var i = 0; i < players.length; i++) {
+                            players[i].wins = 0;
+                        }
+
+                    }
+                    else {
+                        var message = players[self.currentPlayerIndex].name + " (" + self.currentPlayer + ") Wins set!";
+                        self.sendGameChat(self.gameId, message);
+                    }
+                    self.sendGameUpdate(self.gameId);
+                }
+                else {
+                    var message = "Draw! Nobody wins set.";
+                    self.sendGameChat(self.gameId, message);
+
                 }
 
                 self.switchPlayers();

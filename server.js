@@ -11,8 +11,8 @@ var uuid = require('node-uuid');
 var games = [];
 var internal_games = [];
 var gameTypes = [
-    { name: 'bomberman', url: 'games/bomberman/game.html', config: { rows: 7, cols: 9, numToWin: 3 }, code: './games/bomberman/bomberman_logic.js', minPlayers: 2, maxPlayers: 4 },
-    { name: '3-in-a-row', url: 'games/3inarow/game.html', config: { size: 5, numToWin: 4 }, code: './games/3inarow/3inarow_logic.js', minPlayers: 2, maxPlayers: 2 },
+    { name: 'bomberman', url: 'games/bomberman/game.html', config: { rows: 7, cols: 9, numToWin: 3, matchLength: 3 }, code: './games/bomberman/bomberman_logic.js', minPlayers: 2, maxPlayers: 4 },
+    { name: '3-in-a-row', url: 'games/3inarow/game.html', config: { size: 3, numToWin: 3, matchLength: 3 }, code: './games/3inarow/3inarow_logic.js', minPlayers: 2, maxPlayers: 2 },
     { name: 'Repello', url: 'games/repo/game.html', minPlayers: 2, maxPlayers: 6 }
 ];
 
@@ -103,7 +103,7 @@ listener.sockets.on('connection', function (socket) {
             return;
         var game = getGameByUser(socket.nickname);
         if (game) {
-            var message = { user: socket.nickname, line: line }
+            var message = { user: socket.nickname, line: line, fromGame: false, important: false }
             console.log('server_game_chat');
             listener.to(game.id).emit('server_game_chat', message);
         }
@@ -126,7 +126,7 @@ listener.sockets.on('connection', function (socket) {
             listener.to(game.id).emit('server_game_event', result);
     });
 
-    function sendGameEvent(data, gameId) {
+    function sendGameEvent(gameId, data) {
         listener.to(gameId).emit('server_game_event', data);
     }
 
@@ -136,17 +136,26 @@ listener.sockets.on('connection', function (socket) {
         listener.to(game.id).emit('server_game_update', game);
     }
 
+    function sendGameChat(gameId, line, important) {
+        var game = getGameById(gameId);
+        if (game) {
+            var message = { user: "(Game)", fromGame: true, line: line, important: important === true }
+            console.log('server_game_chat');
+            listener.to(game.id).emit('server_game_chat', message);
+        }
+    }
+
     socket.on('client_game_start', function () {
         var game = getGameByUser(socket.nickname);
         var player = getListItemByParam(socket.nickname, "name", game.players);
-        if (player && player.isAdmin && game.players.length <= game.gameType.maxPlayers && game.players.length >= game.gameType.minPlayers) {
+        if (player && player.isAdmin && game && game.players.length <= game.gameType.maxPlayers && game.players.length >= game.gameType.minPlayers) {
             var gameType = game.gameType;
-            console.log("client_game_start:" + game.gameName + " by: " + socket.nickname);
+            console.log("client_game_start:" + gameType.name + " by: " + socket.nickname);
             console.log("code url:" + gameType.code);
 
             var gameEnviroment = require(gameType.code);
 
-            game.instance = new gameEnviroment.game(gameType.config, game.players, sendGameEvent, sendGameUpdate, game.id);
+            game.instance = new gameEnviroment.game(game.id, gameType.config, game.players, sendGameEvent, sendGameUpdate, sendGameChat);
             var result = game.instance.init();
 
             var response = { gameType: gameType, config: gameType.config, result: result };

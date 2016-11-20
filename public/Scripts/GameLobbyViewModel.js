@@ -17,6 +17,7 @@ function GameLobbyViewModel(socket) {
     self.gameTypeName = ko.observable("");
     self.gameMaxPlayers = ko.observable(0);
     self.gameMinPlayers = ko.observable(0);
+    self.gameMatchLength = ko.observable(0);
 
     self.isAdmin = ko.observable(false);
 
@@ -129,10 +130,12 @@ function GameLobbyViewModel(socket) {
     self.init();
 
     self.enterGame = function (game, isAdmin) {
+        self.gameChats([]);
         self.gamePlayers(game.players);
         self.gameName(game.name);
         self.gameMaxPlayers(game.gameType.maxPlayers);
         self.gameMinPlayers(game.gameType.minPlayers);
+        self.gameMatchLength(game.gameType.config.matchLength);
         self.gameTypeName(game.gameType.name);
         self.createGameMode(false);
         self.gameLobbyMode(true);
