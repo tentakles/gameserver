@@ -111,3 +111,5 @@ man skall ej kunna lägga 2 eller fler bomber på samma plats
 man skall dö när man går in i pågående explosion
 kedjeexplosion av bomber
 	hantera på klientsidan närliggande bomber
+
+styrkors+bombknapp för mobilt läge

@@ -8,6 +8,12 @@
     margin-top: 10px;
 }
 
+.chatRow{
+    margin:2px;
+    padding:2px;
+    border-radius:5px; 
+}
+
 .chathRowFromGame{
     background-color:#ffff00;
 }
