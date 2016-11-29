@@ -71,6 +71,11 @@
 
 *bugg: client_game_start:undefined by: 
 
+*Kunna gå igenom spelare
+	*kolla på fler olika conditions när man får gå i metod: can_move_to_pos, 
+
+*spara "grid", och bara rita om de rutor som ändrats (kanske blir viktigt sen med bilder etc)
+
 ############
 TODO server
 ############
@@ -84,6 +89,7 @@ göra snyggare design
 	kunna trycka enter + få rätt fokus i passsword dialog
 	tydligare avgränsning i chattar mellan namn och meddelande
 	password behöver inte ta upp en kolumn, utan kan t.ex. stå framför game name eller nåt sådant
+	större box för spelet
 		
 skriva server events i spel chat
 	joins
@@ -91,17 +97,9 @@ skriva server events i spel chat
 
 ska man kunna starta ett redan startat spel igen? isåfall borde players.wins resettas, i annat fall borde knappen gömmas när man startat.
 
-fundera på: 
-	iom game chat events: ta bort vissa duplicerade meddelanden ur 3inarow UI?
-
 ############
 Todo bomberman
 ############
-
-spara "grid", och bara rita om de rutor som ändrats (kanske blir viktigt sen med bilder etc)
-
-Kunna gå igenom spelare
-	kolla på fler olika conditions när man får gå i metod: can_move_to_pos, 
 
 skriva om timeouts på explosioner så att servern skickar när explosionen är slut istället.
 

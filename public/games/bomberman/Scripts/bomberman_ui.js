@@ -7,6 +7,8 @@ var ACTION_MOVE_LEFT = 3;
 var ACTION_PLACE_BOMB = 4;
 var EVENT_TYPE_EXPLOSION = 0;
 
+var oldGrid = null;
+
 var config = null;
 var columns = null;
 
@@ -22,7 +24,7 @@ function game_event(event) {
         for (i = 1; i <= event.size; i++) {
             affectedTiles += ", #" + event.row + "_" + (event.col + i);
             affectedTiles += ", #" + event.row + "_" + (event.col - i);
-            affectedTiles += ", #" + (event.row + i)  + "_" + event.col;
+            affectedTiles += ", #" + (event.row + i) + "_" + event.col;
             affectedTiles += ", #" + (event.row - i) + "_" + event.col;
         }
 
@@ -33,12 +35,13 @@ function game_event(event) {
 
     for (var r = 0; r < config.rows; r++) {
         for (var c = 0; c < config.cols; c++) {
-            i = (r * config.cols) + c;
-            $(columns[i]).html(event.grid[r][c]);
-            // var col = $("#" + r + "_" + c).html(event.grid[r][c]);
+            if (oldGrid === null || oldGrid[r][c] !== event.grid[r][c]) {
+                i = (r * config.cols) + c;
+                $(columns[i]).html(event.grid[r][c]);
+            }
         }
     }
-
+    oldGrid = event.grid;
 }
 
 function try_move(action) {
