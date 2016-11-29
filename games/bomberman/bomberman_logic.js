@@ -30,17 +30,18 @@ exports.game = function game(gameId, config, players, sendGameEvent, sendGameUpd
     self.bombExplosions = [];
 
     self.update_pos_after_move = function (playerObj, rowDelta, colDelta) {
-        var resultObj = self.OBJECT_EMPTY;
-        if (self.grid[playerObj.row][playerObj.col].includes(self.OBJECT_BOMB))
-            resultObj = self.OBJECT_BOMB;
-        self.grid[playerObj.row][playerObj.col] = resultObj;
+        self.grid[playerObj.row][playerObj.col] = self.grid[playerObj.row][playerObj.col].replace(playerObj.char, "");
         playerObj.row += rowDelta;
         playerObj.col += colDelta;
-        self.grid[playerObj.row][playerObj.col] = playerObj.char;
+        self.grid[playerObj.row][playerObj.col] += playerObj.char;
     }
 
     self.can_move_to_pos = function (row, col) {
-        return self.grid[row][col] === self.OBJECT_EMPTY;
+        if (self.grid[row][col].includes(self.OBJECT_BOMB) ||
+            self.grid[row][col].includes(self.OBJECT_DESTRUCTIBLE_BLOCK) ||
+            self.grid[row][col].includes(self.OBJECT_INDESTRUCTIBLE_BLOCK))
+            return false;
+        return true;
     }
 
     self.try_move = function (event, player) {
