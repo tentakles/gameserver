@@ -76,6 +76,8 @@
 
 *spara "grid", och bara rita om de rutor som ändrats (kanske blir viktigt sen med bilder etc)
 
+*skriva om timeouts på explosioner så att servern skickar när explosionen är slut istället.
+
 ############
 TODO server
 ############
@@ -101,7 +103,8 @@ ska man kunna starta ett redan startat spel igen? isåfall borde players.wins re
 Todo bomberman
 ############
 
-skriva om timeouts på explosioner så att servern skickar när explosionen är slut istället.
+uppdatera UI koden så att explosioner bara ritas ut där servern bestämt
+	skicka med tiles med explosion från servern i explosion event
 
 implementera powerups
 	mer bomber
@@ -112,6 +115,5 @@ Ersätta chars med tex gifar
 man skall ej kunna lägga 2 eller fler bomber på samma plats
 man skall dö när man går in i pågående explosion
 kedjeexplosion av bomber
-	hantera på klientsidan närliggande bomber
 
 styrkors+bombknapp för mobilt läge

@@ -5,12 +5,18 @@ var ACTION_MOVE_RIGHT = 1;
 var ACTION_MOVE_DOWN = 2;
 var ACTION_MOVE_LEFT = 3;
 var ACTION_PLACE_BOMB = 4;
+
 var EVENT_TYPE_EXPLOSION = 0;
+var EVENT_TYPE_EXPLOSION_END = 1;
 
 var oldGrid = null;
 
 var config = null;
 var columns = null;
+
+var gameDiv = null;
+
+var bombs = {};
 
 function restart() {
 
@@ -19,18 +25,30 @@ function restart() {
 function game_event(event) {
     var i;
     if (event.type === EVENT_TYPE_EXPLOSION) {
-        var affectedTiles = "#" + event.row + "_" + event.col;
+        bombs[event.bombId] = event;
+    }
+    if (event.type === EVENT_TYPE_EXPLOSION_END) {
+        delete bombs[event.bombId];
+    }
 
-        for (i = 1; i <= event.size; i++) {
-            affectedTiles += ", #" + event.row + "_" + (event.col + i);
-            affectedTiles += ", #" + event.row + "_" + (event.col - i);
-            affectedTiles += ", #" + (event.row + i) + "_" + event.col;
-            affectedTiles += ", #" + (event.row - i) + "_" + event.col;
+    //paint explosions
+    columns.removeClass("explosion"); 
+    
+    for (var key in bombs) {
+        if (bombs.hasOwnProperty(key)) {
+            var bomb = bombs[key];
+
+            var affectedTiles = "#" + bomb.row + "_" + bomb.col;
+
+            for (i = 1; i <= bomb.size; i++) {
+                affectedTiles += ", #" + bomb.row + "_" + (bomb.col + i);
+                affectedTiles += ", #" + bomb.row + "_" + (bomb.col - i);
+                affectedTiles += ", #" + (bomb.row + i) + "_" + bomb.col;
+                affectedTiles += ", #" + (bomb.row - i) + "_" + bomb.col;
+            }
+
+            gameDiv.find(affectedTiles).addClass("explosion");
         }
-
-        $(affectedTiles).addClass("explosion");
-
-        setTimeout(function () { $(affectedTiles).removeClass("explosion"); }, 1000);
     }
 
     for (var r = 0; r < config.rows; r++) {
@@ -45,14 +63,14 @@ function game_event(event) {
 }
 
 function try_move(action) {
-
     var data = { action: action };
-
     gameLobby.gameEvent(data);
 }
 
 function setup_game(conf) {
+    console.log("Setup_game: Bomberman");
     config = conf;
+    gameDiv = $("#game");
     var gamegrid = "<table>";
     for (var r = 0; r < config.rows; r++) {
         gamegrid += "<tr>";
@@ -64,12 +82,12 @@ function setup_game(conf) {
     }
     gamegrid += "</table>";
 
-    $("#game").html(gamegrid);
+    gameDiv.html(gamegrid);
 
-    columns = $("#game").find("td");
+    columns = gameDiv.find("td");
 
-    $("#game").focus();
-    $("#game").keyup(function (event) {
+    gameDiv.focus();
+    gameDiv.keyup(function (event) {
         switch (event.which) {
             case 32:
                 try_move(ACTION_PLACE_BOMB);

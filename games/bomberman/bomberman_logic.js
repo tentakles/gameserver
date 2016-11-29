@@ -1,3 +1,5 @@
+var uuid = require('node-uuid');
+
 exports.game = function game(gameId, config, players, sendGameEvent, sendGameUpdate, sendGameChat) {
     var self = this;
 
@@ -14,6 +16,7 @@ exports.game = function game(gameId, config, players, sendGameEvent, sendGameUpd
     self.ACTION_PLACE_BOMB = 4;
 
     self.EVENT_TYPE_EXPLOSION = 0;
+    self.EVENT_TYPE_EXPLOSION_END = 1;
 
     self.OBJECT_EMPTY = ' ';
     self.OBJECT_BOMB = '@';
@@ -25,6 +28,8 @@ exports.game = function game(gameId, config, players, sendGameEvent, sendGameUpd
     self.actionDelay = 300;
     self.explosionDelay = 2000;
     self.restartDelay = 3000;
+    self.explosionBurnDelay = 1000;
+
     self.gameResettingState = false;
 
     self.bombExplosions = [];
@@ -62,10 +67,17 @@ exports.game = function game(gameId, config, players, sendGameEvent, sendGameUpd
 
             playerObj.bombs -= 1;
             var explosionId = setTimeout(function () {
-                var event = { grid: self.grid, type: self.EVENT_TYPE_EXPLOSION, row: bombRow, col: bombCol, size: playerObj.bombStrength };
+                var bombId = uuid.v4();
+                var event = { grid: self.grid, type: self.EVENT_TYPE_EXPLOSION, row: bombRow, col: bombCol, size: playerObj.bombStrength, bombId: bombId };
                 self.explosion(event);
                 self.sendGameEvent(self.gameId, event);
                 playerObj.bombs += 1;
+                
+                setTimeout(function() {
+                    var event = { grid: self.grid, type: self.EVENT_TYPE_EXPLOSION_END, bombId: bombId };
+                    self.sendGameEvent(self.gameId, event);
+                }, self.explosionBurnDelay * playerObj.bombBurn);
+
             }, self.explosionDelay);
 
             self.bombExplosions.push(explosionId);
@@ -241,6 +253,7 @@ exports.game = function game(gameId, config, players, sendGameEvent, sendGameUpd
             playerData[i].wins = 0;
             playerData[i].bombs = 1;
             playerData[i].bombStrength = 4;
+            playerData[i].bombBurn = 1;
             playerData[i].isAlive = true;
 
             playerData[i].row = playerData[i].startRow;
