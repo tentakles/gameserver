@@ -7,3 +7,23 @@
 #gameWrapper {
     margin-top: 10px;
 }
+
+.chatRow{
+    margin:2px;
+    padding:2px;
+    border-radius:5px; 
+}
+
+.chathRowFromGame{
+    background-color:#ffff00;
+}
+
+.chatRowImportant{
+    background-color:#FF8000;
+    font-size:16px;
+    font-weight:bold;
+}
+
+.bold{
+    font-weight:bold;
+}

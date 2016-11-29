@@ -1,9 +1,11 @@
-exports.game = function game(config, players, eventCallback, gameUpdateCallback, gameId) {
+exports.game = function game(gameId, config, players, sendGameEvent, sendGameUpdate, sendGameChat) {
     var self = this;
 
     self.gameId = gameId;
-    self.eventCallback = eventCallback;
-    self.gameUpdateCallback = gameUpdateCallback;
+
+    self.sendGameEvent = sendGameEvent;
+    self.sendGameUpdate = sendGameUpdate;
+    self.sendGameChat = sendGameChat;
 
     self.ACTION_MOVE_UP = 0;
     self.ACTION_MOVE_RIGHT = 1;
@@ -61,7 +63,7 @@ exports.game = function game(config, players, eventCallback, gameUpdateCallback,
             var explosionId = setTimeout(function () {
                 var event = { grid: self.grid, type: self.EVENT_TYPE_EXPLOSION, row: bombRow, col: bombCol, size: playerObj.bombStrength };
                 self.explosion(event);
-                self.eventCallback(event, self.gameId);
+                self.sendGameEvent(self.gameId, event);
                 playerObj.bombs += 1;
             }, self.explosionDelay);
 
@@ -99,13 +101,13 @@ exports.game = function game(config, players, eventCallback, gameUpdateCallback,
                 }
                 break;
             case self.ACTION_MOVE_RIGHT:
-                if (playerObj.col < config.cols - 1 && self.can_move_to_pos(playerObj.row, playerObj.col+1)) {
+                if (playerObj.col < config.cols - 1 && self.can_move_to_pos(playerObj.row, playerObj.col + 1)) {
                     result = true;
                     self.update_pos_after_move(playerObj, 0, 1);
                 }
                 break;
             case self.ACTION_MOVE_LEFT:
-                if (playerObj.col > 0 && self.can_move_to_pos(playerObj.row, playerObj.col-1)) {
+                if (playerObj.col > 0 && self.can_move_to_pos(playerObj.row, playerObj.col - 1)) {
                     result = true;
                     self.update_pos_after_move(playerObj, 0, -1);
                 }
@@ -167,14 +169,36 @@ exports.game = function game(config, players, eventCallback, gameUpdateCallback,
                 clearTimeout(self.bombExplosions[i]);
             }
             self.bombExplosions = [];
-            //somebody won
+
             setTimeout(function () {
-                if (numPlayersAlive === 1)
+                if (numPlayersAlive === 1) {
+                    //somebody won
                     lastPlayerAlive.wins++;
-                self.gameUpdateCallback(self.gameId);
+
+                    if (lastPlayerAlive.wins == config.matchLength) {
+                        var message = lastPlayerAlive.name + " Wins game!";
+                        self.sendGameChat(self.gameId, message, true);
+
+                        for (var i = 0; i < players.length; i++) {
+                            players[i].wins = 0;
+                        }
+                    }
+                    else {
+                        var message = lastPlayerAlive.name + " Wins set!";
+                        self.sendGameChat(self.gameId, message);
+                    }
+
+                    self.sendGameUpdate(self.gameId);
+                }
+                else {
+                    //its a draw
+                    var message = "Draw! Nobody wins set.";
+                    self.sendGameChat(self.gameId, message);
+                }
+
                 self.init();
                 var event = { grid: self.grid };
-                self.eventCallback(event, self.gameId);
+                self.sendGameEvent(self.gameId, event);
             }, self.restartDelay);
         }
     };

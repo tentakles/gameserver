@@ -54,11 +54,28 @@
 *refaktorisera alla olika move riktningar för spelaren i try_move
 *hantera draw state
 
+*Skriva spel händelser i spel chatten
+	*Events skall gå i väg inifrån spelet, ny eventCallback för chatloggen avsändare, "game"
+	*spelare vunnit omgång 3inarow
+	*spel oavgjort 3inarow 
+	*spelare vunnit set 3inarow
+		*om wins = gameType.matchLength
+		*skicka ett 'viktigt' meddelande important:true
+		*resetta wins vid lampligt tillfalle.
+	*byta plats p[ params i callbacksmed gameid forst
+	*spelare vunnit omgång bomberman
+	*spelare vunnit set bomberman
+	*spel oavgjort bomberman 
+	*visa wins i stil med: wins 2/3
+ 	*resetta allas wins
+
+*bugg: client_game_start:undefined by: 
+
 ############
 TODO server
 ############
 
-implementera "property array" av config
+implementera "property array" av config som kan editeras 
 hantera admin leave från lobby
 		ge vidare admin till annan spelare 
 highlighta i "Players list"  vem som är nuvarande spelare
@@ -67,19 +84,16 @@ göra snyggare design
 	kunna trycka enter + få rätt fokus i passsword dialog
 	tydligare avgränsning i chattar mellan namn och meddelande
 	password behöver inte ta upp en kolumn, utan kan t.ex. stå framför game name eller nåt sådant
-	
-skriva server events i spel chat (såsom joins och leaves, kanske vem som vunnit)
-Skriva spel händelser i spel chatten
-	spelare vunnit omgång
-	spelare vunnit set
-	spelare dör
-	spel o avgjort
-	Events skall gå i väg inifrån spelet, ny eventCallback för chatloggen avsändare, "game"
-	fixa för 3inarow
-	fixa för bomberman
-	
-kunna automagiskt deploy och köra i Azure	
-	
+		
+skriva server events i spel chat
+	joins
+	leaves
+
+ska man kunna starta ett redan startat spel igen? isåfall borde players.wins resettas, i annat fall borde knappen gömmas när man startat.
+
+fundera på: 
+	iom game chat events: ta bort vissa duplicerade meddelanden ur 3inarow UI?
+
 ############
 Todo bomberman
 ############
@@ -99,9 +113,7 @@ implementera powerups
 Ersätta chars med tex gifar
 man skall ej kunna lägga 2 eller fler bomber på samma plats
 man skall dö när man går in i pågående explosion
-kedje explosion av bomber
-	hantera på klientsidan när liggande bomber
+kedjeexplosion av bomber
+	hantera på klientsidan närliggande bomber
 
-
-	
- 
+styrkors+bombknapp för mobilt läge
