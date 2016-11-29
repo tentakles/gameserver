@@ -85,7 +85,21 @@
 TODO server
 ############
 
-implementera "property array" av config som kan editeras 
+implementera "property array" av config som kan editeras
+	allmänt:
+		skicka med gametype.config till Admin.
+		implementera friendlyname för varje config.
+		binda in config i ui:
+			för varje property i config, gör en rad i ui, som visar ett friendly name och en textbox, med ursprungligt värde i.
+				gör <input number> för nu, 
+			denna config skickas in igen när spelet startas.
+			dölj  ui  för confignär spelet startat.
+			(kanske skriva i chatten vilken config spelet startas med?)
+			(implementera typer av config utöver number vid behov)
+
+	bomberman:
+		refaktorisera in rows och cols in i spelet istället för i gametype.config
+	 
 hantera admin leave från lobby
 		ge vidare admin till annan spelare 
 highlighta i "Players list"  vem som är nuvarande spelare
@@ -99,14 +113,18 @@ göra snyggare design
 skriva server events i spel chat
 	joins
 	leaves
+	implementera:
+		i eventet client_game_leave i server.js: anropa sendGameChat och berätta vem som har leavat
+		i eventet client_join_game i server.js: anropa sendGameChat och berätta vem som har joinat
 
-ska man kunna starta ett redan startat spel igen? isåfall borde players.wins resettas, i annat fall borde knappen gömmas när man startat.
+admin bör ej kunna starta om spelet mitt i spelet:
+	när spelet väl är startat, skall man ej se knappen "start game"	 längre.
+		enforca på server att det ej går att starta igen när spelet väl är igång
+		enforca i ui genom att gömma knappen.
 
-############
+##############
 Todo bomberman
-############
-
-
+##############
 
 implementera powerups
 	mer bomber
