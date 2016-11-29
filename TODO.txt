@@ -83,6 +83,8 @@ socket leave /reload(?) måste hanteras, så att man går ut ur spelen när man 
 göra snyggare design
 	kunna trycka enter + få rätt fokus i passsword dialog
 	tydligare avgränsning i chattar mellan namn och meddelande
+	password behöver inte ta upp en kolumn, utan kan t.ex. stå framför game name eller nåt sådant
+		
 skriva server events i spel chat
 	joins
 	leaves
@@ -95,6 +97,8 @@ fundera på:
 ############
 Todo bomberman
 ############
+
+spara "grid", och bara rita om de rutor som ändrats (kanske blir viktigt sen med bilder etc)
 
 Kunna gå igenom spelare
 	kolla på fler olika conditions när man får gå i metod: can_move_to_pos, 
