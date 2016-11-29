@@ -59,21 +59,21 @@ exports.game = function game(gameId, config, players, sendGameEvent, sendGameUpd
             return false;
         }
 
+        var bombRow = playerObj.row;
+        var bombCol = playerObj.col;
+
         if (event.action === self.ACTION_PLACE_BOMB && playerObj.bombs > 0) {
             self.grid[playerObj.row][playerObj.col] += self.OBJECT_BOMB;
-
-            var bombRow = playerObj.row;
-            var bombCol = playerObj.col;
 
             playerObj.bombs -= 1;
             var explosionId = setTimeout(function () {
                 var bombId = uuid.v4();
                 var event = { grid: self.grid, type: self.EVENT_TYPE_EXPLOSION, row: bombRow, col: bombCol, size: playerObj.bombStrength, bombId: bombId };
-                self.explosion(event);
+                event.explosionPositions = self.explosion(event);
                 self.sendGameEvent(self.gameId, event);
                 playerObj.bombs += 1;
-                
-                setTimeout(function() {
+
+                setTimeout(function () {
                     var event = { grid: self.grid, type: self.EVENT_TYPE_EXPLOSION_END, bombId: bombId };
                     self.sendGameEvent(self.gameId, event);
                 }, self.explosionBurnDelay * playerObj.bombBurn);
@@ -155,16 +155,29 @@ exports.game = function game(gameId, config, players, sendGameEvent, sendGameUpd
         var i;
 
         self.handleExplosionOnPosition(event.row, event.col);
-
+        var explosionPositions = [];
+        explosionPositions.push([event.row, event.col]);
         for (i = 1; i <= event.size; i++) {
-            if (goLeft)
+            if (goLeft) {
                 goLeft = self.handleExplosionOnPosition(event.row, event.col - i);
-            if (goRight)
+                if (goLeft)
+                    explosionPositions.push([event.row, event.col - i]);
+            }
+            if (goRight) {
                 goRight = self.handleExplosionOnPosition(event.row, event.col + i);
-            if (goDown)
+                if (goRight)
+                    explosionPositions.push([event.row, event.col + i]);
+            }
+            if (goDown) {
                 goDown = self.handleExplosionOnPosition(event.row + i, event.col);
-            if (goUp)
+                if (goDown)
+                    explosionPositions.push([event.row + i, event.col]);
+            }
+            if (goUp) {
                 goUp = self.handleExplosionOnPosition(event.row - i, event.col);
+                if (goUp)
+                    explosionPositions.push([event.row - i, event.col]);
+            }
         }
 
         var numPlayersAlive = 0;
@@ -214,6 +227,7 @@ exports.game = function game(gameId, config, players, sendGameEvent, sendGameUpd
                 self.sendGameEvent(self.gameId, event);
             }, self.restartDelay);
         }
+        return explosionPositions;
     };
 
     self.move = function (event, player) {
@@ -252,7 +266,7 @@ exports.game = function game(gameId, config, players, sendGameEvent, sendGameUpd
             playerData[i].name = players[i].name;
             playerData[i].wins = 0;
             playerData[i].bombs = 1;
-            playerData[i].bombStrength = 4;
+            playerData[i].bombStrength = 1;
             playerData[i].bombBurn = 1;
             playerData[i].isAlive = true;
 

@@ -78,6 +78,9 @@
 
 *skriva om timeouts på explosioner så att servern skickar när explosionen är slut istället.
 
+*uppdatera UI koden så att explosioner bara ritas ut där servern bestämt
+	*skicka med tiles med explosion från servern i explosion event
+
 ############
 TODO server
 ############
@@ -103,8 +106,7 @@ ska man kunna starta ett redan startat spel igen? isåfall borde players.wins re
 Todo bomberman
 ############
 
-uppdatera UI koden så att explosioner bara ritas ut där servern bestämt
-	skicka med tiles med explosion från servern i explosion event
+
 
 implementera powerups
 	mer bomber

@@ -38,13 +38,13 @@ function game_event(event) {
         if (bombs.hasOwnProperty(key)) {
             var bomb = bombs[key];
 
-            var affectedTiles = "#" + bomb.row + "_" + bomb.col;
+            var affectedTiles = "";
 
-            for (i = 1; i <= bomb.size; i++) {
-                affectedTiles += ", #" + bomb.row + "_" + (bomb.col + i);
-                affectedTiles += ", #" + bomb.row + "_" + (bomb.col - i);
-                affectedTiles += ", #" + (bomb.row + i) + "_" + bomb.col;
-                affectedTiles += ", #" + (bomb.row - i) + "_" + bomb.col;
+            for (i = 0; i < bomb.explosionPositions.length; i++) {
+                var pos = bomb.explosionPositions[i];
+                if (affectedTiles !== "")
+                    affectedTiles += ", ";
+                affectedTiles += "#" + pos[0] + "_" + pos[1];
             }
 
             gameDiv.find(affectedTiles).addClass("explosion");
