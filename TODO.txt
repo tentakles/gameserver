@@ -106,10 +106,10 @@ ska man kunna starta ett redan startat spel igen? isåfall borde players.wins re
 Todo bomberman
 ############
 
-
-
 implementera powerups
 	mer bomber
+	Napalm style (burn time++)
+	"Spin the bottle" snipe bomb
 	större explosion
 	snabbare gång 
 		
