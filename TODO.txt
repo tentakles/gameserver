@@ -81,25 +81,39 @@
 *uppdatera UI koden så att explosioner bara ritas ut där servern bestämt
 	*skicka med tiles med explosion från servern i explosion event
 
+	
+*implementera "property array" av config som kan editeras
+*	allmänt:
+*		skicka med gametype.config till Admin.
+*		implementera friendlyname för varje config.
+	*	binda in config i ui:
+		*	för varje property i config, gör en rad i ui, som visar ett friendly name och en textbox, med ursprungligt värde i.
+		*		gör <input number> för nu, 
+	*	 config skickas in igen när spelet startas.
+	*	dölj  ui  för config när spelet startat.
+	
+		*add more cool bomberman properties, ex:            
+		*	numBombs = 1;
+         *   bombStrength = 1;
+        *    bombBurnTime = 1;
+		*	speed
+*	min, max po proeprties
+		*server
+	*	UI
+*	bomberman:
+*		refaktorisera in rows och cols in i spelet istället för i gametype.config
+
+*default name pa spel, asds: game
+
 ############
 TODO server
 ############
 
-implementera "property array" av config som kan editeras
-	allmänt:
-		skicka med gametype.config till Admin.
-		implementera friendlyname för varje config.
-		binda in config i ui:
-			för varje property i config, gör en rad i ui, som visar ett friendly name och en textbox, med ursprungligt värde i.
-				gör <input number> för nu, 
-			denna config skickas in igen när spelet startas.
-			dölj  ui  för confignär spelet startat.
-			(kanske skriva i chatten vilken config spelet startas med?)
-			(implementera typer av config utöver number vid behov)
+gameMatchLength m[ste kanske specialhanteras i properties? kolla upp.
 
-	bomberman:
-		refaktorisera in rows och cols in i spelet istället för i gametype.config
-	 
+(kanske skriva i chatten vilken config spelet startas med?)
+(implementera typer av config utöver number vid behov)
+
 hantera admin leave från lobby
 		ge vidare admin till annan spelare 
 highlighta i "Players list"  vem som är nuvarande spelare
@@ -122,9 +136,13 @@ admin bör ej kunna starta om spelet mitt i spelet:
 		enforca på server att det ej går att starta igen när spelet väl är igång
 		enforca i ui genom att gömma knappen.
 
+inkapsla spelen sa att de ej pollutar global scope med losa variabler etc.
+
 ##############
 Todo bomberman
 ############
+
+explosioner borde stoppas av destruerbara block
 
 implementera powerups
 	mer bomber

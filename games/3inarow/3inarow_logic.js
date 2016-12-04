@@ -21,7 +21,7 @@ exports.game = function game(gameId, config, players, sendGameEvent, sendGameUpd
     self.check_diag = function (y, x) {
         var numInARow = 0;
 
-        for (var i = 0; i < config.size; i++) {
+        for (var i = 0; i < config.size.value; i++) {
             if (!self.grid[i + y] || !self.grid[i + y][i + x]) {
                 return false;
             }
@@ -30,7 +30,7 @@ exports.game = function game(gameId, config, players, sendGameEvent, sendGameUpd
                 continue;
             }
             numInARow++;
-            if (numInARow === config.numToWin) {
+            if (numInARow === config.numToWin.value) {
                 return true;
             }
         }
@@ -54,7 +54,7 @@ exports.game = function game(gameId, config, players, sendGameEvent, sendGameUpd
                 continue;
             }
             numInARow++;
-            if (numInARow === config.numToWin) {
+            if (numInARow === config.numToWin.value) {
                 return true;
             }
         }
@@ -65,35 +65,35 @@ exports.game = function game(gameId, config, players, sendGameEvent, sendGameUpd
 
         var numInARow = 0;
         //check col
-        for (var i = 0; i < config.size; i++) {
+        for (var i = 0; i < config.size.value; i++) {
             if (self.grid[y][i] !== self.currentPlayer) {
                 numInARow = 0;
                 continue;
             }
             numInARow++;
 
-            if (numInARow === config.numToWin) {
+            if (numInARow === config.numToWin.value) {
                 return self.RESULT_WIN;
             }
         }
 
         numInARow = 0;
         //check row
-        for (var i = 0; i < config.size; i++) {
+        for (var i = 0; i < config.size.value; i++) {
             if (self.grid[i][x] !== self.currentPlayer) {
                 numInARow = 0;
                 continue;
             }
             numInARow++;
 
-            if (numInARow === config.numToWin) {
+            if (numInARow === config.numToWin.value) {
                 return self.RESULT_WIN;
             }
         }
 
         //check diagonals
-        for (var row = 0; row < config.size; row++) {
-            for (var col = 0; col < config.size; col++) {
+        for (var row = 0; row < config.size.value; row++) {
+            for (var col = 0; col < config.size.value; col++) {
                 if (self.check_diag(row, col) || self.check_reverse_diag(row, col)) {
                     return self.RESULT_WIN;
                 }
@@ -102,8 +102,8 @@ exports.game = function game(gameId, config, players, sendGameEvent, sendGameUpd
 
         //check draw
         var numEmpty = 0;
-        for (var i = 0; i < config.size; i++) {
-            for (var j = 0; j < config.size; j++) {
+        for (var i = 0; i < config.size.value; i++) {
+            for (var j = 0; j < config.size.value; j++) {
                 if (self.grid[i][j] === "")
                     numEmpty++;
             }
@@ -150,7 +150,7 @@ exports.game = function game(gameId, config, players, sendGameEvent, sendGameUpd
 
                 if (result === self.RESULT_WIN) {
                     players[self.currentPlayerIndex].wins++;
-                    if (players[self.currentPlayerIndex].wins == config.matchLength) {
+                    if (players[self.currentPlayerIndex].wins == config.matchLength.value) {
                         var message = players[self.currentPlayerIndex].name + " (" + self.currentPlayer + ") Wins game!";
                         self.sendGameChat(self.gameId, message, true);
 
@@ -190,8 +190,8 @@ exports.game = function game(gameId, config, players, sendGameEvent, sendGameUpd
 
         //create internal state grid
         self.grid = [];
-        for (var y = 0; y < config.size; y++) {
-            for (var x = 0; x < config.size; x++) {
+        for (var y = 0; y < config.size.value; y++) {
+            for (var x = 0; x < config.size.value; x++) {
                 if (!self.grid[y])
                     self.grid[y] = [];
                 self.grid[y][x] = "";

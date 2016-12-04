@@ -59,11 +59,11 @@ function try_move() {
 }
 
 function setup_game(config) {
-
+    console.log("Setup_game: 3-in-a-row");
     var gamegrid = "<table>";
-    for (var r = 0; r < config.size; r++) {
+    for (var r = 0; r < config.size.value; r++) {
         gamegrid += "<tr>";
-        for (var c = 0; c < config.size; c++) {
+        for (var c = 0; c < config.size.value; c++) {
             gamegrid += "<td id='" + r + "_" + c + "'>";
             gamegrid += "</td>";
         }

@@ -25,12 +25,15 @@ exports.game = function game(gameId, config, players, sendGameEvent, sendGameUpd
 
     self.playerData = {};
 
-    self.actionDelay = 300;
+    self.actionDelay = 30;
     self.explosionDelay = 2000;
     self.restartDelay = 3000;
-    self.explosionBurnDelay = 1000;
+    self.explosionBurnDelay = 100;
 
     self.gameResettingState = false;
+
+    self.rows = 7;
+    self.cols = 9;
 
     self.bombExplosions = [];
 
@@ -76,7 +79,7 @@ exports.game = function game(gameId, config, players, sendGameEvent, sendGameUpd
                 setTimeout(function () {
                     var event = { grid: self.grid, type: self.EVENT_TYPE_EXPLOSION_END, bombId: bombId };
                     self.sendGameEvent(self.gameId, event);
-                }, self.explosionBurnDelay * playerObj.bombBurn);
+                }, self.explosionBurnDelay * playerObj.bombBurnFactor);
 
             }, self.explosionDelay);
 
@@ -88,8 +91,8 @@ exports.game = function game(gameId, config, players, sendGameEvent, sendGameUpd
         if (playerObj.date) {
             var now = new Date();
             var millisSinceLastAction = now - playerObj.date;
-            // console.log(millisSinceLastAction);
-            if (millisSinceLastAction > self.actionDelay) {
+
+            if (millisSinceLastAction > self.actionDelay * playerObj.speedFactor) {
                 playerObj.date = now;
             }
             else {
@@ -108,13 +111,13 @@ exports.game = function game(gameId, config, players, sendGameEvent, sendGameUpd
                 }
                 break;
             case self.ACTION_MOVE_DOWN:
-                if (playerObj.row < config.rows - 1 && self.can_move_to_pos(playerObj.row + 1, playerObj.col)) {
+                if (playerObj.row < self.rows - 1 && self.can_move_to_pos(playerObj.row + 1, playerObj.col)) {
                     result = true;
                     self.update_pos_after_move(playerObj, 1, 0);
                 }
                 break;
             case self.ACTION_MOVE_RIGHT:
-                if (playerObj.col < config.cols - 1 && self.can_move_to_pos(playerObj.row, playerObj.col + 1)) {
+                if (playerObj.col < self.cols - 1 && self.can_move_to_pos(playerObj.row, playerObj.col + 1)) {
                     result = true;
                     self.update_pos_after_move(playerObj, 0, 1);
                 }
@@ -201,7 +204,7 @@ exports.game = function game(gameId, config, players, sendGameEvent, sendGameUpd
                     //somebody won
                     lastPlayerAlive.wins++;
 
-                    if (lastPlayerAlive.wins == config.matchLength) {
+                    if (lastPlayerAlive.wins == config.matchLength.value) {
                         var message = lastPlayerAlive.name + " Wins game!";
                         self.sendGameChat(self.gameId, message, true);
 
@@ -262,12 +265,10 @@ exports.game = function game(gameId, config, players, sendGameEvent, sendGameUpd
             { char: 'D', startRow: 0, startCol: 8 }
         ];
 
+        //init player properties
         for (i = 0; i < players.length; i++) {
             playerData[i].name = players[i].name;
             playerData[i].wins = 0;
-            playerData[i].bombs = 1;
-            playerData[i].bombStrength = 1;
-            playerData[i].bombBurn = 1;
             playerData[i].isAlive = true;
 
             playerData[i].row = playerData[i].startRow;
@@ -275,6 +276,12 @@ exports.game = function game(gameId, config, players, sendGameEvent, sendGameUpd
 
             self.playerData[players[i].name] = playerData[i];
             self.grid[playerData[i].row][playerData[i].col] = playerData[i].char;
+
+            //custom properties
+            playerData[i].bombs = config.bombs.value;
+            playerData[i].bombStrength = config.bombStrength.value;
+            playerData[i].bombBurnFactor = config.bombBurnFactor.value;
+            playerData[i].speedFactor = config.speedFactor.value;
         }
 
         return { grid: self.grid };

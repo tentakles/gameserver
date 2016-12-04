@@ -9,6 +9,9 @@ var ACTION_PLACE_BOMB = 4;
 var EVENT_TYPE_EXPLOSION = 0;
 var EVENT_TYPE_EXPLOSION_END = 1;
 
+var rows = 7;
+var cols = 9;
+
 var oldGrid = null;
 
 var config = null;
@@ -51,10 +54,10 @@ function game_event(event) {
         }
     }
 
-    for (var r = 0; r < config.rows; r++) {
-        for (var c = 0; c < config.cols; c++) {
+    for (var r = 0; r < rows; r++) {
+        for (var c = 0; c < cols; c++) {
             if (oldGrid === null || oldGrid[r][c] !== event.grid[r][c]) {
-                i = (r * config.cols) + c;
+                i = (r * cols) + c;
                 $(columns[i]).html(event.grid[r][c]);
             }
         }
@@ -72,9 +75,9 @@ function setup_game(conf) {
     config = conf;
     gameDiv = $("#game");
     var gamegrid = "<table>";
-    for (var r = 0; r < config.rows; r++) {
+    for (var r = 0; r < rows; r++) {
         gamegrid += "<tr>";
-        for (var c = 0; c < config.cols; c++) {
+        for (var c = 0; c < cols; c++) {
             gamegrid += "<td id='" + r + "_" + c + "'>";
             gamegrid += "</td>";
         }

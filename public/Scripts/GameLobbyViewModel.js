@@ -20,7 +20,8 @@ function GameLobbyViewModel(socket) {
     self.gameMatchLength = ko.observable(0);
 
     self.isAdmin = ko.observable(false);
-
+    self.gameStarted = ko.observable(false);
+    
     self.selectedGame = ko.observable(null);
 
     self.createGameName = ko.observable("");
@@ -31,6 +32,7 @@ function GameLobbyViewModel(socket) {
     self.games = ko.observableArray([]);
     self.gamePlayers = ko.observableArray([]);
     self.gameTypes = ko.observableArray([]);
+    self.gameConfigList = ko.observableArray([]);
 
     //modes
     self.lobbyMode = ko.observable(false);
@@ -79,6 +81,7 @@ function GameLobbyViewModel(socket) {
         });
 
         socket.on('server_game_start', function (game) {
+            self.gameStarted(true);
             self.currentGame = game;
             $("#gameWrapper").load(game.gameType.url);
         });
@@ -129,18 +132,40 @@ function GameLobbyViewModel(socket) {
 
     self.init();
 
+    self.transformGameConfig = function (config) {
+        var list = [];
+        for (var key in config) {
+            if (config.hasOwnProperty(key)) {
+                var obj = config[key];
+                obj['id'] = key;
+                list.push(obj);
+            }
+        }
+        return list;
+    };
+
+    self.transformBackGameConfig = function (list) {
+        var config = {};
+        for (var i = 0; i < list.length; i++) {
+            var obj = list[i];
+            config[obj.id] = obj;
+        }
+        return config;
+    };
+
     self.enterGame = function (game, isAdmin) {
         self.gameChats([]);
         self.gamePlayers(game.players);
         self.gameName(game.name);
         self.gameMaxPlayers(game.gameType.maxPlayers);
         self.gameMinPlayers(game.gameType.minPlayers);
-        self.gameMatchLength(game.gameType.config.matchLength);
+        self.gameMatchLength(game.gameType.config.matchLength.value);
         self.gameTypeName(game.gameType.name);
         self.createGameMode(false);
         self.gameLobbyMode(true);
         self.isAdmin(isAdmin);
         self.gameMode(false);
+        self.gameConfigList(self.transformGameConfig(game.gameType.config));
         self.title('Welcome to game "' + game.name + '"');
     };
 
@@ -168,7 +193,7 @@ function GameLobbyViewModel(socket) {
     };
 
     self.createGame = function () {
-        self.createGameName("");
+        self.createGameName(self.nickname()+"'s Game");
         self.createGamePassword("");
         self.selectedGame(undefined);
         self.createGameMode(true);
@@ -220,10 +245,12 @@ function GameLobbyViewModel(socket) {
     }
 
     self.startGame = function () {
-        socket.emit('client_game_start');
+        var config = self.transformBackGameConfig(self.gameConfigList());
+        socket.emit('client_game_start', config);
     }
 
     self.leaveGame = function () {
+        self.gameStarted(false);
         socket.emit('client_game_leave');
         self.enterLobby();
         $("#gameWrapper").html("");
