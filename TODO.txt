@@ -153,7 +153,11 @@ implementera powerups
 		
 Ersätta chars med tex gifar
 man skall ej kunna lägga 2 eller fler bomber på samma plats
+	kolla om positionen "contains" en bomb-character, om den gör det skall man ej få lägga bomb där.
 man skall dö när man går in i pågående explosion
+	i algoritmen: kolla om det finns en bomb på platsen dit man spränger:
+		om det finns, kolla upp vilken bomb som ligger på den positionen (ev. måste det sparas)
+		trigga dess timeout omedelbart.
 kedjeexplosion av bomber
 
 styrkors+bombknapp för mobilt läge
