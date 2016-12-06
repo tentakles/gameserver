@@ -76,6 +76,7 @@ listener.sockets.on('connection', function (socket) {
                 var gameIndex = games.indexOf(game);
                 games.splice(gameIndex, 1);
             }
+            sendGameChat(game.id, socket.nickname + " leaves the game");
             updateGameState(game);
             listener.to(game.id).emit('server_game_update', game);
             listener.sockets.emit('server_games', games);
@@ -227,6 +228,7 @@ listener.sockets.on('connection', function (socket) {
         if (game) {
             socket.emit('server_join_game_success', game);
             updateGameState(game);
+            sendGameChat(game.id, socket.nickname + " joins the game");
             listener.to(game.id).emit('server_game_update', game);
             listener.sockets.emit('server_games', games);
         }
