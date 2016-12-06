@@ -65,7 +65,7 @@ exports.game = function game(gameId, config, players, sendGameEvent, sendGameUpd
         var bombRow = playerObj.row;
         var bombCol = playerObj.col;
 
-        if (event.action === self.ACTION_PLACE_BOMB && playerObj.bombs > 0) {
+        if (event.action === self.ACTION_PLACE_BOMB && playerObj.bombs > 0 && !self.grid[playerObj.row][playerObj.col].includes(self.OBJECT_BOMB)) {
             self.grid[playerObj.row][playerObj.col] += self.OBJECT_BOMB;
 
             playerObj.bombs -= 1;
@@ -132,9 +132,12 @@ exports.game = function game(gameId, config, players, sendGameEvent, sendGameUpd
         return result;
     }
 
-    self.handleExplosionOnPosition = function (row, col) {
-        if (self.grid[row] && (self.grid[row][col] === self.OBJECT_DESTRUCTIBLE_BLOCK))
+    self.handleExplosionOnPosition = function (row, col, explosionPositions) {
+        var foundDestructibleBlock = false;
+        if (self.grid[row] && (self.grid[row][col] === self.OBJECT_DESTRUCTIBLE_BLOCK)) {
+            foundDestructibleBlock = true;
             self.grid[row][col] = self.OBJECT_EMPTY;
+        }
 
         for (var i = 0; i < players.length; i++) {
 
@@ -144,8 +147,11 @@ exports.game = function game(gameId, config, players, sendGameEvent, sendGameUpd
                 player.isAlive = false;
             }
         }
-
-        return !(self.grid[row] && (self.grid[row][col] === self.OBJECT_INDESTRUCTIBLE_BLOCK));
+        var isIndestructibleBlock = self.grid[row] && self.grid[row][col] === self.OBJECT_INDESTRUCTIBLE_BLOCK;
+        if (!isIndestructibleBlock && explosionPositions) {
+            explosionPositions.push([row, col]);
+        }
+        return !isIndestructibleBlock && !foundDestructibleBlock;
     }
 
     self.explosion = function (event) {
@@ -162,24 +168,16 @@ exports.game = function game(gameId, config, players, sendGameEvent, sendGameUpd
         explosionPositions.push([event.row, event.col]);
         for (i = 1; i <= event.size; i++) {
             if (goLeft) {
-                goLeft = self.handleExplosionOnPosition(event.row, event.col - i);
-                if (goLeft)
-                    explosionPositions.push([event.row, event.col - i]);
+                goLeft = self.handleExplosionOnPosition(event.row, event.col - i, explosionPositions);
             }
             if (goRight) {
-                goRight = self.handleExplosionOnPosition(event.row, event.col + i);
-                if (goRight)
-                    explosionPositions.push([event.row, event.col + i]);
+                goRight = self.handleExplosionOnPosition(event.row, event.col + i, explosionPositions);
             }
             if (goDown) {
-                goDown = self.handleExplosionOnPosition(event.row + i, event.col);
-                if (goDown)
-                    explosionPositions.push([event.row + i, event.col]);
+                goDown = self.handleExplosionOnPosition(event.row + i, event.col, explosionPositions);
             }
             if (goUp) {
-                goUp = self.handleExplosionOnPosition(event.row - i, event.col);
-                if (goUp)
-                    explosionPositions.push([event.row - i, event.col]);
+                goUp = self.handleExplosionOnPosition(event.row - i, event.col, explosionPositions);
             }
         }
 

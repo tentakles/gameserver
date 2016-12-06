@@ -117,11 +117,16 @@
 	   * enforca på server att det ej går att starta igen när spelet väl är igång
 	   * enforca i ui genom att gömma knappen.
 
+* man skall ej kunna lägga 2 eller fler bomber på samma plats
+	* kolla om positionen "contains" en bomb-character, om den gör det skall man ej få lägga bomb där.
+
+* explosioner borde stoppas av destruerbara block
+
 ############
 TODO server
 ############
 
-gameMatchLength m[ste kanske specialhanteras i properties? kolla upp.
+gameMatchLength måste kanske specialhanteras i properties? kolla upp.
 
 (kanske skriva i chatten vilken config spelet startas med?)
 (implementera typer av config utöver number vid behov)
@@ -144,8 +149,6 @@ inkapsla spelen sa att de ej pollutar global scope med losa variabler etc.
 Todo bomberman
 ############
 
-explosioner borde stoppas av destruerbara block
-
 implementera powerups
 	mer bomber
 	Napalm style (burn time++)
@@ -154,8 +157,7 @@ implementera powerups
 	snabbare gång 
 		
 Ersätta chars med tex gifar
-man skall ej kunna lägga 2 eller fler bomber på samma plats
-	kolla om positionen "contains" en bomb-character, om den gör det skall man ej få lägga bomb där.
+
 man skall dö när man går in i pågående explosion
 	i algoritmen: kolla om det finns en bomb på platsen dit man spränger:
 		om det finns, kolla upp vilken bomb som ligger på den positionen (ev. måste det sparas)
