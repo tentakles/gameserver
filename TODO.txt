@@ -143,40 +143,49 @@
 TODO server
 ############
 
+hantera admin leave från lobby
+		om inte spelet är startat: spelet avslutas när admin leavar 
+		om spelet är startat, kolla min/max players, och om inte det uppfylls längre, avsluta hela spelet och släng ut allt folk
+
+socket leave /reload(?) måste hanteras, så att man går ut ur spelen när man laddar om sidan
+	hantera som ovan
+	skriva ut i spelchat om någon disconnectar, ev. ge över adminstatus som ovan.
+	kolla upp reconnect? is it real
+
 gameMatchLength måste kanske specialhanteras i properties? kolla upp.
 
 (kanske skriva i chatten vilken config spelet startas med?)
 (implementera typer av config utöver number vid behov)
-
-hantera admin leave från lobby
-		ge vidare admin till annan spelare 
-
-socket leave /reload(?) måste hanteras, så att man går ut ur spelen när man laddar om sidan
 
 göra snyggare design
 	kunna trycka enter + få rätt fokus i passsword dialog
 	tydligare avgränsning i chattar mellan namn och meddelande
 	password behöver inte ta upp en kolumn, utan kan t.ex. stå framför game name eller nåt sådant
 	större box för spelet
+	fixa fokusgrejen
 		
 ##############
 Todo bomberman
 ############
 
 implementera powerups
-	mer bomber
+	fler bomber
 	Napalm style (burn time++)
-	"Spin the bottle" snipe bomb
 	större explosion
 	snabbare gång 
-		
+	
 Ersätta chars med tex gifar
-
-styrkors+bombknapp för mobilt läge
 
 ############
 TODO nice to have
 ############
+
+optimera sändningen av data, t.ex. skicka inte hela banan jämt?
+
+styrkors+bombknapp för mobilt läge
+	
+bomberman-powerup:
+	"Spin the bottle" snipe bomb
 
 göra en debug-write metod i server, som man använder istället för console.log, och som bara loggar ut om man har "debug=true" etc.
 
