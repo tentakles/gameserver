@@ -73,13 +73,23 @@ exports.game = function game(gameId, config, players, sendGameEvent, sendGameUpd
             var explosionFunc = function () {
                 var event = { grid: self.grid, type: self.EVENT_TYPE_EXPLOSION, row: bombRow, col: bombCol, size: playerObj.bombStrength, bombId: bombId };
                 event.explosionPositions = self.explosion(event);
+
+                //remove ourselves from coming explosions
+                for (var i = 0; i < self.bombExplosions.length; i++) {
+                    var bombExplosion = self.bombExplosions[i];
+                    if (bombExplosion.bombId === bombId) {
+                        bombExplosion.explosionPositions = event.explosionPositions;
+                        break;
+                    }
+                }
+
                 self.sendGameEvent(self.gameId, event);
                 playerObj.bombs += 1;
 
                 setTimeout(function () {
                     var event = { grid: self.grid, type: self.EVENT_TYPE_EXPLOSION_END, bombId: bombId };
                     self.sendGameEvent(self.gameId, event);
-                    
+
                     //remove ourselves from coming explosions
                     for (var i = 0; i < self.bombExplosions.length; i++) {
                         var bombExplosion = self.bombExplosions[i];
@@ -95,7 +105,7 @@ exports.game = function game(gameId, config, players, sendGameEvent, sendGameUpd
 
             var explosionId = setTimeout(explosionFunc, self.explosionDelay);
 
-            self.bombExplosions.push({ funcId: explosionId, func: explosionFunc, bombId:bombId, row: bombRow, col: bombCol });
+            self.bombExplosions.push({ funcId: explosionId, func: explosionFunc, bombId: bombId, row: bombRow, col: bombCol });
 
             return true;
         }
@@ -147,7 +157,7 @@ exports.game = function game(gameId, config, players, sendGameEvent, sendGameUpd
     self.handleExplosionOnPosition = function (row, col, explosionPositions, isBombOrigin) {
         var foundDestructibleBlock = false;
 
-        if (!self.grid[row] || self.grid[row][col]===undefined)
+        if (!self.grid[row] || self.grid[row][col] === undefined)
             return false;
 
         if (self.grid[row][col] === self.OBJECT_DESTRUCTIBLE_BLOCK) {
@@ -156,7 +166,6 @@ exports.game = function game(gameId, config, players, sendGameEvent, sendGameUpd
         }
 
         for (var i = 0; i < players.length; i++) {
-
             var player = self.playerData[players[i].name];
             if (self.grid[row][col].indexOf(player.char) > -1) {
                 self.grid[row][col] = self.grid[row][col].replace(player.char, ' ');
@@ -167,9 +176,9 @@ exports.game = function game(gameId, config, players, sendGameEvent, sendGameUpd
         if (!isIndestructibleBlock && explosionPositions) {
             explosionPositions.push([row, col]);
         }
-        
+
         if (!isBombOrigin && self.grid[row][col].includes(self.OBJECT_BOMB)) {
-           
+
             for (var i = 0; i < self.bombExplosions.length; i++) {
                 var bombExplosion = self.bombExplosions[i];
                 if (bombExplosion.row === row && bombExplosion.col === col) {
@@ -177,11 +186,11 @@ exports.game = function game(gameId, config, players, sendGameEvent, sendGameUpd
                     bombExplosion.func();
                     break;
                 }
-            } 
+            }
 
             //DO STUFF
         }
-        
+
         return !isIndestructibleBlock && !foundDestructibleBlock;
     }
 
@@ -212,6 +221,12 @@ exports.game = function game(gameId, config, players, sendGameEvent, sendGameUpd
             }
         }
 
+        self.checkWinStatus();
+        return explosionPositions;
+    };
+
+    self.checkWinStatus = function () {
+        var i;
         var numPlayersAlive = 0;
         var lastPlayerAlive = null;
         for (i = 0; i < players.length; i++) {
@@ -233,7 +248,7 @@ exports.game = function game(gameId, config, players, sendGameEvent, sendGameUpd
                     //somebody won
                     lastPlayerAlive.wins++;
 
-                    if (lastPlayerAlive.wins == config.matchLength.value) {
+                    if (lastPlayerAlive.wins === config.matchLength.value) {
                         var message = lastPlayerAlive.name + " Wins game!";
                         self.sendGameChat(self.gameId, message, true);
 
@@ -259,8 +274,10 @@ exports.game = function game(gameId, config, players, sendGameEvent, sendGameUpd
                 self.sendGameEvent(self.gameId, event);
             }, self.restartDelay);
         }
-        return explosionPositions;
-    };
+
+
+    }
+
 
     self.move = function (event, player) {
         // console.log(event.action);
@@ -269,7 +286,33 @@ exports.game = function game(gameId, config, players, sendGameEvent, sendGameUpd
             return { cancelEvent: true };
 
         var canMove = self.try_move(event, player);
+
+        if (canMove) {
+            self.checkIfPlayerWalkedInToExplosion(player);
+        }
+
         return { grid: self.grid, cancelEvent: !canMove };
+    }
+
+    self.checkIfPlayerWalkedInToExplosion = function (player) {
+        var playerObj = self.playerData[player];
+
+        for (var i = 0; i < self.bombExplosions.length; i++) {
+            var bombExplosion = self.bombExplosions[i];
+
+            if (bombExplosion.explosionPositions) {
+                for (var j = 0; j < bombExplosion.explosionPositions.length;j++) {
+                    var pos = bombExplosion.explosionPositions[j];
+                    if (pos[0] === playerObj.row && pos[1] === playerObj.col) {
+                        //player walked in to a explosion
+                        self.grid[playerObj.row][playerObj.col] = self.grid[playerObj.row][playerObj.col].replace(playerObj.char, ' ');
+                        playerObj.isAlive = false;
+                        self.checkWinStatus();
+                        break;
+                    }
+                }
+            }
+        }
     }
 
     self.init = function () {

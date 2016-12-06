@@ -131,6 +131,14 @@
 		*	kör dess funktion.
 		*i explodeFunctionen, ta bort sej själv från bombExplosions-array.
 		
+*man skall dö när man går in i pågående explosion
+*	när en bomb exploderar, lägg in alla "explosionsRutor" i en array, med sitt bombid. (2d array)
+*	i checkIfPlayerWalkedInToExplosion:
+*		loopa igenom arrayen ovan, och kolla om man går in i en explosion. isåfall:
+*			gör som när en spelare träffas av en explosion i vanliga fall.
+*	när är explosion är klar, ta bort alla tiles kopplade till den.
+
+		
 ############
 TODO server
 ############
@@ -142,16 +150,15 @@ gameMatchLength måste kanske specialhanteras i properties? kolla upp.
 
 hantera admin leave från lobby
 		ge vidare admin till annan spelare 
-highlighta i "Players list"  vem som är nuvarande spelare
+
 socket leave /reload(?) måste hanteras, så att man går ut ur spelen när man laddar om sidan
+
 göra snyggare design
 	kunna trycka enter + få rätt fokus i passsword dialog
 	tydligare avgränsning i chattar mellan namn och meddelande
 	password behöver inte ta upp en kolumn, utan kan t.ex. stå framför game name eller nåt sådant
 	större box för spelet
 		
-inkapsla spelen sa att de ej pollutar global scope med losa variabler etc.
-
 ##############
 Todo bomberman
 ############
@@ -165,6 +172,14 @@ implementera powerups
 		
 Ersätta chars med tex gifar
 
-man skall dö när man går in i pågående explosion
-
 styrkors+bombknapp för mobilt läge
+
+############
+TODO nice to have
+############
+
+göra en debug-write metod i server, som man använder istället för console.log, och som bara loggar ut om man har "debug=true" etc.
+
+inkapsla spelen sa att de ej pollutar global scope med losa variabler etc.
+
+highlighta i "Players list"  vem som är nuvarande spelare
