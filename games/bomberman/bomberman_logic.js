@@ -69,8 +69,8 @@ exports.game = function game(gameId, config, players, sendGameEvent, sendGameUpd
             self.grid[playerObj.row][playerObj.col] += self.OBJECT_BOMB;
 
             playerObj.bombs -= 1;
-            var explosionId = setTimeout(function () {
-                var bombId = uuid.v4();
+            var bombId = uuid.v4();
+            var explosionFunc = function () {
                 var event = { grid: self.grid, type: self.EVENT_TYPE_EXPLOSION, row: bombRow, col: bombCol, size: playerObj.bombStrength, bombId: bombId };
                 event.explosionPositions = self.explosion(event);
                 self.sendGameEvent(self.gameId, event);
@@ -79,11 +79,23 @@ exports.game = function game(gameId, config, players, sendGameEvent, sendGameUpd
                 setTimeout(function () {
                     var event = { grid: self.grid, type: self.EVENT_TYPE_EXPLOSION_END, bombId: bombId };
                     self.sendGameEvent(self.gameId, event);
+                    
+                    //remove ourselves from coming explosions
+                    for (var i = 0; i < self.bombExplosions.length; i++) {
+                        var bombExplosion = self.bombExplosions[i];
+                        if (bombExplosion.bombId === bombId) {
+                            self.bombExplosions.splice(i, 1);
+                            break;
+                        }
+                    }
+
                 }, self.explosionBurnDelay * playerObj.bombBurnFactor);
 
-            }, self.explosionDelay);
+            };
 
-            self.bombExplosions.push(explosionId);
+            var explosionId = setTimeout(explosionFunc, self.explosionDelay);
+
+            self.bombExplosions.push({ funcId: explosionId, func: explosionFunc, bombId:bombId, row: bombRow, col: bombCol });
 
             return true;
         }
@@ -132,9 +144,13 @@ exports.game = function game(gameId, config, players, sendGameEvent, sendGameUpd
         return result;
     }
 
-    self.handleExplosionOnPosition = function (row, col, explosionPositions) {
+    self.handleExplosionOnPosition = function (row, col, explosionPositions, isBombOrigin) {
         var foundDestructibleBlock = false;
-        if (self.grid[row] && (self.grid[row][col] === self.OBJECT_DESTRUCTIBLE_BLOCK)) {
+
+        if (!self.grid[row] || self.grid[row][col]===undefined)
+            return false;
+
+        if (self.grid[row][col] === self.OBJECT_DESTRUCTIBLE_BLOCK) {
             foundDestructibleBlock = true;
             self.grid[row][col] = self.OBJECT_EMPTY;
         }
@@ -142,15 +158,30 @@ exports.game = function game(gameId, config, players, sendGameEvent, sendGameUpd
         for (var i = 0; i < players.length; i++) {
 
             var player = self.playerData[players[i].name];
-            if (self.grid[row] && self.grid[row][col] && self.grid[row][col].indexOf(player.char) > -1) {
+            if (self.grid[row][col].indexOf(player.char) > -1) {
                 self.grid[row][col] = self.grid[row][col].replace(player.char, ' ');
                 player.isAlive = false;
             }
         }
-        var isIndestructibleBlock = self.grid[row] && self.grid[row][col] === self.OBJECT_INDESTRUCTIBLE_BLOCK;
+        var isIndestructibleBlock = self.grid[row][col] === self.OBJECT_INDESTRUCTIBLE_BLOCK;
         if (!isIndestructibleBlock && explosionPositions) {
             explosionPositions.push([row, col]);
         }
+        
+        if (!isBombOrigin && self.grid[row][col].includes(self.OBJECT_BOMB)) {
+           
+            for (var i = 0; i < self.bombExplosions.length; i++) {
+                var bombExplosion = self.bombExplosions[i];
+                if (bombExplosion.row === row && bombExplosion.col === col) {
+                    clearTimeout(bombExplosion.funcId);
+                    bombExplosion.func();
+                    break;
+                }
+            } 
+
+            //DO STUFF
+        }
+        
         return !isIndestructibleBlock && !foundDestructibleBlock;
     }
 
@@ -163,7 +194,7 @@ exports.game = function game(gameId, config, players, sendGameEvent, sendGameUpd
         var goDown = true;
         var i;
 
-        self.handleExplosionOnPosition(event.row, event.col);
+        self.handleExplosionOnPosition(event.row, event.col, null, true);
         var explosionPositions = [];
         explosionPositions.push([event.row, event.col]);
         for (i = 1; i <= event.size; i++) {
@@ -193,7 +224,7 @@ exports.game = function game(gameId, config, players, sendGameEvent, sendGameUpd
         if (numPlayersAlive <= 1) {
             self.gameResettingState = true;
             for (i = 0; i < self.bombExplosions.length; i++) {
-                clearTimeout(self.bombExplosions[i]);
+                clearTimeout(self.bombExplosions[i].funcId);
             }
             self.bombExplosions = [];
 
@@ -266,7 +297,6 @@ exports.game = function game(gameId, config, players, sendGameEvent, sendGameUpd
         //init player properties
         for (i = 0; i < players.length; i++) {
             playerData[i].name = players[i].name;
-            playerData[i].wins = 0;
             playerData[i].isAlive = true;
 
             playerData[i].row = playerData[i].startRow;

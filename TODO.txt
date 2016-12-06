@@ -122,6 +122,15 @@
 
 * explosioner borde stoppas av destruerbara block
 
+
+* kedjeexplosion av bomber
+	* i handleExplosionOnPosition: kolla om det finns en bomb här redan, isåfall:
+		*(kolla att det inte är bomben man själv lägger ut precis)
+		*loopa bombExplosions tills man hittar rätt bomb baserat på row och col, med denna:
+		*	cancellera den.
+		*	kör dess funktion.
+		*i explodeFunctionen, ta bort sej själv från bombExplosions-array.
+		
 ############
 TODO server
 ############
@@ -141,8 +150,6 @@ göra snyggare design
 	password behöver inte ta upp en kolumn, utan kan t.ex. stå framför game name eller nåt sådant
 	större box för spelet
 		
-
-
 inkapsla spelen sa att de ej pollutar global scope med losa variabler etc.
 
 ##############
@@ -159,9 +166,5 @@ implementera powerups
 Ersätta chars med tex gifar
 
 man skall dö när man går in i pågående explosion
-	i algoritmen: kolla om det finns en bomb på platsen dit man spränger:
-		om det finns, kolla upp vilken bomb som ligger på den positionen (ev. måste det sparas)
-		trigga dess timeout omedelbart.
-kedjeexplosion av bomber
 
 styrkors+bombknapp för mobilt läge
