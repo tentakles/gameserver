@@ -168,7 +168,7 @@ listener.sockets.on('connection', function (socket) {
     socket.on('client_game_start', function (clientConfig) {
         var game = getGameByUser(socket.nickname);
         var player = getListItemByParam(socket.nickname, "name", game.players);
-        if (player && player.isAdmin && game && game.players.length <= game.gameType.maxPlayers && game.players.length >= game.gameType.minPlayers) {
+        if (player && player.isAdmin && game && game.players.length <= game.gameType.maxPlayers && game.players.length >= game.gameType.minPlayers && !game.instance) {
             var gameType = game.gameType;
             console.log("client_game_start:" + gameType.name + " by: " + socket.nickname);
             console.log("code url:" + gameType.code);

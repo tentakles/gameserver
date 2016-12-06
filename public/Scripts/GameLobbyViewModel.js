@@ -21,7 +21,7 @@ function GameLobbyViewModel(socket) {
 
     self.isAdmin = ko.observable(false);
     self.gameStarted = ko.observable(false);
-    
+
     self.selectedGame = ko.observable(null);
 
     self.createGameName = ko.observable("");
@@ -56,7 +56,8 @@ function GameLobbyViewModel(socket) {
     });
 
     self.canStartGame = ko.computed(function () {
-        return self.gamePlayers().length >= self.gameMinPlayers() && self.gamePlayers().length <= self.gameMaxPlayers();
+        var correctPlayers = self.gamePlayers().length >= self.gameMinPlayers() && self.gamePlayers().length <= self.gameMaxPlayers();
+        return correctPlayers;
     });
 
     self.joinGameWithPassword = function () {
@@ -193,7 +194,7 @@ function GameLobbyViewModel(socket) {
     };
 
     self.createGame = function () {
-        self.createGameName(self.nickname()+"'s Game");
+        self.createGameName(self.nickname() + "'s Game");
         self.createGamePassword("");
         self.selectedGame(undefined);
         self.createGameMode(true);

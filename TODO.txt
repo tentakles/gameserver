@@ -112,6 +112,11 @@
 		* i eventet client_game_leave i server.js: anropa sendGameChat och berätta vem som har leavat
 		* i eventet client_join_game i server.js: anropa sendGameChat och berätta vem som har joinat
 
+* admin bör ej kunna starta om spelet mitt i spelet:
+	* när spelet väl är startat, skall man ej se knappen "start game"	 längre.
+	   * enforca på server att det ej går att starta igen när spelet väl är igång
+	   * enforca i ui genom att gömma knappen.
+
 ############
 TODO server
 ############
@@ -131,10 +136,7 @@ göra snyggare design
 	password behöver inte ta upp en kolumn, utan kan t.ex. stå framför game name eller nåt sådant
 	större box för spelet
 		
-admin bör ej kunna starta om spelet mitt i spelet:
-	när spelet väl är startat, skall man ej se knappen "start game"	 längre.
-		enforca på server att det ej går att starta igen när spelet väl är igång
-		enforca i ui genom att gömma knappen.
+
 
 inkapsla spelen sa att de ej pollutar global scope med losa variabler etc.
 
