@@ -4,14 +4,14 @@ var fs = require('fs');
 var io = require('socket.io');
 var express = require('express');
 var app = express();
-var port = 8001;
+var port = process.env.port || 8001;
 var http = require('http').Server(app);
 var uuid = require('node-uuid');
 
 var games = [];
 var internal_games = [];
 var gameTypes = [
-    { name: 'bomberman', url: 'games/bomberman/game.html', config: { matchLength: { value: 3, name: 'Match length', min: 1, max: 100 },bombs :{ value: 1, name: 'Bombs', min: 1, max: 10 } ,bombStrength:{ value: 1, name: 'Bomb power', min: 1, max: 10 },bombBurnFactor:{ value: 10, name: 'Bomb burn time', min: 1, max: 50 } ,speedFactor:{ value: 10, name: 'Player walk delay', min: 1, max: 20 } }, code: './games/bomberman/bomberman_logic.js', minPlayers: 2, maxPlayers: 4 },
+    { name: 'bomberman', url: 'games/bomberman/game.html', config: { matchLength: { value: 3, name: 'Match length', min: 1, max: 100 },bombs :{ value: 1, name: 'Bombs', min: 1, max: 10 } ,bombStrength:{ value: 1, name: 'Bomb power', min: 1, max: 10 },bombBurnFactor:{ value: 10, name: 'Bomb burn time', min: 1, max: 20 } ,speedFactor:{ value: 10, name: 'Player walk delay', min: 1, max: 20 } }, code: './games/bomberman/bomberman_logic.js', minPlayers: 2, maxPlayers: 4 },
     { name: '3-in-a-row', url: 'games/3inarow/game.html', config: { size: { value: 3, name: 'Game size', min: 3, max: 20 }, numToWin: { value: 3, name: 'Win length', min: 3, max: 5 }, matchLength: { value: 3, name: 'Match length', min: 1, max: 100 } }, code: './games/3inarow/3inarow_logic.js', minPlayers: 2, maxPlayers: 2 },
     { name: 'Repello', url: 'games/repo/game.html', minPlayers: 2, maxPlayers: 6 }
 ];
@@ -76,7 +76,6 @@ listener.sockets.on('connection', function (socket) {
                 var gameIndex = games.indexOf(game);
                 games.splice(gameIndex, 1);
             }
-            sendGameChat(game.id, socket.nickname + " leaves the game");
             updateGameState(game);
             listener.to(game.id).emit('server_game_update', game);
             listener.sockets.emit('server_games', games);
@@ -168,7 +167,7 @@ listener.sockets.on('connection', function (socket) {
     socket.on('client_game_start', function (clientConfig) {
         var game = getGameByUser(socket.nickname);
         var player = getListItemByParam(socket.nickname, "name", game.players);
-        if (player && player.isAdmin && game && game.players.length <= game.gameType.maxPlayers && game.players.length >= game.gameType.minPlayers && !game.instance) {
+        if (player && player.isAdmin && game && game.players.length <= game.gameType.maxPlayers && game.players.length >= game.gameType.minPlayers) {
             var gameType = game.gameType;
             console.log("client_game_start:" + gameType.name + " by: " + socket.nickname);
             console.log("code url:" + gameType.code);
@@ -228,7 +227,6 @@ listener.sockets.on('connection', function (socket) {
         if (game) {
             socket.emit('server_join_game_success', game);
             updateGameState(game);
-            sendGameChat(game.id, socket.nickname + " joins the game");
             listener.to(game.id).emit('server_game_update', game);
             listener.sockets.emit('server_games', games);
         }
