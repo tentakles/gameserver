@@ -4,7 +4,7 @@ var fs = require('fs');
 var io = require('socket.io');
 var express = require('express');
 var app = express();
-var port = process.env.port || 8001;
+var port = process.env.PORT || process.env.port || 8001;
 var http = require('http').Server(app);
 var uuid = require('node-uuid');
 
