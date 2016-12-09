@@ -44,8 +44,14 @@ function updateGameState(game) {
     game.joinable = game.players.length < game.gameType.maxPlayers;
 }
 
+console.log('Trying to start on node version:' + process.version);
+
 http.listen(port, function () {
     console.log('Gameserver listening on *:' + port);
+	
+	
+	
+	
 });
 app.use(express.static('public'));
 
