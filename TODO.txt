@@ -191,6 +191,10 @@ göra snyggare design
 Todo bomberman
 ############
 
+bugg i uppritning:
+	n'r man ror sig med en explosion aktiv, ritas explosionen om fel.
+
+powerups borde resettas efter game eller match
 
 ############
 TODO nice to have (post 1.0)
