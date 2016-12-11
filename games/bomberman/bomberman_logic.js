@@ -23,14 +23,22 @@ exports.game = function game(gameId, config, players, sendGameEvent, sendGameUpd
     self.OBJECT_DESTRUCTIBLE_BLOCK = '$';
     self.OBJECT_INDESTRUCTIBLE_BLOCK = '#';
 
-    self.powerup_max_num=15;
+    self.EXP_TYPE_CENTER = 0;
+    self.EXP_TYPE_UP = 1;
+    self.EXP_TYPE_DOWN = 2;
+    self.EXP_TYPE_LEFT = 3;
+    self.EXP_TYPE_RIGHT = 4;
+    self.EXP_TYPE_VERT = 5;
+    self.EXP_TYPE_HORI = 6;
+
+    self.powerup_max_num = 15;
 
     self.POWERUP_BOMBS = '1';
     self.POWERUP_BURN = '2';
     self.POWERUP_STRENGTH = '3';
     self.POWERUP_SPEED = '4';
 
-    self.powerup_list = [ self.POWERUP_BOMBS, self.POWERUP_BURN,  self.POWERUP_STRENGTH,self.POWERUP_SPEED];
+    self.powerup_list = [self.POWERUP_BOMBS, self.POWERUP_BURN, self.POWERUP_STRENGTH, self.POWERUP_SPEED];
 
     self.playerData = {};
 
@@ -61,13 +69,13 @@ exports.game = function game(gameId, config, players, sendGameEvent, sendGameUpd
         return true;
     }
 
-    self.get_power_up=function(){
-    var random = Math.ceil(Math.random() * self.powerup_max_num)-1;
+    self.get_power_up = function () {
+        var random = Math.ceil(Math.random() * self.powerup_max_num) - 1;
 
-    if(random < self.powerup_list.length)
-        return  self.powerup_list[random];
+        if (random < self.powerup_list.length)
+            return self.powerup_list[random];
 
-    return '';
+        return '';
     };
 
     self.try_move = function (event, player) {
@@ -172,23 +180,23 @@ exports.game = function game(gameId, config, players, sendGameEvent, sendGameUpd
         return result;
     }
 
-    self.handleExplosionOnPosition = function (row, col, explosionPositions, isBombOrigin) {
+    self.handleExplosionOnPosition = function (row, col, explosionPositions, isBombOrigin, exp_dir) {
         var foundDestructibleBlock = false;
 
         if (!self.grid[row] || self.grid[row][col] === undefined)
             return false;
 
         if (self.grid[row][col].includes(self.POWERUP_BOMBS)) {
-         self.grid[row][col] = self.grid[row][col].replace(self.POWERUP_BOMBS, '');            
+            self.grid[row][col] = self.grid[row][col].replace(self.POWERUP_BOMBS, '');
         }
         else if (self.grid[row][col].includes(self.POWERUP_BURN)) {
-         self.grid[row][col] = self.grid[row][col].replace(self.POWERUP_BURN, '');            
+            self.grid[row][col] = self.grid[row][col].replace(self.POWERUP_BURN, '');
         }
         else if (self.grid[row][col].includes(self.POWERUP_STRENGTH)) {
-         self.grid[row][col] = self.grid[row][col].replace(self.POWERUP_STRENGTH, '');            
+            self.grid[row][col] = self.grid[row][col].replace(self.POWERUP_STRENGTH, '');
         }
         else if (self.grid[row][col].includes(self.POWERUP_SPEED)) {
-         self.grid[row][col] = self.grid[row][col].replace(self.POWERUP_SPEED, '');            
+            self.grid[row][col] = self.grid[row][col].replace(self.POWERUP_SPEED, '');
         }
 
         if (self.grid[row][col] === self.OBJECT_DESTRUCTIBLE_BLOCK) {
@@ -205,7 +213,7 @@ exports.game = function game(gameId, config, players, sendGameEvent, sendGameUpd
         }
         var isIndestructibleBlock = self.grid[row][col] === self.OBJECT_INDESTRUCTIBLE_BLOCK;
         if (!isIndestructibleBlock && explosionPositions) {
-            explosionPositions.push([row, col]);
+            explosionPositions.push([row, col, exp_dir]);
         }
 
         if (!isBombOrigin && self.grid[row][col].includes(self.OBJECT_BOMB)) {
@@ -219,11 +227,19 @@ exports.game = function game(gameId, config, players, sendGameEvent, sendGameUpd
                 }
             }
 
-            //DO STUFF
         }
 
         return !isIndestructibleBlock && !foundDestructibleBlock;
     }
+
+    self.updateExplosionDir = function (explosions, row, col, dir) {
+        for (var i = 0; i < explosions.length; i++) {
+            if (explosions[i][0] === row && explosions[i][1] === col) {
+                explosions[i][2] = dir;
+                break;
+            }
+        }
+    };
 
     self.explosion = function (event) {
         self.grid[event.row][event.col] = self.grid[event.row][event.col].replace(self.OBJECT_BOMB, ' ');
@@ -234,22 +250,59 @@ exports.game = function game(gameId, config, players, sendGameEvent, sendGameUpd
         var goDown = true;
         var i;
 
-        self.handleExplosionOnPosition(event.row, event.col, null, true);
+        var lastLeft, lastRight, lastUp, lastDown;
+
+        self.handleExplosionOnPosition(event.row, event.col, null, true, null);
         var explosionPositions = [];
-        explosionPositions.push([event.row, event.col]);
+        explosionPositions.push([event.row, event.col, self.EXP_TYPE_CENTER]);
         for (i = 1; i <= event.size; i++) {
             if (goLeft) {
-                goLeft = self.handleExplosionOnPosition(event.row, event.col - i, explosionPositions);
+                goLeft = self.handleExplosionOnPosition(event.row, event.col - i, explosionPositions, false, self.EXP_TYPE_HORI);
+                lastLeft = [event.row, event.col - i];
             }
+            else if (lastLeft) {
+              //  self.updateExplosionDir(explosionPositions, lastLeft[0], lastLeft[1], self.EXP_TYPE_LEFT);
+            }
+
             if (goRight) {
-                goRight = self.handleExplosionOnPosition(event.row, event.col + i, explosionPositions);
+                goRight = self.handleExplosionOnPosition(event.row, event.col + i, explosionPositions, false, self.EXP_TYPE_HORI);
+                lastRight = [event.row, event.col + i];
             }
+            else if (lastRight) {
+            //    self.updateExplosionDir(explosionPositions, lastLeft[0], lastLeft[1], self.EXP_TYPE_RIGHT);
+            }
+
             if (goDown) {
-                goDown = self.handleExplosionOnPosition(event.row + i, event.col, explosionPositions);
+                goDown = self.handleExplosionOnPosition(event.row + i, event.col, explosionPositions, false, self.EXP_TYPE_VERT);
+                lastDown = [event.row + i, event.col];
             }
+            else if (lastDown) {
+            //    self.updateExplosionDir(explosionPositions, lastLeft[0], lastLeft[1], self.EXP_TYPE_DOWN);
+            }
+
             if (goUp) {
-                goUp = self.handleExplosionOnPosition(event.row - i, event.col, explosionPositions);
+                goUp = self.handleExplosionOnPosition(event.row - i, event.col, explosionPositions, false, self.EXP_TYPE_VERT);
+                lastUp = [event.row - i, event.col];
             }
+            else if (lastUp) {
+              //  self.updateExplosionDir(explosionPositions, lastLeft[0], lastLeft[1], self.EXP_TYPE_UP);
+            }
+        }
+
+        if (lastLeft) {
+            self.updateExplosionDir(explosionPositions, lastLeft[0], lastLeft[1], self.EXP_TYPE_LEFT);
+        }
+
+        if (lastRight) {
+            self.updateExplosionDir(explosionPositions, lastRight[0], lastRight[1], self.EXP_TYPE_RIGHT);
+        }
+
+        if (lastDown) {
+            self.updateExplosionDir(explosionPositions, lastDown[0], lastDown[1], self.EXP_TYPE_DOWN);
+        }
+
+        if (lastUp) {
+            self.updateExplosionDir(explosionPositions, lastUp[0], lastUp[1], self.EXP_TYPE_UP);
         }
 
         self.checkWinStatus();
@@ -320,16 +373,16 @@ exports.game = function game(gameId, config, players, sendGameEvent, sendGameUpd
         }
         else if (self.grid[row][col].includes(self.POWERUP_BURN)) {
             self.grid[row][col] = self.grid[row][col].replace(self.POWERUP_BURN, '');
-             playerObj.bombBurnFactor++;
+            playerObj.bombBurnFactor++;
         }
         else if (self.grid[row][col].includes(self.POWERUP_STRENGTH)) {
             self.grid[row][col] = self.grid[row][col].replace(self.POWERUP_STRENGTH, '');
-             playerObj.bombStrength++;
+            playerObj.bombStrength++;
         }
         else if (self.grid[row][col].includes(self.POWERUP_SPEED)) {
             self.grid[row][col] = self.grid[row][col].replace(self.POWERUP_SPEED, '');
 
-            if(playerObj.speedFactor > config.speedFactor.min)
+            if (playerObj.speedFactor > config.speedFactor.min)
                 playerObj.speedFactor--;
         }
     };
@@ -357,7 +410,7 @@ exports.game = function game(gameId, config, players, sendGameEvent, sendGameUpd
             var bombExplosion = self.bombExplosions[i];
 
             if (bombExplosion.explosionPositions) {
-                for (var j = 0; j < bombExplosion.explosionPositions.length;j++) {
+                for (var j = 0; j < bombExplosion.explosionPositions.length; j++) {
                     var pos = bombExplosion.explosionPositions[j];
                     if (pos[0] === playerObj.row && pos[1] === playerObj.col) {
                         //player walked in to a explosion

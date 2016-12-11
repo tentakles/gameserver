@@ -156,6 +156,13 @@
 
 *bugg: om man 'ndrar config vardena, verkar de ligga kvar nesta gang man startar ett spel.
 		
+*Ersätta chars med tex gifar
+*	impl explosioner
+*		impl explosioner grafiskt korrekt.
+*			skicka med riktnin fran server
+*			skriv ut ratt bild beroende pa riktning.
+*	impl powerups
+
 ############
 TODO server
 ############
@@ -184,28 +191,29 @@ göra snyggare design
 Todo bomberman
 ############
 
-Ersätta chars med tex gifar
 
 ############
 TODO nice to have (post 1.0)
 ############
 
+bomberman: 
+	optimisera uppritningen av explosioner etc.
+		tex, rita endast om ruta ifall den har en pagaende explosion.
+	dod gubbe sprite
+	segrare gubbe sprite
+	göra en bomberman_common.js, där allt som är gemensamt ligger. gärna namespacat
+	powerups borde automagiskt forsvinna?	
+	powerup:
+		"Spin the bottle" snipe bomb
+	styrkors+bombknapp för mobilt läge
+
 properties:
 	(kanske skriva i chatten vilken config spelet startas med?)
 	(implementera typer av config utöver number vid behov)
 
-bomberman: göra en bomberman_common.js, där allt som är gemensamt ligger. gärna namespacat
-
-indikering av offline / connection problems
-
-powerups borde automagiskt forsvinna?	
-
 optimera sändningen av data, t.ex. skicka inte hela banan jämt?
 
-styrkors+bombknapp för mobilt läge
-	
-bomberman-powerup:
-	"Spin the bottle" snipe bomb
+indikering av offline / connection problems
 
 göra en debug-write metod i server, som man använder istället för console.log, och som bara loggar ut om man har "debug=true" etc.
 

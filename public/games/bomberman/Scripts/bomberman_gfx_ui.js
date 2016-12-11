@@ -9,6 +9,29 @@ var ACTION_PLACE_BOMB = 4;
 var EVENT_TYPE_EXPLOSION = 0;
 var EVENT_TYPE_EXPLOSION_END = 1;
 
+var OBJECT_EMPTY = ' ';
+var OBJECT_BOMB = '@';
+var OBJECT_DESTRUCTIBLE_BLOCK = '$';
+var OBJECT_INDESTRUCTIBLE_BLOCK = '#';
+
+var POWERUP_BOMBS = '1';
+var POWERUP_BURN = '2';
+var POWERUP_STRENGTH = '3';
+var POWERUP_SPEED = '4';
+
+var PLAYER_1 = "A";
+var PLAYER_2 = "B";
+var PLAYER_3 = "C";
+var PLAYER_4 = "D";
+
+var EXP_TYPE_CENTER = 0;
+var EXP_TYPE_UP = 1;
+var EXP_TYPE_DOWN = 2;
+var EXP_TYPE_LEFT = 3;
+var EXP_TYPE_RIGHT = 4;
+var EXP_TYPE_VERT = 5;
+var EXP_TYPE_HORI = 6;
+
 var rows = 7;
 var cols = 9;
 
@@ -32,36 +55,122 @@ function game_event(event) {
     }
     if (event.type === EVENT_TYPE_EXPLOSION_END) {
         delete bombs[event.bombId];
-    }
-
-    //paint explosions
-    columns.removeClass("explosion"); 
-    
-    for (var key in bombs) {
-        if (bombs.hasOwnProperty(key)) {
-            var bomb = bombs[key];
-
-            var affectedTiles = "";
-
-            for (i = 0; i < bomb.explosionPositions.length; i++) {
-                var pos = bomb.explosionPositions[i];
-                if (affectedTiles !== "")
-                    affectedTiles += ", ";
-                affectedTiles += "#" + pos[0] + "_" + pos[1];
-            }
-
-            gameDiv.find(affectedTiles).addClass("explosion");
-        }
+        columns.removeClass('sprite-exp-center sprite-exp-down sprite-exp-hori sprite-exp-left sprite-exp-right sprite-exp-up sprite-exp-vert');
     }
 
     for (var r = 0; r < rows; r++) {
         for (var c = 0; c < cols; c++) {
-            if (oldGrid === null || oldGrid[r][c] !== event.grid[r][c]) {
+            if (oldGrid === null || oldGrid[r][c] !== event.grid[r][c] || event.type === EVENT_TYPE_EXPLOSION_END || event.type === EVENT_TYPE_EXPLOSION) {
                 i = (r * cols) + c;
-                $(columns[i]).html(event.grid[r][c]);
+                var char = event.grid[r][c];
+
+                var sprite = 'floor';
+                if (char == OBJECT_DESTRUCTIBLE_BLOCK)
+                    sprite = "block";
+                else if (char == OBJECT_INDESTRUCTIBLE_BLOCK)
+                    sprite = "hardblock";
+                else if (char.includes(OBJECT_BOMB)) {
+                    sprite = "bomb";
+
+                    if (char.includes(PLAYER_1)) {
+                        sprite = "p1bomb";
+                    }
+                    else if (char.includes(PLAYER_2)) {
+                        sprite = "p2bomb";
+                    }
+                    else if (char.includes(PLAYER_3)) {
+                        sprite = "p3bomb";
+                    }
+                    else if (char.includes(PLAYER_4)) {
+                        sprite = "p4bomb";
+                    }
+                }
+                else if (char.includes(PLAYER_1))
+                    sprite = "p1";
+                else if (char.includes(PLAYER_2))
+                    sprite = "p2";
+                else if (char.includes(PLAYER_3))
+                    sprite = "p3";
+                else if (char.includes(PLAYER_4))
+                    sprite = "p4";
+                else if (char.includes(POWERUP_BOMBS))
+                    sprite = "powerup-bombs";
+
+                else if (char.includes(POWERUP_STRENGTH))
+                    sprite = "powerup-strength";
+
+                else if (char.includes(POWERUP_BURN))
+                    sprite = "powerup-burn";
+
+                else if (char.includes(POWERUP_SPEED))
+                    sprite = "powerup-speed";
+
+                $(columns[i]).removeClass().addClass("sprite sprite-" + sprite);
             }
         }
     }
+
+    for (var key in bombs) {
+        if (bombs.hasOwnProperty(key)) {
+            var bomb = bombs[key];
+
+            //var affectedTiles = "";
+
+            for (i = 0; i < bomb.explosionPositions.length; i++) {
+
+                var pos = bomb.explosionPositions[i];
+                var elm = gameDiv.find("#" + pos[0] + "_" + pos[1]);
+
+                var sprite = "sprite-exp-center";
+                var hasCenter = elm.hasClass("sprite-exp-center")
+                var hasHori = elm.hasClass("sprite-exp-left") || elm.hasClass("sprite-exp-right") || elm.hasClass("sprite-exp-hori");
+                var hasVert = elm.hasClass("sprite-exp-up") || elm.hasClass("sprite-exp-down") || elm.hasClass("sprite-exp-vert");
+
+                if (pos[2] == EXP_TYPE_DOWN && !hasCenter) {
+                    if (hasVert)
+                        sprite = "sprite-exp-vert";
+                    else
+                        sprite = "sprite-exp-down";
+                }
+
+                else if (pos[2] == EXP_TYPE_UP && !hasCenter) {
+                    if (hasVert)
+                        sprite = "sprite-exp-vert";
+                    else
+                        sprite = "sprite-exp-up";
+                }
+                if (pos[2] == EXP_TYPE_LEFT && !hasCenter) {
+
+                    if (hasHori)
+                        sprite = "sprite-exp-hori";
+                    else
+                        sprite = "sprite-exp-left";
+                }
+
+                else if (pos[2] == EXP_TYPE_RIGHT && !hasCenter) {
+
+                    if (hasHori)
+                        sprite = "sprite-exp-hori";
+                    else
+                        sprite = "sprite-exp-right";
+                }
+
+                if (pos[2] == EXP_TYPE_VERT && !hasCenter) {
+                    if (!hasHori)
+                        sprite = "sprite-exp-vert";
+                }
+
+                else if (pos[2] == EXP_TYPE_HORI && !hasCenter) {
+                    if (!hasVert)
+                        sprite = "sprite-exp-hori";
+                }
+
+                elm.removeClass().addClass("sprite " + sprite);
+            }
+
+        }
+    }
+
     oldGrid = event.grid;
 }
 
