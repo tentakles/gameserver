@@ -11,8 +11,8 @@ var uuid = require('node-uuid');
 var games = [];
 var internal_games = [];
 var gameTypes = [
-    { name: 'bomberman', url: 'games/bomberman/game.html', config: { matchLength: { value: 3, name: 'Match length', min: 1, max: 100 },bombs :{ value: 1, name: 'Bombs', min: 1, max: 10 } ,bombStrength:{ value: 1, name: 'Bomb power', min: 1, max: 10 },bombBurnFactor:{ value: 10, name: 'Bomb burn time', min: 1, max: 20 } ,speedFactor:{ value: 10, name: 'Player walk delay', min: 1, max: 20 } }, code: './games/bomberman/bomberman_logic.js', minPlayers: 2, maxPlayers: 4 },
-    { name: '3-in-a-row', url: 'games/3inarow/game.html', config: { size: { value: 3, name: 'Game size', min: 3, max: 20 }, numToWin: { value: 3, name: 'Win length', min: 3, max: 5 }, matchLength: { value: 3, name: 'Match length', min: 1, max: 100 } }, code: './games/3inarow/3inarow_logic.js', minPlayers: 2, maxPlayers: 2 },
+    { name: 'bomberman', url: 'games/bomberman/game.html', config: { matchLength: { value: 3, name: 'Match length', min: 1, max: 100 }, bombs: { value: 1, name: 'Bombs', min: 1, max: 10 }, bombStrength: { value: 1, name: 'Bomb power', min: 1, max: 10 }, bombBurnFactor: { value: 5, name: 'Bomb burn time', min: 1, max: 20 }, speedFactor: { value: 5, name: 'Player walk delay', min: 1, max: 10 } }, code: './games/bomberman/bomberman_logic.js', minPlayers: 2, maxPlayers: 4 },
+    { name: 'N-in-a-row', url: 'games/3inarow/game.html', config: { size: { value: 3, name: 'Game size', min: 3, max: 20 }, numToWin: { value: 3, name: 'Win length', min: 3, max: 5 }, matchLength: { value: 3, name: 'Match length', min: 1, max: 100 } }, code: './games/3inarow/3inarow_logic.js', minPlayers: 2, maxPlayers: 2 },
     { name: 'Repello', url: 'games/repo/game.html', minPlayers: 2, maxPlayers: 6 }
 ];
 
@@ -48,10 +48,6 @@ console.log('Trying to start on node version:' + process.version);
 
 http.listen(port, function () {
     console.log('Gameserver listening on *:' + port);
-	
-	
-	
-	
 });
 app.use(express.static('public'));
 
@@ -152,17 +148,17 @@ listener.sockets.on('connection', function (socket) {
     }
 
     function mapConfigValues(gameConfig, userConfig) {
-        var result = {};
+        var result = JSON.parse(JSON.stringify(gameConfig));
 
-        for (var key in gameConfig) {
-            if (gameConfig.hasOwnProperty(key)) {
-                var obj = gameConfig[key];
-                result[key] = obj;
-                var userValue = userConfig[key];
-                if (userValue && userValue.value) {
-                    var parsedUserValue = parseInt(userValue.value)
-                    if (parsedUserValue >= obj.min && parsedUserValue <= obj.max)
-                        result[key].value = parsedUserValue;
+        if (userConfig) {
+            for (var key in result) {
+                if (result.hasOwnProperty(key)) {
+                    var userValue = userConfig[key];
+                    if (userValue && userValue.value) {
+                        var parsedUserValue = parseInt(userValue.value)
+                        if (parsedUserValue >= result[key].min && parsedUserValue <= result[key].max)
+                            result[key].value = parsedUserValue;
+                    }
                 }
             }
         }

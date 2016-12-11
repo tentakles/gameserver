@@ -23,8 +23,13 @@
             gameLobby = new GameLobbyViewModel(socket);
             ko.applyBindings(gameLobby, document.getElementById("htmlTop"));
         }
+        function warnExit(e) {
+          if (gameLobby && gameLobby.gameStarted())
+            e.returnValue = 'Game in progress. Really quit?';
+        }
         $(function () {
             initViewModel();
+            window.onbeforeunload = warnExit;
         });
     </script>
 </head>

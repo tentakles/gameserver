@@ -138,10 +138,31 @@
 *			gör som när en spelare träffas av en explosion i vanliga fall.
 *	när är explosion är klar, ta bort alla tiles kopplade till den.
 
+*implementera powerups
+*	fler bomber
+*	Napalm style (burn time++)
+	*större explosion
+	*snabbare gång 
+	*skapa random funktionen
+	*kunna spreng bort dem.
+	*kolla efter dem nar man gar in i en loda.
+	*	ta bort powerupen
+	*	ge effekten
+
+*spara namn i hash, som autoifylls i ladan
+*html varning n'r man navigerar fran sidan, fast bara man ar i ett spel?
+
+*gameMatchLength måste kanske specialhanteras i properties? kolla upp.
+
+*bugg: om man 'ndrar config vardena, verkar de ligga kvar nesta gang man startar ett spel.
 		
 ############
 TODO server
 ############
+
+definera scope for 1.0
+release 1.0
+deploya 1.0
 
 hantera admin leave från lobby
 		om inte spelet är startat: spelet avslutas när admin leavar 
@@ -151,11 +172,6 @@ socket leave /reload(?) måste hanteras, så att man går ut ur spelen när man 
 	hantera som ovan
 	skriva ut i spelchat om någon disconnectar, ev. ge över adminstatus som ovan.
 	kolla upp reconnect? is it real
-
-gameMatchLength måste kanske specialhanteras i properties? kolla upp.
-
-(kanske skriva i chatten vilken config spelet startas med?)
-(implementera typer av config utöver number vid behov)
 
 göra snyggare design
 	kunna trycka enter + få rätt fokus i passsword dialog
@@ -168,17 +184,21 @@ göra snyggare design
 Todo bomberman
 ############
 
-implementera powerups
-	fler bomber
-	Napalm style (burn time++)
-	större explosion
-	snabbare gång 
-	
 Ersätta chars med tex gifar
 
 ############
-TODO nice to have
+TODO nice to have (post 1.0)
 ############
+
+properties:
+	(kanske skriva i chatten vilken config spelet startas med?)
+	(implementera typer av config utöver number vid behov)
+
+bomberman: göra en bomberman_common.js, där allt som är gemensamt ligger. gärna namespacat
+
+indikering av offline / connection problems
+
+powerups borde automagiskt forsvinna?	
 
 optimera sändningen av data, t.ex. skicka inte hela banan jämt?
 

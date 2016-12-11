@@ -84,6 +84,7 @@ function GameLobbyViewModel(socket) {
         socket.on('server_game_start', function (game) {
             self.gameStarted(true);
             self.currentGame = game;
+            self.gameMatchLength(game.gameType.config.matchLength.value);
             $("#gameWrapper").load(game.gameType.url);
         });
 
@@ -106,8 +107,10 @@ function GameLobbyViewModel(socket) {
         });
 
         socket.on('server_nickname_response', function (response) {
-            if (response.result === true)
+            if (response.result === true) {
                 self.enterLobby();
+                location.hash = self.nickname();
+            }
             else
                 alert("Can not enter lobby! Check nickname.");
         });
@@ -256,5 +259,14 @@ function GameLobbyViewModel(socket) {
         self.enterLobby();
         $("#gameWrapper").html("");
     }
+
+    self.prefillNickname = function () {
+        var nickname = location.hash;
+
+        if (nickname) { }
+        nickname = nickname.substring(1);
+        self.nickname(nickname);
+    };
+    self.prefillNickname();
 }
 
