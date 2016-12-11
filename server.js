@@ -12,6 +12,9 @@ var games = [];
 var internal_games = [];
 var gameTypes = [
     { name: 'bomberman', url: 'games/bomberman/game.html', config: { matchLength: { value: 3, name: 'Match length', min: 1, max: 100 }, bombs: { value: 1, name: 'Bombs', min: 1, max: 10 }, bombStrength: { value: 1, name: 'Bomb power', min: 1, max: 10 }, bombBurnFactor: { value: 5, name: 'Bomb burn time', min: 1, max: 20 }, speedFactor: { value: 5, name: 'Player walk delay', min: 1, max: 10 } }, code: './games/bomberman/bomberman_logic.js', minPlayers: 2, maxPlayers: 4 },
+
+  { name: 'bomberman gfx', url: 'games/bomberman/gamegfx.html', config: { matchLength: { value: 3, name: 'Match length', min: 1, max: 100 }, bombs: { value: 1, name: 'Bombs', min: 1, max: 10 }, bombStrength: { value: 1, name: 'Bomb power', min: 1, max: 10 }, bombBurnFactor: { value: 5, name: 'Bomb burn time', min: 1, max: 20 }, speedFactor: { value: 5, name: 'Player walk delay', min: 1, max: 10 } }, code: './games/bomberman/bomberman_logic.js', minPlayers: 2, maxPlayers: 4 },
+
     { name: 'N-in-a-row', url: 'games/3inarow/game.html', config: { size: { value: 3, name: 'Game size', min: 3, max: 20 }, numToWin: { value: 3, name: 'Win length', min: 3, max: 5 }, matchLength: { value: 3, name: 'Match length', min: 1, max: 100 } }, code: './games/3inarow/3inarow_logic.js', minPlayers: 2, maxPlayers: 2 },
     { name: 'Repello', url: 'games/repo/game.html', minPlayers: 2, maxPlayers: 6 }
 ];
