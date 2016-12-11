@@ -163,6 +163,10 @@
 *			skriv ut ratt bild beroende pa riktning.
 *	impl powerups
 
+*bugg i uppritning:
+*	n'r man ror sig med en explosion aktiv, ritas explosionen om fel.
+
+
 ############
 TODO server
 ############
@@ -191,8 +195,6 @@ göra snyggare design
 Todo bomberman
 ############
 
-bugg i uppritning:
-	n'r man ror sig med en explosion aktiv, ritas explosionen om fel.
 
 powerups borde resettas efter game eller match
 

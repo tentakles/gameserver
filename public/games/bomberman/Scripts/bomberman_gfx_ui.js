@@ -55,7 +55,6 @@ function game_event(event) {
     }
     if (event.type === EVENT_TYPE_EXPLOSION_END) {
         delete bombs[event.bombId];
-        columns.removeClass('sprite-exp-center sprite-exp-down sprite-exp-hori sprite-exp-left sprite-exp-right sprite-exp-up sprite-exp-vert');
     }
 
     for (var r = 0; r < rows; r++) {
@@ -110,6 +109,7 @@ function game_event(event) {
         }
     }
 
+columns.removeClass('sprite-exp-center sprite-exp-down sprite-exp-hori sprite-exp-left sprite-exp-right sprite-exp-up sprite-exp-vert');
     for (var key in bombs) {
         if (bombs.hasOwnProperty(key)) {
             var bomb = bombs[key];
