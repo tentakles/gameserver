@@ -130,7 +130,7 @@ function handleClientLeave(socket) {
 listener.sockets.on('connection', function (socket) {
 
     socket.on('disconnect', function () {
-        console.log('client game leave');
+        console.log('client game disconnect');
         handleClientLeave(socket);
     });
 

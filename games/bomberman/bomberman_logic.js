@@ -305,7 +305,8 @@ exports.game = function game(gameId, config, players, sendGameEvent, sendGameUpd
             self.updateExplosionDir(explosionPositions, lastUp[0], lastUp[1], self.EXP_TYPE_UP);
         }
 
-        self.checkWinStatus();
+        if (!self.gameResettingState)
+            self.checkWinStatus();
         return explosionPositions;
     };
 

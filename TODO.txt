@@ -21,7 +21,6 @@ Todo bomberman
 ##############
 
 Buggar: 
-	Dubbel vinst vid dubbel bomb explosion
 	Powerups påverkar redan placerade bomber
 
 ############
@@ -29,6 +28,7 @@ TODO nice to have (post 1.0)
 ############
 
 kolla upp reconnect? is it real
+	vid timeout?
 
 Gamelobby leaves
 	Server ska skicka med 'reason' om sådan finns vid server_game_close
@@ -62,6 +62,8 @@ highlighta i "Players list"  vem som är nuvarande spelare
 ############
 DONE
 ############
+
+*Bugg:Dubbel vinst vid dubbel bomb explosion
 
 *socket leave /reload(?) måste hanteras, så att man går ut ur spelen när man laddar om sidan
 	*om det finns ett spel
