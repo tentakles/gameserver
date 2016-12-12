@@ -1,4 +1,73 @@
-﻿DONE
+﻿############
+TODO server
+############
+
+definera scope for 1.0
+release 1.0
+deploya 1.0
+
+kolla om nickname är unikt vid join
+visa dialogruta om att nickname ej är godkänt om nickname ej är godkänt
+
+socket leave /reload(?) måste hanteras, så att man går ut ur spelen när man laddar om sidan
+	om det finns ett spel
+		om inte spelet är startat: spelet avslutas när admin leavar 
+		om spelet är startat, kolla min/max players, och om inte det uppfylls längre, avsluta hela spelet och släng ut allt folk				
+	skriva ut i spelchat om någon disconnectar
+	kolla upp reconnect? is it real
+
+göra snyggare design
+	kunna trycka enter + få rätt fokus i passsword dialog
+	tydligare avgränsning i chattar mellan namn och meddelande
+	password behöver inte ta upp en kolumn, utan kan t.ex. stå framför game name eller nåt sådant
+	större box för spelet
+	fixa fokusgrejen
+		
+##############
+Todo bomberman
+##############
+
+Buggar: 
+	Dubbel vinst vid dubbel bomb explosion
+	Powerups påverkar redan placerade bomber
+
+############
+TODO nice to have (post 1.0)
+############
+
+Gamelobby leaves
+	Server ska skicka med 'reason' om sådan finns vid server_game_close
+	Klient skall visa denna reason i en modal om reason finns
+
+bomberman: 
+	optimisera uppritningen av explosioner etc.
+		tex, rita endast om ruta ifall den har en pagaende explosion.
+	dod gubbe sprite
+	segrare gubbe sprite
+	göra en bomberman_common.js, där allt som är gemensamt ligger. gärna namespacat
+	powerups borde automagiskt forsvinna?	
+	powerup:
+		"Spin the bottle" snipe bomb
+	styrkors+bombknapp för mobilt läge
+
+properties:
+	(kanske skriva i chatten vilken config spelet startas med?)
+	(implementera typer av config utöver number vid behov)
+
+optimera sändningen av data, t.ex. skicka inte hela banan jämt?
+
+indikering av offline / connection problems
+
+göra en debug-write metod i server, som man använder istället för console.log, och som bara loggar ut om man har "debug=true" etc.
+
+inkapsla spelen sa att de ej pollutar global scope med losa variabler etc.
+
+highlighta i "Players list"  vem som är nuvarande spelare
+
+############
+DONE
+############
+
 *implementera "game chat"
 *implementera lämna spel
 *visa upp antal personer i ett spel
@@ -169,68 +238,7 @@
 * hantera admin leave från lobby
 		* om inte spelet är startat: spelet avslutas när admin leavar 
 		* om spelet är startat, kolla min/max players, och om inte det uppfylls längre, avsluta hela spelet och släng ut allt folk
-
-############
-TODO server
-############
-
-definera scope for 1.0
-release 1.0
-deploya 1.0
-
-socket leave /reload(?) måste hanteras, så att man går ut ur spelen när man laddar om sidan
-	hantera som ovan
-	skriva ut i spelchat om någon disconnectar, ev. ge över adminstatus som ovan.
-	kolla upp reconnect? is it real
-
-Hantera joinable om spelet är startat
-	server: enforca att det inte går att joina spel 
-	klient: knappen utgråad
-
-göra snyggare design
-	kunna trycka enter + få rätt fokus i passsword dialog
-	tydligare avgränsning i chattar mellan namn och meddelande
-	password behöver inte ta upp en kolumn, utan kan t.ex. stå framför game name eller nåt sådant
-	större box för spelet
-	fixa fokusgrejen
-		
-##############
-Todo bomberman
-##############
-
-Buggar: 
-	Dubbel vinst vid dubbel bomb explosion
-	Powerups påverkar redan placerade bomber
-
-############
-TODO nice to have (post 1.0)
-############
-
-Gamelobby leaves
-	Server ska skicka med 'reason' om sådan finns vid server_game_close
-	Klient skall visa denna reason i en modal om reason finns
-
-bomberman: 
-	optimisera uppritningen av explosioner etc.
-		tex, rita endast om ruta ifall den har en pagaende explosion.
-	dod gubbe sprite
-	segrare gubbe sprite
-	göra en bomberman_common.js, där allt som är gemensamt ligger. gärna namespacat
-	powerups borde automagiskt forsvinna?	
-	powerup:
-		"Spin the bottle" snipe bomb
-	styrkors+bombknapp för mobilt läge
-
-properties:
-	(kanske skriva i chatten vilken config spelet startas med?)
-	(implementera typer av config utöver number vid behov)
-
-optimera sändningen av data, t.ex. skicka inte hela banan jämt?
-
-indikering av offline / connection problems
-
-göra en debug-write metod i server, som man använder istället för console.log, och som bara loggar ut om man har "debug=true" etc.
-
-inkapsla spelen sa att de ej pollutar global scope med losa variabler etc.
-
-highlighta i "Players list"  vem som är nuvarande spelare
+				
+*Hantera joinable om spelet är startat
+	*server: enforca att det inte går att joina spel 
+	*klient: knappen utgråad

@@ -43,8 +43,23 @@ function getGameByUser(user) {
     return null;
 }
 
+function sendGameUpdate(gameId) {
+    var game = getGameById(gameId);
+    updateGameState(game);
+    listener.to(game.id).emit('server_game_update', game);
+}
+
+function sendGameChat(gameId, line, important) {
+    var game = getGameById(gameId);
+    if (game) {
+        var message = { user: "(Game)", fromGame: true, line: line, important: important === true }
+        console.log('server_game_chat');
+        listener.to(game.id).emit('server_game_chat', message);
+    }
+}
+
 function updateGameState(game) {
-    game.joinable = game.players.length < game.gameType.maxPlayers;
+    game.joinable = game.players.length < game.gameType.maxPlayers && !game.instance;
 }
 
 console.log('Trying to start on node version:' + process.version);
@@ -56,11 +71,15 @@ app.use(express.static('public'));
 
 var listener = io.listen(http);
 
+function handleClientLeave(socket) {
+
+}
 
 listener.sockets.on('connection', function (socket) {
 
-    socket.on('disconnect',  function() {
+    socket.on('disconnect', function () {
         console.log('client game leave');
+        handleClientLeave(socket);
     });
 
     socket.on('client_game_leave', function () {
@@ -113,6 +132,7 @@ listener.sockets.on('connection', function (socket) {
                 games.splice(gameIndex, 1);
             }
             updateGameState(game);
+            sendGameChat(game.id, socket.nickname + " leaves the game");
             listener.to(game.id).emit('server_game_update', game);
             listener.sockets.emit('server_games', games);
         }
@@ -166,21 +186,6 @@ listener.sockets.on('connection', function (socket) {
         listener.to(gameId).emit('server_game_event', data);
     }
 
-    function sendGameUpdate(gameId) {
-        var game = getGameById(gameId);
-        updateGameState(game);
-        listener.to(game.id).emit('server_game_update', game);
-    }
-
-    function sendGameChat(gameId, line, important) {
-        var game = getGameById(gameId);
-        if (game) {
-            var message = { user: "(Game)", fromGame: true, line: line, important: important === true }
-            console.log('server_game_chat');
-            listener.to(game.id).emit('server_game_chat', message);
-        }
-    }
-
     function mapConfigValues(gameConfig, userConfig) {
         var result = JSON.parse(JSON.stringify(gameConfig));
 
@@ -216,6 +221,9 @@ listener.sockets.on('connection', function (socket) {
             var result = game.instance.init();
 
             var response = { gameType: gameType, config: controlledGameConfig, result: result };
+
+            updateGameState(game);
+            listener.sockets.emit('server_games', games);
 
             listener.to(game.id).emit('server_game_start', response);
         }
@@ -258,16 +266,18 @@ listener.sockets.on('connection', function (socket) {
                 return;
             }
         }
-        game.players.push({ name: socket.nickname, wins: 0, isAdmin: false });
-        socket.join(game.id);
-        if (game) {
+
+        if (game && game.joinable) {
+            game.players.push({ name: socket.nickname, wins: 0, isAdmin: false });
+            socket.join(game.id);
             socket.emit('server_join_game_success', game);
             updateGameState(game);
+            sendGameChat(game.id, socket.nickname + " joins the game");
             listener.to(game.id).emit('server_game_update', game);
             listener.sockets.emit('server_games', games);
         }
         else {
-            console.log('game not found: ' + request.id);
+            console.log('game not found or joinable: ' + request.id);
         }
     });
 
