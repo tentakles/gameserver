@@ -183,6 +183,10 @@ socket leave /reload(?) måste hanteras, så att man går ut ur spelen när man 
 	skriva ut i spelchat om någon disconnectar, ev. ge över adminstatus som ovan.
 	kolla upp reconnect? is it real
 
+Hantera joinable om spelet är startat
+	server: enforca att det inte går att joina spel 
+	klient: knappen utgråad
+
 göra snyggare design
 	kunna trycka enter + få rätt fokus i passsword dialog
 	tydligare avgränsning i chattar mellan namn och meddelande
@@ -192,7 +196,11 @@ göra snyggare design
 		
 ##############
 Todo bomberman
-############
+##############
+
+Buggar: 
+	Dubbel vinst vid dubbel bomb explosion
+	Powerups påverkar redan placerade bomber
 
 ############
 TODO nice to have (post 1.0)
