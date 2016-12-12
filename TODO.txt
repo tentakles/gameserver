@@ -2,12 +2,13 @@
 TODO server
 ############
 
-definera scope for 1.0
 release 1.0
-deploya 1.0
+deploya 1.0 till egen site
 
 kolla om nickname är unikt vid join
+	loopa listener.sockets, om det finns en träff, sätta result till false, och break:a loopen.
 visa dialogruta om att nickname ej är godkänt om nickname ej är godkänt
+	imitera hur password dialog fungerar
 
 göra snyggare design
 	kunna trycka enter + få rätt fokus i passsword dialog
@@ -15,6 +16,10 @@ göra snyggare design
 	password behöver inte ta upp en kolumn, utan kan t.ex. stå framför game name eller nåt sådant
 	större box för spelet
 	fixa fokusgrejen
+	
+Gamelobby leaves
+	Server ska skicka med 'reason' om sådan finns vid server_game_close
+	Klient skall visa denna reason i en modal om reason finns
 		
 ##############
 Todo bomberman
@@ -28,11 +33,8 @@ TODO nice to have (post 1.0)
 ############
 
 kolla upp reconnect? is it real
-	vid timeout?
 
-Gamelobby leaves
-	Server ska skicka med 'reason' om sådan finns vid server_game_close
-	Klient skall visa denna reason i en modal om reason finns
+
 
 bomberman: 
 	optimisera uppritningen av explosioner etc.
@@ -62,6 +64,8 @@ highlighta i "Players list"  vem som är nuvarande spelare
 ############
 DONE
 ############
+
+*definera scope for 1.0
 
 *Bugg:Dubbel vinst vid dubbel bomb explosion
 
