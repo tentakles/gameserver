@@ -195,9 +195,6 @@ göra snyggare design
 Todo bomberman
 ############
 
-
-powerups borde resettas efter game eller match
-
 ############
 TODO nice to have (post 1.0)
 ############

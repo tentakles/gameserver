@@ -19,6 +19,9 @@
   <PropertyGroup Condition="'$(Configuration)' == 'Release'" />
   <ItemGroup>
     <Content Include="public\games\bomberman\game.html" />
+    <Content Include="public\games\bomberman\gamegfx.html" />
+    <Content Include="public\games\bomberman\gfx\sprites.css" />
+    <Content Include="public\games\bomberman\gfx\spritesheet.png" />
     <Content Include="public\games\bomberman\index.html" />
     <Content Include="public\img\admin.png" />
     <Content Include="TODO.txt" />
@@ -70,6 +73,7 @@
     <Folder Include="public\games\3inarow" />
     <Folder Include="public\games\3inarow\Scripts" />
     <Folder Include="public\games\bomberman\" />
+    <Folder Include="public\games\bomberman\gfx\" />
     <Folder Include="public\games\bomberman\Scripts\" />
     <Folder Include="public\games\repo" />
     <Folder Include="public\games\repo\css" />
