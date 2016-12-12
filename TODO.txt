@@ -9,13 +9,6 @@ deploya 1.0
 kolla om nickname är unikt vid join
 visa dialogruta om att nickname ej är godkänt om nickname ej är godkänt
 
-socket leave /reload(?) måste hanteras, så att man går ut ur spelen när man laddar om sidan
-	om det finns ett spel
-		om inte spelet är startat: spelet avslutas när admin leavar 
-		om spelet är startat, kolla min/max players, och om inte det uppfylls längre, avsluta hela spelet och släng ut allt folk				
-	skriva ut i spelchat om någon disconnectar
-	kolla upp reconnect? is it real
-
 göra snyggare design
 	kunna trycka enter + få rätt fokus i passsword dialog
 	tydligare avgränsning i chattar mellan namn och meddelande
@@ -34,6 +27,8 @@ Buggar:
 ############
 TODO nice to have (post 1.0)
 ############
+
+kolla upp reconnect? is it real
 
 Gamelobby leaves
 	Server ska skicka med 'reason' om sådan finns vid server_game_close
@@ -68,6 +63,12 @@ highlighta i "Players list"  vem som är nuvarande spelare
 DONE
 ############
 
+*socket leave /reload(?) måste hanteras, så att man går ut ur spelen när man laddar om sidan
+	*om det finns ett spel
+	*	om inte spelet är startat: spelet avslutas när admin leavar 
+	*	om spelet är startat, kolla min/max players, och om inte det uppfylls längre, avsluta hela spelet och släng ut allt folk				
+	*skriva ut i spelchat om någon disconnectar
+	
 *implementera "game chat"
 *implementera lämna spel
 *visa upp antal personer i ett spel

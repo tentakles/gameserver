@@ -72,6 +72,58 @@ app.use(express.static('public'));
 var listener = io.listen(http);
 
 function handleClientLeave(socket) {
+    var game = getGameByUser(socket.nickname);
+    if (game) {
+        var gameIndex;
+        var player;
+        for (var i = 0; i < game.players.length; i++) {
+            if (game.players[i].name === socket.nickname) {
+                player = game.players[i];
+                break;
+            }
+        }
+
+        if (player) {
+            if (player.isAdmin && !game.instance) {
+                listener.to(game.id).emit('server_game_close');
+                game.players = [];
+                var clients = listener.to(game.id).connected;
+                for (var key in clients) {
+                    if (clients.hasOwnProperty(key)) {
+                        var clientSocket = clients[key];
+                        clientSocket.leave(game.id);
+                    }
+                }
+            }
+
+            else {
+                var index = game.players.indexOf(player);
+                game.players.splice(index, 1);
+                socket.emit('server_game_close');
+                socket.leave(game.id);
+            }
+            if (game.instance && game.players.length < game.gameType.minPlayers) {
+                listener.to(game.id).emit('server_game_close');
+                game.players = [];
+                var clients = listener.to(game.id).connected;
+                for (var key in clients) {
+                    if (clients.hasOwnProperty(key)) {
+                        var clientSocket = clients[key];
+                        clientSocket.leave(game.id);
+                    }
+                }
+            }
+        }
+
+        if (game.players.length === 0) {
+            gameIndex = games.indexOf(game);
+            games.splice(gameIndex, 1);
+        }
+        updateGameState(game);
+        sendGameChat(game.id, socket.nickname + " leaves the game");
+        listener.to(game.id).emit('server_game_update', game);
+        listener.sockets.emit('server_games', games);
+    }
 
 }
 
@@ -84,58 +136,7 @@ listener.sockets.on('connection', function (socket) {
 
     socket.on('client_game_leave', function () {
         console.log("Player left game:" + socket.nickname);
-        var game = getGameByUser(socket.nickname);
-        if (game) {
-            var gameIndex;
-            var player;
-            for (var i = 0; i < game.players.length; i++) {
-                if (game.players[i].name === socket.nickname) {
-                    player = game.players[i];
-                    break;
-                }
-            }
-
-            if (player) {
-                if (player.isAdmin && !game.instance) {
-                    listener.to(game.id).emit('server_game_close');
-                    game.players = [];
-                    var clients = listener.to(game.id).connected;
-                    for (var key in clients) {
-                        if (clients.hasOwnProperty(key)) {
-                            var clientSocket = clients[key];
-                            clientSocket.leave(game.id);
-                        }
-                    }
-                }
-
-                else {
-                    var index = game.players.indexOf(player);
-                    game.players.splice(index, 1);
-                    socket.emit('server_game_close');
-                    socket.leave(game.id);
-                }
-                if (game.instance && game.players.length < game.gameType.minPlayers) {
-                    listener.to(game.id).emit('server_game_close');
-                    game.players = [];
-                    var clients = listener.to(game.id).connected;
-                    for (var key in clients) {
-                        if (clients.hasOwnProperty(key)) {
-                            var clientSocket = clients[key];
-                            clientSocket.leave(game.id);
-                        }
-                    }
-                }
-            }
-
-            if (game.players.length === 0) {
-                gameIndex = games.indexOf(game);
-                games.splice(gameIndex, 1);
-            }
-            updateGameState(game);
-            sendGameChat(game.id, socket.nickname + " leaves the game");
-            listener.to(game.id).emit('server_game_update', game);
-            listener.sockets.emit('server_games', games);
-        }
+        handleClientLeave(socket);
     });
 
     socket.on('client_nickname_submit', function (data) {
