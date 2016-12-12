@@ -13,7 +13,7 @@ var internal_games = [];
 var gameTypes = [
     { name: 'bomberman', url: 'games/bomberman/game.html', config: { matchLength: { value: 3, name: 'Match length', min: 1, max: 100 }, bombs: { value: 1, name: 'Bombs', min: 1, max: 10 }, bombStrength: { value: 1, name: 'Bomb power', min: 1, max: 10 }, bombBurnFactor: { value: 5, name: 'Bomb burn time', min: 1, max: 20 }, speedFactor: { value: 5, name: 'Player walk delay', min: 1, max: 10 } }, code: './games/bomberman/bomberman_logic.js', minPlayers: 2, maxPlayers: 4 },
 
-  { name: 'bomberman gfx', url: 'games/bomberman/gamegfx.html', config: { matchLength: { value: 3, name: 'Match length', min: 1, max: 100 }, bombs: { value: 1, name: 'Bombs', min: 1, max: 10 }, bombStrength: { value: 1, name: 'Bomb power', min: 1, max: 10 }, bombBurnFactor: { value: 5, name: 'Bomb burn time', min: 1, max: 20 }, speedFactor: { value: 5, name: 'Player walk delay', min: 1, max: 10 } }, code: './games/bomberman/bomberman_logic.js', minPlayers: 2, maxPlayers: 4 },
+    { name: 'bomberman gfx', url: 'games/bomberman/gamegfx.html', config: { matchLength: { value: 3, name: 'Match length', min: 1, max: 100 }, bombs: { value: 1, name: 'Bombs', min: 1, max: 10 }, bombStrength: { value: 1, name: 'Bomb power', min: 1, max: 10 }, bombBurnFactor: { value: 5, name: 'Bomb burn time', min: 1, max: 20 }, speedFactor: { value: 5, name: 'Player walk delay', min: 1, max: 10 } }, code: './games/bomberman/bomberman_logic.js', minPlayers: 2, maxPlayers: 4 },
 
     { name: 'N-in-a-row', url: 'games/3inarow/game.html', config: { size: { value: 3, name: 'Game size', min: 3, max: 20 }, numToWin: { value: 3, name: 'Win length', min: 3, max: 5 }, matchLength: { value: 3, name: 'Match length', min: 1, max: 100 } }, code: './games/3inarow/3inarow_logic.js', minPlayers: 2, maxPlayers: 2 },
     { name: 'Repello', url: 'games/repo/game.html', minPlayers: 2, maxPlayers: 6 }
@@ -56,14 +56,18 @@ app.use(express.static('public'));
 
 var listener = io.listen(http);
 
+
 listener.sockets.on('connection', function (socket) {
+
+    socket.on('disconnect',  function() {
+        console.log('client game leave');
+    });
 
     socket.on('client_game_leave', function () {
         console.log("Player left game:" + socket.nickname);
         var game = getGameByUser(socket.nickname);
         if (game) {
-            socket.leave(game.id);
-
+            var gameIndex;
             var player;
             for (var i = 0; i < game.players.length; i++) {
                 if (game.players[i].name === socket.nickname) {
@@ -73,12 +77,39 @@ listener.sockets.on('connection', function (socket) {
             }
 
             if (player) {
-                var index = game.players.indexOf(player);
-                game.players.splice(index, 1);
+                if (player.isAdmin && !game.instance) {
+                    listener.to(game.id).emit('server_game_close');
+                    game.players = [];
+                    var clients = listener.to(game.id).connected;
+                    for (var key in clients) {
+                        if (clients.hasOwnProperty(key)) {
+                            var clientSocket = clients[key];
+                            clientSocket.leave(game.id);
+                        }
+                    }
+                }
+
+                else {
+                    var index = game.players.indexOf(player);
+                    game.players.splice(index, 1);
+                    socket.emit('server_game_close');
+                    socket.leave(game.id);
+                }
+                if (game.instance && game.players.length < game.gameType.minPlayers) {
+                    listener.to(game.id).emit('server_game_close');
+                    game.players = [];
+                    var clients = listener.to(game.id).connected;
+                    for (var key in clients) {
+                        if (clients.hasOwnProperty(key)) {
+                            var clientSocket = clients[key];
+                            clientSocket.leave(game.id);
+                        }
+                    }
+                }
             }
 
             if (game.players.length === 0) {
-                var gameIndex = games.indexOf(game);
+                gameIndex = games.indexOf(game);
                 games.splice(gameIndex, 1);
             }
             updateGameState(game);

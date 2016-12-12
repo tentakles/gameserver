@@ -164,8 +164,11 @@
 *	impl powerups
 
 *bugg i uppritning:
-*	n'r man ror sig med en explosion aktiv, ritas explosionen om fel.
+*	när man ror sig med en explosion aktiv, ritas explosionen om fel.
 
+* hantera admin leave från lobby
+		* om inte spelet är startat: spelet avslutas när admin leavar 
+		* om spelet är startat, kolla min/max players, och om inte det uppfylls längre, avsluta hela spelet och släng ut allt folk
 
 ############
 TODO server
@@ -174,10 +177,6 @@ TODO server
 definera scope for 1.0
 release 1.0
 deploya 1.0
-
-hantera admin leave från lobby
-		om inte spelet är startat: spelet avslutas när admin leavar 
-		om spelet är startat, kolla min/max players, och om inte det uppfylls längre, avsluta hela spelet och släng ut allt folk
 
 socket leave /reload(?) måste hanteras, så att man går ut ur spelen när man laddar om sidan
 	hantera som ovan
@@ -198,6 +197,10 @@ Todo bomberman
 ############
 TODO nice to have (post 1.0)
 ############
+
+Gamelobby leaves
+	Server ska skicka med 'reason' om sådan finns vid server_game_close
+	Klient skall visa denna reason i en modal om reason finns
 
 bomberman: 
 	optimisera uppritningen av explosioner etc.

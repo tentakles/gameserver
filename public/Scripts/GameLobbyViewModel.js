@@ -81,6 +81,12 @@ function GameLobbyViewModel(socket) {
                 self.gameEventCallback(data);
         });
 
+        socket.on('server_game_close', function (game) {
+            self.gameStarted(false);
+            self.enterLobby();
+            $("#gameWrapper").html("");
+        });
+
         socket.on('server_game_start', function (game) {
             self.gameStarted(true);
             self.currentGame = game;
@@ -254,10 +260,7 @@ function GameLobbyViewModel(socket) {
     }
 
     self.leaveGame = function () {
-        self.gameStarted(false);
         socket.emit('client_game_leave');
-        self.enterLobby();
-        $("#gameWrapper").html("");
     }
 
     self.prefillNickname = function () {
