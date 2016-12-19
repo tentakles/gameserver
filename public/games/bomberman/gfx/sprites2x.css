@@ -1,0 +1,98 @@
+.sprite {
+    width: 64px;
+    height: 64px;
+    background-image: url(spritesheet2x.png);
+    background-repeat: no-repeat;
+}
+
+.sprite-block {
+background-position: 0px 0px;
+}
+
+.sprite-bomb {
+background-position: -64px 0px;
+}
+
+.sprite-exp-center {
+background-position: -128px 0px;
+}
+
+.sprite-exp-down {
+background-position: -192px 0px;
+}
+
+.sprite-exp-hori {
+background-position: 0px -64px;
+}
+
+.sprite-exp-left {
+background-position: -64px -64px;
+}
+
+.sprite-exp-right {
+background-position: -128px -64px;
+}
+
+.sprite-exp-up {
+background-position: -192px -64px;
+}
+
+.sprite-exp-vert {
+background-position: 0px -128px;
+}
+
+.sprite-floor {
+background-position: -64px -128px;
+}
+
+.sprite-hardblock {
+background-position: -128px -128px;
+}
+
+.sprite-p1 {
+background-position: -192px -128px;
+}
+
+.sprite-p1bomb {
+background-position: 0px -192px;
+}
+
+.sprite-p2 {
+background-position: -64px -192px;
+}
+
+.sprite-p2bomb {
+background-position: -128px -192px;
+}
+
+.sprite-p3 {
+background-position: -192px -192px;
+}
+
+.sprite-p3bomb {
+background-position: -256px 0px;
+}
+
+.sprite-p4 {
+background-position: -256px -64px;
+}
+
+.sprite-p4bomb {
+background-position: -256px -128px;
+}
+
+.sprite-powerup-bombs {
+background-position: -256px -192px;
+}
+
+.sprite-powerup-burn {
+background-position: 0px -256px;
+}
+
+.sprite-powerup-speed {
+background-position: -64px -256px;
+}
+
+.sprite-powerup-strength {
+background-position: -128px -256px;
+}
