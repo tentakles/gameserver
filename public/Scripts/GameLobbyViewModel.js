@@ -26,6 +26,7 @@ function GameLobbyViewModel(socket) {
 
     self.createGameName = ko.observable("");
     self.createGamePassword = ko.observable("");
+    self.gameCloseReason = ko.observable("");
 
     self.chats = ko.observableArray([]);
     self.gameChats = ko.observableArray([]);
@@ -81,7 +82,13 @@ function GameLobbyViewModel(socket) {
                 self.gameEventCallback(data);
         });
 
-        socket.on('server_game_close', function (game) {
+        socket.on('server_game_close', function (data) {
+
+            if(data && data.reason){
+                self.gameCloseReason(data.reason);
+                 $('#gameCloseModal').modal();
+            }
+
             self.gameStarted(false);
             self.enterLobby();
             $("#gameWrapper").html("");

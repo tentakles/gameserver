@@ -103,7 +103,9 @@ function handleClientLeave(socket) {
                 socket.leave(game.id);
             }
             if (game.instance && game.players.length < game.gameType.minPlayers) {
-                listener.to(game.id).emit('server_game_close');
+                socket.emit('server_game_close');
+                socket.leave(game.id);
+                listener.to(game.id).emit('server_game_close',{reason:"Not enough players left"});
                 game.players = [];
                 var clients = listener.to(game.id).connected;
                 for (var key in clients) {
