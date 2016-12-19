@@ -18,6 +18,7 @@ function GameLobbyViewModel(socket) {
     self.gameMaxPlayers = ko.observable(0);
     self.gameMinPlayers = ko.observable(0);
     self.gameMatchLength = ko.observable(0);
+    self.numConnectedClients = ko.observable(0);
 
     self.isAdmin = ko.observable(false);
     self.gameStarted = ko.observable(false);
@@ -77,6 +78,11 @@ function GameLobbyViewModel(socket) {
 
     //initierar vymodellen
     self.init = function () {
+
+        socket.on('server_stats', function (data) {
+         self.numConnectedClients(data.numConnectedClients);          
+        });
+
         socket.on('server_game_event', function (data) {
             if (self.gameEventCallback)
                 self.gameEventCallback(data);

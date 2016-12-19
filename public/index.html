@@ -221,6 +221,8 @@
             <div class="col-sm-4">
                 <button type="button" class="btn btn-default btn-lg" data-bind="click:submitChat">Send</button>
             </div>
+
+            <div class="col-sm-12" data-bind="text:'Connected players: '+numConnectedClients()"></div>
         </div>
 
         <div class="col-sm-12" id="gameWrapper" data-bind="visible:gameLobbyMode">

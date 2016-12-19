@@ -10,6 +10,9 @@ var uuid = require('node-uuid');
 
 var games = [];
 var internal_games = [];
+
+var numConnectedClients = 0;
+
 var gameTypes = [
     { name: 'bomberman', url: 'games/bomberman/game.html', config: { matchLength: { value: 3, name: 'Match length', min: 1, max: 100 }, bombs: { value: 1, name: 'Bombs', min: 1, max: 10 }, bombStrength: { value: 1, name: 'Bomb power', min: 1, max: 10 }, bombBurnFactor: { value: 5, name: 'Bomb burn time', min: 1, max: 20 }, speedFactor: { value: 5, name: 'Player walk delay', min: 1, max: 10 } }, code: './games/bomberman/bomberman_logic.js', minPlayers: 2, maxPlayers: 4 },
 
@@ -71,6 +74,11 @@ app.use(express.static('public'));
 
 var listener = io.listen(http);
 
+function sendServerStats() {
+    console.log("Num players: " + numConnectedClients);
+    listener.sockets.emit('server_stats', { numConnectedClients: numConnectedClients });
+}
+
 function handleClientLeave(socket) {
     var game = getGameByUser(socket.nickname);
     if (game) {
@@ -105,7 +113,7 @@ function handleClientLeave(socket) {
             if (game.instance && game.players.length < game.gameType.minPlayers) {
                 socket.emit('server_game_close');
                 socket.leave(game.id);
-                listener.to(game.id).emit('server_game_close',{reason:"Not enough players left"});
+                listener.to(game.id).emit('server_game_close', { reason: "Not enough players left" });
                 game.players = [];
                 var clients = listener.to(game.id).connected;
                 for (var key in clients) {
@@ -131,9 +139,14 @@ function handleClientLeave(socket) {
 
 listener.sockets.on('connection', function (socket) {
 
+    numConnectedClients++;
+    sendServerStats();
+
     socket.on('disconnect', function () {
         console.log('client game disconnect');
         handleClientLeave(socket);
+        numConnectedClients--;
+        sendServerStats();
     });
 
     socket.on('client_game_leave', function () {
