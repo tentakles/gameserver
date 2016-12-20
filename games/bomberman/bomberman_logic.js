@@ -96,8 +96,9 @@ exports.game = function game(gameId, config, players, sendGameEvent, sendGameUpd
 
             playerObj.bombs -= 1;
             var bombId = uuid.v4();
+            var bombStrength = playerObj.bombStrength;
             var explosionFunc = function () {
-                var event = { grid: self.grid, type: self.EVENT_TYPE_EXPLOSION, row: bombRow, col: bombCol, size: playerObj.bombStrength, bombId: bombId };
+                var event = { grid: self.grid, type: self.EVENT_TYPE_EXPLOSION, row: bombRow, col: bombCol, size: bombStrength, bombId: bombId };
                 event.explosionPositions = self.explosion(event);
 
                 //remove ourselves from coming explosions

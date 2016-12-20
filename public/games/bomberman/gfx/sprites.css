@@ -1,142 +1,98 @@
 .sprite {
+    width: 32px;
+    height: 32px;
     background-image: url(spritesheet.png);
     background-repeat: no-repeat;
 }
 
 .sprite-block {
-    width: 32px;
-    height: 32px;
-    background-position: 0 0;
+    background-position: 0 0;   
 }
 
 .sprite-bomb {
-    width: 32px;
-    height: 32px;
     background-position: -32px 0;
 }
 
 .sprite-exp-center {
-    width: 32px;
-    height: 32px;
     background-position: -64px 0;
 }
 
 .sprite-exp-down {
-    width: 32px;
-    height: 32px;
     background-position: -96px 0;
 }
 
 .sprite-exp-hori {
-    width: 32px;
-    height: 32px;
     background-position: 0 -32px;
 }
 
 .sprite-exp-left {
-    width: 32px;
-    height: 32px;
     background-position: -32px -32px;
 }
 
 .sprite-exp-right {
-    width: 32px;
-    height: 32px;
     background-position: -64px -32px;
 }
 
 .sprite-exp-up {
-    width: 32px;
-    height: 32px;
     background-position: -96px -32px;
 }
 
 .sprite-exp-vert {
-    width: 32px;
-    height: 32px;
     background-position: 0 -64px;
 }
 
 .sprite-floor {
-    width: 32px;
-    height: 32px;
     background-position: -32px -64px;
 }
 
 .sprite-hardblock {
-    width: 32px;
-    height: 32px;
     background-position: -64px -64px;
 }
 
 .sprite-p1 {
-    width: 32px;
-    height: 32px;
     background-position: -96px -64px;
 }
 
 .sprite-p1bomb {
-    width: 32px;
-    height: 32px;
     background-position: 0 -96px;
 }
 
 .sprite-p2 {
-    width: 32px;
-    height: 32px;
     background-position: -32px -96px;
 }
 
 .sprite-p2bomb {
-    width: 32px;
-    height: 32px;
     background-position: -64px -96px;
 }
 
 .sprite-p3 {
-    width: 32px;
-    height: 32px;
     background-position: -96px -96px;
 }
 
 .sprite-p3bomb {
-    width: 32px;
-    height: 32px;
     background-position: -128px 0;
 }
 
 .sprite-p4 {
-    width: 32px;
-    height: 32px;
     background-position: -128px -32px;
 }
 
 .sprite-p4bomb {
-    width: 32px;
-    height: 32px;
     background-position: -128px -64px;
 }
 
 .sprite-powerup-bombs {
-    width: 32px;
-    height: 32px;
     background-position: -128px -96px;
 }
 
 .sprite-powerup-burn {
-    width: 32px;
-    height: 32px;
     background-position: 0 -128px;
 }
 
 .sprite-powerup-speed {
-    width: 32px;
-    height: 32px;
     background-position: -32px -128px;
 }
 
 .sprite-powerup-strength {
-    width: 32px;
-    height: 32px;
     background-position: -64px -128px;
 }
