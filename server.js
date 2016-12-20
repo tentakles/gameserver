@@ -3,7 +3,6 @@ var url = require('url');
 var fs = require('fs');
 var io = require('socket.io');
 var express = require('express');
-var fs = require('fs');
 var app = express();
 var port = process.env.PORT || process.env.port || 8001;
 var http = require('http').Server(app);
@@ -11,9 +10,20 @@ var uuid = require('node-uuid');
 
 var games = [];
 var internal_games = [];
-var gameTypes = JSON.parse(fs.readFileSync('gametypes.json', 'utf8'));
 
-//todo: re add repello in dev version:  { name: 'Repello', url: 'games/repo/game.html', minPlayers: 2, maxPlayers: 6 }
+var maxNicknameLength = 20;
+var maxGameLength = 30;
+
+var numConnectedClients = 0;
+
+var gameTypes = [
+    { name: 'bomberman', url: 'games/bomberman/game.html', config: { matchLength: { value: 3, name: 'Match length', min: 1, max: 100 }, bombs: { value: 1, name: 'Bombs', min: 1, max: 10 }, bombStrength: { value: 1, name: 'Bomb power', min: 1, max: 10 }, bombBurnFactor: { value: 5, name: 'Bomb burn time', min: 1, max: 20 }, speedFactor: { value: 5, name: 'Player walk delay', min: 1, max: 10 } }, code: './games/bomberman/bomberman_logic.js', minPlayers: 2, maxPlayers: 4 },
+
+    { name: 'bomberman gfx', url: 'games/bomberman/gamegfx.html', config: { matchLength: { value: 3, name: 'Match length', min: 1, max: 100 }, bombs: { value: 1, name: 'Bombs', min: 1, max: 10 }, bombStrength: { value: 1, name: 'Bomb power', min: 1, max: 10 }, bombBurnFactor: { value: 5, name: 'Bomb burn time', min: 1, max: 20 }, speedFactor: { value: 5, name: 'Player walk delay', min: 1, max: 10 } }, code: './games/bomberman/bomberman_logic.js', minPlayers: 2, maxPlayers: 4 },
+
+    { name: 'N-in-a-row', url: 'games/3inarow/game.html', config: { size: { value: 3, name: 'Game size', min: 3, max: 20 }, numToWin: { value: 3, name: 'Win length', min: 3, max: 5 }, matchLength: { value: 3, name: 'Match length', min: 1, max: 100 } }, code: './games/3inarow/3inarow_logic.js', minPlayers: 2, maxPlayers: 2 },
+    { name: 'Repello', url: 'games/repo/game.html', minPlayers: 2, maxPlayers: 6 }
+];
 
 function getListItemByParam(param, paramName, list) {
     for (var i = 0; i < list.length; i++) {
@@ -67,6 +77,11 @@ app.use(express.static('public'));
 
 var listener = io.listen(http);
 
+function sendServerStats() {
+    console.log("Num players: " + numConnectedClients);
+    listener.sockets.emit('server_stats', { numConnectedClients: numConnectedClients });
+}
+
 function handleClientLeave(socket) {
     var game = getGameByUser(socket.nickname);
     if (game) {
@@ -99,7 +114,9 @@ function handleClientLeave(socket) {
                 socket.leave(game.id);
             }
             if (game.instance && game.players.length < game.gameType.minPlayers) {
-                listener.to(game.id).emit('server_game_close');
+                socket.emit('server_game_close');
+                socket.leave(game.id);
+                listener.to(game.id).emit('server_game_close', { reason: "Not enough players left" });
                 game.players = [];
                 var clients = listener.to(game.id).connected;
                 for (var key in clients) {
@@ -125,9 +142,14 @@ function handleClientLeave(socket) {
 
 listener.sockets.on('connection', function (socket) {
 
+    numConnectedClients++;
+    sendServerStats();
+
     socket.on('disconnect', function () {
         console.log('client game disconnect');
         handleClientLeave(socket);
+        numConnectedClients--;
+        sendServerStats();
     });
 
     socket.on('client_game_leave', function () {
@@ -137,10 +159,32 @@ listener.sockets.on('connection', function (socket) {
 
     socket.on('client_nickname_submit', function (data) {
         var response = { result: true };
-        if (!data.nickname || !data.nickname.trim())
+        var clients = listener.sockets.connected;
+        if (!data.nickname || !data.nickname.trim()) {
             response.result = false;
-        else
-            socket.nickname = data.nickname.trim();
+            response.reason = "Incorrect nickname";
+            socket.emit('server_nickname_response', response);
+            return;
+        }
+
+        var nickname = data.nickname.trim();
+        if (nickname.length > maxNicknameLength) {
+            response.result = false;
+            response.reason = "Nickname is too long";
+            socket.emit('server_nickname_response', response);
+            return;
+        }
+        for (var key in clients) {
+            if (clients.hasOwnProperty(key)) {
+                var clientSocket = clients[key];
+                if (clientSocket.nickname && clientSocket.nickname.toLowerCase() === nickname.toLowerCase()) {
+                    response.result = false;
+                    response.reason = "Nickname already taken";
+                    break;
+                }
+            }
+        }
+        socket.nickname = nickname;
         socket.emit('server_nickname_response', response);
     });
 
@@ -238,18 +282,30 @@ listener.sockets.on('connection', function (socket) {
 
     socket.on('client_create_game', function (data) {
         if (!data.name) {
+            socket.emit('server_create_game_response', { success: false, reason: "No name given" });
             return;
+        }
+        var gameName = data.name.trim();
+        if (gameName.length > maxGameLength) {
+            socket.emit('server_create_game_response', { success: false, reason: "Too long name" });
+            return;
+        }
+        for (var i = 0; i < games.length; i++) {
+            if (games[i].name.toLowerCase() === gameName.toLowerCase()) {
+                socket.emit('server_create_game_response', { success: false, reason: "Game name already taken" });
+                return;
+            }
         }
         var players = [{ name: socket.nickname, wins: 0, isAdmin: true }];
 
         var gameType = getListItemByParam(data.gameName, "name", gameTypes);
-        var game = { id: uuid.v4(), players: players, name: data.name, needPassword: data.password ? true : false, available: 'N/A', gameType: gameType };
+        var game = { id: uuid.v4(), players: players, name: gameName, needPassword: data.password ? true : false, available: 'N/A', gameType: gameType };
         updateGameState(game);
         console.log('client_create_game:' + game.id);
         games.push(game);
-        internal_games.push({ name: data.name, password: data.password });
+        internal_games.push({ name: gameName, password: data.password });
         listener.sockets.emit('server_games', games);
-        socket.emit('server_create_game_success', game);
+        socket.emit('server_create_game_response', { game: game, success: true });
         socket.join(game.id);
     });
 
