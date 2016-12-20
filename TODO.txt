@@ -21,6 +21,10 @@ Buggar:
 TODO nice to have (post 1.0)
 ############
 
+indikation av nya meddelanden i chatdialogerna
+
+scrolla chatten till botten vid inkommet meddelande
+
 Modularisera UI i "index.html" så att det inte är duplicerad html, kanske använda komponenter
 
 Maxgräns på chatmeddelande
