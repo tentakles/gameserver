@@ -260,33 +260,22 @@ exports.game = function game(gameId, config, players, sendGameEvent, sendGameUpd
                 goLeft = self.handleExplosionOnPosition(event.row, event.col - i, explosionPositions, false, self.EXP_TYPE_HORI);
                 lastLeft = [event.row, event.col - i];
             }
-            else if (lastLeft) {
-              //  self.updateExplosionDir(explosionPositions, lastLeft[0], lastLeft[1], self.EXP_TYPE_LEFT);
-            }
-
+            
             if (goRight) {
                 goRight = self.handleExplosionOnPosition(event.row, event.col + i, explosionPositions, false, self.EXP_TYPE_HORI);
                 lastRight = [event.row, event.col + i];
             }
-            else if (lastRight) {
-            //    self.updateExplosionDir(explosionPositions, lastLeft[0], lastLeft[1], self.EXP_TYPE_RIGHT);
-            }
-
+            
             if (goDown) {
                 goDown = self.handleExplosionOnPosition(event.row + i, event.col, explosionPositions, false, self.EXP_TYPE_VERT);
                 lastDown = [event.row + i, event.col];
             }
-            else if (lastDown) {
-            //    self.updateExplosionDir(explosionPositions, lastLeft[0], lastLeft[1], self.EXP_TYPE_DOWN);
-            }
-
+            
             if (goUp) {
                 goUp = self.handleExplosionOnPosition(event.row - i, event.col, explosionPositions, false, self.EXP_TYPE_VERT);
                 lastUp = [event.row - i, event.col];
             }
-            else if (lastUp) {
-              //  self.updateExplosionDir(explosionPositions, lastLeft[0], lastLeft[1], self.EXP_TYPE_UP);
-            }
+            
         }
 
         if (lastLeft) {
