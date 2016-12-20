@@ -11,6 +11,9 @@ var uuid = require('node-uuid');
 var games = [];
 var internal_games = [];
 
+var maxNicknameLength = 20;
+var maxGameLength = 30;
+
 var numConnectedClients = 0;
 
 var gameTypes = [
@@ -156,10 +159,32 @@ listener.sockets.on('connection', function (socket) {
 
     socket.on('client_nickname_submit', function (data) {
         var response = { result: true };
-        if (!data.nickname || !data.nickname.trim())
+        var clients = listener.sockets.connected;
+        if (!data.nickname || !data.nickname.trim()) {
             response.result = false;
-        else
-            socket.nickname = data.nickname.trim();
+            response.reason = "Incorrect nickname";
+            socket.emit('server_nickname_response', response);
+            return;
+        }
+
+        var nickname = data.nickname.trim();
+        if (nickname.length > maxNicknameLength) {
+            response.result = false;
+            response.reason = "Nickname is too long";
+            socket.emit('server_nickname_response', response);
+            return;
+        }
+        for (var key in clients) {
+            if (clients.hasOwnProperty(key)) {
+                var clientSocket = clients[key];
+                if (clientSocket.nickname && clientSocket.nickname.toLowerCase() === nickname.toLowerCase()) {
+                    response.result = false;
+                    response.reason = "Nickname already taken";
+                    break;
+                }
+            }
+        }
+        socket.nickname = nickname;
         socket.emit('server_nickname_response', response);
     });
 
@@ -257,18 +282,30 @@ listener.sockets.on('connection', function (socket) {
 
     socket.on('client_create_game', function (data) {
         if (!data.name) {
+            socket.emit('server_create_game_response', { success: false, reason: "No name given" });
             return;
+        }
+        var gameName = data.name.trim();
+        if (gameName.length > maxGameLength) {
+            socket.emit('server_create_game_response', { success: false, reason: "Too long name" });
+            return;
+        }
+        for (var i = 0; i < games.length; i++) {
+            if (games[i].name.toLowerCase() === gameName.toLowerCase()) {
+                socket.emit('server_create_game_response', { success: false, reason: "Game name already taken" });
+                return;
+            }
         }
         var players = [{ name: socket.nickname, wins: 0, isAdmin: true }];
 
         var gameType = getListItemByParam(data.gameName, "name", gameTypes);
-        var game = { id: uuid.v4(), players: players, name: data.name, needPassword: data.password ? true : false, available: 'N/A', gameType: gameType };
+        var game = { id: uuid.v4(), players: players, name: gameName, needPassword: data.password ? true : false, available: 'N/A', gameType: gameType };
         updateGameState(game);
         console.log('client_create_game:' + game.id);
         games.push(game);
-        internal_games.push({ name: data.name, password: data.password });
+        internal_games.push({ name: gameName, password: data.password });
         listener.sockets.emit('server_games', games);
-        socket.emit('server_create_game_success', game);
+        socket.emit('server_create_game_response', { game: game, success: true });
         socket.join(game.id);
     });
 

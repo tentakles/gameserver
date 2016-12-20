@@ -27,7 +27,9 @@ function GameLobbyViewModel(socket) {
 
     self.createGameName = ko.observable("");
     self.createGamePassword = ko.observable("");
-    self.gameCloseReason = ko.observable("");
+
+    self.alertTitle = ko.observable("");
+    self.alertText = ko.observable("");
 
     self.chats = ko.observableArray([]);
     self.gameChats = ko.observableArray([]);
@@ -80,7 +82,7 @@ function GameLobbyViewModel(socket) {
     self.init = function () {
 
         socket.on('server_stats', function (data) {
-         self.numConnectedClients(data.numConnectedClients);          
+            self.numConnectedClients(data.numConnectedClients);
         });
 
         socket.on('server_game_event', function (data) {
@@ -90,9 +92,10 @@ function GameLobbyViewModel(socket) {
 
         socket.on('server_game_close', function (data) {
 
-            if(data && data.reason){
-                self.gameCloseReason(data.reason);
-                 $('#gameCloseModal').modal();
+            if (data && data.reason) {
+                self.alertTitle("Game closed");
+                self.alertText(data.reason);
+                $('#alertModal').modal();
             }
 
             self.gameStarted(false);
@@ -131,11 +134,22 @@ function GameLobbyViewModel(socket) {
                 location.hash = self.nickname();
             }
             else
-                alert("Can not enter lobby! Check nickname.");
+                if (response && response.reason) {
+                    self.alertTitle("Incorrect nickname");
+                    self.alertText(response.reason);
+                    $('#alertModal').modal();
+                }
         });
 
-        socket.on('server_create_game_success', function (game) {
-            self.enterGame(game, true);
+        socket.on('server_create_game_response', function (response) {
+            if (response.success) {
+                self.enterGame(response.game, true);
+            }
+            else {
+                self.alertTitle("Incorrect game name");
+                self.alertText(response.reason);
+                $('#alertModal').modal();
+            }
         });
 
         socket.on('server_join_game_success', function (game) {

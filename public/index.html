@@ -248,16 +248,15 @@
         </div>
     </div>
 
-    <div id="gameCloseModal" class="modal fade" role="dialog">
+    <div id="alertModal" class="modal fade" role="dialog">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal">&times;</button>
-                    <h4 class="modal-title">Game closed</h4>
+                    <h4 class="modal-title" data-bind="text:alertTitle"></h4>
                 </div>
                 <div class="modal-body">
-                    <p>Game closed because:</p>
-                    <p data-bind="text:gameCloseReason"></p>
+                    <p data-bind="text:alertText"></p>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
