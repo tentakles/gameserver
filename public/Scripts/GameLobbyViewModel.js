@@ -20,6 +20,8 @@ function GameLobbyViewModel(socket) {
     self.gameMatchLength = ko.observable(0);
     self.numConnectedClients = ko.observable(0);
 
+    self.chatMode = ko.observable(0);
+    
     self.isAdmin = ko.observable(false);
     self.gameStarted = ko.observable(false);
 
@@ -98,12 +100,14 @@ function GameLobbyViewModel(socket) {
                 $('#alertModal').modal();
             }
 
+            self.chatMode(0);
             self.gameStarted(false);
             self.enterLobby();
             $("#gameWrapper").html("");
         });
 
         socket.on('server_game_start', function (game) {
+            self.chatMode(1);
             self.gameStarted(true);
             self.currentGame = game;
             self.gameMatchLength(game.gameType.config.matchLength.value);
@@ -211,6 +215,10 @@ function GameLobbyViewModel(socket) {
             self.lastGameId = game.id;
             self.gamePassword("");
             $('#passwordModal').modal();
+
+            $('#passwordModal').on('shown.bs.modal', function() {
+                $('#gamePasswordInput').focus();
+            });
         }
         else
             socket.emit('client_join_game', { 'id': game.id });
@@ -252,6 +260,13 @@ function GameLobbyViewModel(socket) {
     self.submitGameChat = function () {
         socket.emit('client_game_chat', self.gameChatRow());
         self.gameChatRow("");
+    };
+    
+    self.submitPasswordModalKeyPress = function (d, e) {
+        if (e.keyCode === 13) {
+            self.joinGameWithPassword();
+        }
+        return true;
     };
 
     self.submitGameChatKeyPress = function (d, e) {

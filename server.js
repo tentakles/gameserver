@@ -131,6 +131,12 @@ function handleClientLeave(socket) {
         if (game.players.length === 0) {
             gameIndex = games.indexOf(game);
             games.splice(gameIndex, 1);
+
+            var internal_game = getListItemByParam(game.name, "name", internal_games);
+            if (internal_game) {
+                var internalGameIndex = internal_games.indexOf(internal_game); 
+                internal_games.splice(internalGameIndex, 1);
+            }
         }
         updateGameState(game);
         sendGameChat(game.id, socket.nickname + " leaves the game");

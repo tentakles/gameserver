@@ -28,6 +28,7 @@
     <Content Include="TODO.txt" />
     <Content Include="package.json" />
     <Compile Include="games\bomberman\bomberman_logic.js" />
+    <Compile Include="public\games\bomberman\Scripts\bomberman_gfx_ui.js" />
     <Compile Include="public\games\bomberman\Scripts\bomberman_ui.js" />
     <Compile Include="server.js" />
     <Content Include="public\index.html" />

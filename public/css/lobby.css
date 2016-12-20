@@ -1,11 +1,20 @@
 ﻿
-#createGameBox, #gameBox, #gamePlayersBox, #chatBox, #gameChatBox {
-    height: 300px;
+#createGameBox, #gameBox, #gamePlayersBox, #chatBox, #gameChatBox, #gameChatBoxInGame  {
+    height: 250px;
+    overflow-y: auto;
+}
+
+#gamePlayersBoxInGame{
+    height: 180px;
     overflow-y: auto;
 }
 
 #gameWrapper {
     margin-top: 10px;
+}
+
+.chatTabs {
+    margin-top: 20px;
 }
 
 .chatRow{

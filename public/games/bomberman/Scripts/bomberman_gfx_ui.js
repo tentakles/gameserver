@@ -183,7 +183,7 @@ function setup_game(conf) {
     console.log("Setup_game: Bomberman");
     config = conf;
     gameDiv = $("#game");
-    var gamegrid = "<table>";
+    var gamegrid = "<table tabindex='0'>";
     for (var r = 0; r < rows; r++) {
         gamegrid += "<tr>";
         for (var c = 0; c < cols; c++) {
@@ -197,6 +197,8 @@ function setup_game(conf) {
     gameDiv.html(gamegrid);
 
     columns = gameDiv.find("td");
+    
+    gameDiv.find("table").focus();
 
     gameDiv.focus();
     gameDiv.keyup(function (event) {
