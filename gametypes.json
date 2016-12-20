@@ -1,23 +1,107 @@
 ﻿[
-    { name: 'Bomberman', url: 'games/bomberman/gamegfx.html', code: './games/bomberman/bomberman_logic.js', minPlayers: 2, maxPlayers: 4,
-	config: { 
-		matchLength: { value: 3, name: 'Match length', min: 1, max: 100 }, 
-		bombs: { value: 1, name: 'Bombs', min: 1, max: 10 }, 
-		bombStrength: { value: 1, name: 'Bomb power', min: 1, max: 10 }, 
-		bombBurnFactor: { value: 5, name: 'Bomb burn time', min: 1, max: 20 }, 
-		speedFactor: { value: 5, name: 'Player walk delay', min: 1, max: 10 } } 
-	 },
-    { name: 'Bomberman text mode', url: 'games/bomberman/game.html', code: './games/bomberman/bomberman_logic.js', minPlayers: 2, maxPlayers: 4,
-	config: { 
-		matchLength: { value: 3, 
-		name: 'Match length', min: 1, max: 100 }, 
-		bombs: { value: 1, name: 'Bombs', min: 1, max: 10 }, 
-		bombStrength: { value: 1, name: 'Bomb power', min: 1, max: 10 }, 
-		bombBurnFactor: { value: 5, name: 'Bomb burn time', min: 1, max: 20 }, 
-		speedFactor: { value: 5, name: 'Player walk delay', min: 1, max: 10 } }},
-    { name: 'N-in-a-row', url: 'games/3inarow/game.html', 
-	config: { 
-		size: { value: 3, name: 'Game size', min: 3, max: 20 }, code: './games/3inarow/3inarow_logic.js', minPlayers: 2, maxPlayers: 2,
-		numToWin: { value: 3, name: 'Win length', min: 3, max: 5 }, 
-		matchLength: { value: 3, name: 'Match length', min: 1, max: 100 } }}
+  {
+    "code": "./games/bomberman/bomberman_logic.js",
+    "config": {
+      "bombBurnFactor": {
+        "max": 20,
+        "min": 1,
+        "name": "Bomb burn time",
+        "value": 5
+      },
+      "bombStrength": {
+        "max": 10,
+        "min": 1,
+        "name": "Bomb power",
+        "value": 1
+      },
+      "bombs": {
+        "max": 10,
+        "min": 1,
+        "name": "Bombs",
+        "value": 1
+      },
+      "matchLength": {
+        "max": 100,
+        "min": 1,
+        "name": "Match length",
+        "value": 3
+      },
+      "speedFactor": {
+        "max": 10,
+        "min": 1,
+        "name": "Player walk delay",
+        "value": 5
+      }
+    },
+    "maxPlayers": 4,
+    "minPlayers": 2,
+    "name": "Bomberman",
+    "url": "games/bomberman/gamegfx.html"
+  },
+  {
+    "code": "./games/bomberman/bomberman_logic.js",
+    "config": {
+      "bombBurnFactor": {
+        "max": 20,
+        "min": 1,
+        "name": "Bomb burn time",
+        "value": 5
+      },
+      "bombStrength": {
+        "max": 10,
+        "min": 1,
+        "name": "Bomb power",
+        "value": 1
+      },
+      "bombs": {
+        "max": 10,
+        "min": 1,
+        "name": "Bombs",
+        "value": 1
+      },
+      "matchLength": {
+        "max": 100,
+        "min": 1,
+        "name": "Match length",
+        "value": 3
+      },
+      "speedFactor": {
+        "max": 10,
+        "min": 1,
+        "name": "Player walk delay",
+        "value": 5
+      }
+    },
+    "maxPlayers": 4,
+    "minPlayers": 2,
+    "name": "Bomberman text mode",
+    "url": "games/bomberman/game.html"
+  },
+  {
+    "config": {
+      "code": "./games/3inarow/3inarow_logic.js",
+      "matchLength": {
+        "max": 100,
+        "min": 1,
+        "name": "Match length",
+        "value": 3
+      },
+      "maxPlayers": 2,
+      "minPlayers": 2,
+      "numToWin": {
+        "max": 5,
+        "min": 3,
+        "name": "Win length",
+        "value": 3
+      },
+      "size": {
+        "max": 20,
+        "min": 3,
+        "name": "Game size",
+        "value": 3
+      }
+    },
+    "name": "N-in-a-row",
+    "url": "games/3inarow/game.html"
+  }
 ]
