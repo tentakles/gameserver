@@ -1,15 +1,15 @@
-﻿<div class="panel panel-default" id="repoContainer">
+﻿<div id="repoContainer">
    
     <!-- Vy: spelet -->
     <div>
 
         <h4 class="player selectedPlayer" data-bind="html:status"></h4>
 
-        <div class="float">
+        <div class="float"  style="margin-bottom:10px;margin-right:10px;">
             <canvas id="canvas" width="530" height="530"></canvas>
         </div>
 
-        <div class="float " style="margin-left:20px;">
+        <div class="float ">
 
 <div data-bind="foreach:players">
     <div class="player" data-bind="css:{selectedPlayer:IsCurrentPlayer}">

@@ -30,35 +30,48 @@ new todo:
         *refaktorisera sa att approchatarget tar ett obj istallet.
      *   skicka med Moved pa saker, om ! moved, resetta alla props.
      *   gora en metod updateItemPositions som resettar de tre props po servern.
-
   *  impl 
        * self.playerHasPlacedMovedTarget        
       *  self.gameOver 
       *  self.currentPlayer
       *self.oldpos
-
    *   det skall malas gult nar man markerar fro att paverka.
+ * initial repaint!
 
-  initial repaint!
+    * skriva ut i chat vinnare
+     *   matcher
+    *    testa win set
+    *    testa win game
 
-  
-  
+ * fick ej poang nar jag kastade ut gra objekt.
+  *  bugg :     if (thingOnPosition instanceof ItemModel) {
+
+    *kunna starta ny omgang
+
+    
+  *  oversatt status till engelska  
+   
+       publicera for test
+
+  //todo fixme alla väderstreck skall fungera att knuffa ut saker och fa poang  
+        testa:
+            upp 
+            ned 
+            vanster 
+            hoger 
+            snettvanster 
+            snetthoger 
+            snettnedathoger 
+            snettnedatvanster
+
+
+
     knuffa svart med svart gjorde att det ej animerades.
         var aven sa nar jag knuffade medmin gubbe vid ett tillfalle.
 
-    fick ej poang nar jag kastade ut gra objekt.
-
-    kunna starta ny omgang
- 
-    skriva ut i chat vinnare
-    ta bort matchLength?
-    vinnare
-    matcher
     ta bort style taggar ur game.html
-
     optimera
     minspelare = 2
-
-     instruktioner
+    instruktioner
 
     
