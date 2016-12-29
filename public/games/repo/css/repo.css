@@ -1,13 +1,19 @@
-﻿body {
-    margin: 20px;
-}
-
+﻿
 .bold {
     font-weight: bold;
 }
 
 .selectedPlayer {
     background-color: yellow;
+}
+
+.canvasContainer{
+margin-bottom:10px;
+margin-right:10px;
+} 
+
+.playerScore{
+margin-left:5px;
 }
 
 .ball{
@@ -43,12 +49,10 @@ margin-top:0px;
     clear: both;
 }
 
-
 .margin20px {
     margin: 20px;
 }
 
 #canvas {
     border: 1px solid #000000;
-
 }

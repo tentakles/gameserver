@@ -122,6 +122,7 @@ function GameLobbyViewModel(socket) {
         socket.on('server_game_chat', function (data) {
             self.gameChats.push(data);
             $('#gameChatBox').animate({ scrollTop: $('#gameChatBox').prop("scrollHeight") }, 100);
+            $('#gameChatBoxInGame').animate({ scrollTop: $('#gameChatBoxInGame').prop("scrollHeight") }, 100); 
         });
 
         socket.on('server_games', function (data) {

@@ -1,20 +1,71 @@
-DONE
-
-*inte ropa ut i förskott att spelet är slut
-*ta bort lila när spelet är slut
-*oavgjort
-*acceleration
-*se till att players och items inte är separata arrayer :|
-*se till att shrinkpositionen går snabbare
-*rows och cols har fel namn
-*nollställa size animation om man fallar ut.
-
 TODO
 
-sortera på size (störst först) så att de ritas ovanför, på någe vis.
-animera utkastningen också, nu försvinner de bara.
-medans man ritar, ha ett "cancelMove", som gör att moves inte släpps igenom.
-när cancel animation, sätt tillbaka den.
-Separat RepellDrawer, viewModel.drawer
-regelgrej:
-ska man itne få knuffa innan man tagit och gått?!
+    gameOver cooldown
+        for att man inte ska kunna dubbelklicka och ej se varfor spelet tog slut
+        impl likt bomberman
+
+    animera utkastningen ocksï¿½, nu fï¿½rsvinner de bara.
+  
+    optimera
+    minspelare = 2
+    instruktioner
+
+    lysa upp alla adjacent objects med nuvarande spelares tur
+    kanske blinka nar det ar 'min' tur
+
+    sortera pï¿½ size (stï¿½rst fï¿½rst) sï¿½ att storst ritas overst.
+
+    medans man ritar, gï¿½r att moves inte slï¿½pps igenom.
+            sett en timeout som i bomberman
+    regelgrej:
+        ska man itne fï¿½ knuffa innan man tagit och gï¿½tt?!
+
+DONE
+
+*  kolla upp vart man maste klicka for att starta nytt spel
+*    skriv ut det,click game to continue.
+*     kolla upp om bagge kan gora?
+
+*inte ropa ut i fï¿½rskott att spelet ï¿½r slut
+*ta bort lila nï¿½r spelet ï¿½r slut
+*oavgjort
+*acceleration
+*se till att players och items inte ï¿½r separata arrayer :|
+*se till att shrinkpositionen gï¿½r snabbare
+*rows och cols har fel namn
+*nollstï¿½lla size animation om man fallar ut.
+
+*kolla upp varfor ett tomt event kommer?
+*  ta bort starta om knapp
+* initial draw
+*visa poang
+*   skicka med players
+*  skriva in IsCurrentPlayer
+*rensa upp filer
+* animering
+*refaktorisera sa att approchatarget tar ett obj istallet.
+*   skicka med Moved pa saker, om ! moved, resetta alla props.
+*   gora en metod updateItemPositions som resettar de tre props po servern.
+*  impl 
+* self.playerHasPlacedMovedTarget        
+*  self.gameOver 
+*  self.currentPlayer
+*self.oldpos
+*   det skall malas gult nar man markerar fro att paverka.
+* initial repaint!
+
+* skriva ut i chat vinnare
+*   matcher
+*    testa win set
+*    testa win game
+
+* fick ej poang nar jag kastade ut gra objekt.
+*  bugg :     if (thingOnPosition instanceof ItemModel) {
+*kunna starta ny omgang  
+*  oversatt status till engelska    
+*    publicera for test
+* ta bort style taggar ur game.html
+
+*  knuffa svart med svart gjorde att det ej animerades.
+*     var aven sa nar jag knuffade medmin gubbe vid ett tillfalle.
+*     endast svarta pluttar paverkas
