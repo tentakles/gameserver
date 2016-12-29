@@ -19,9 +19,11 @@ var numConnectedClients = 0;
 var gameTypes = [
     { name: 'bomberman', url: 'games/bomberman/gamegfx.html', config: { matchLength: { value: 3, name: 'Match length', min: 1, max: 100 }, bombs: { value: 1, name: 'Bombs', min: 1, max: 10 }, bombStrength: { value: 1, name: 'Bomb power', min: 1, max: 10 }, bombBurnFactor: { value: 5, name: 'Bomb burn time', min: 1, max: 20 }, speedFactor: { value: 5, name: 'Player walk delay', min: 1, max: 10 } }, code: './games/bomberman/bomberman_logic.js', minPlayers: 2, maxPlayers: 4 },
     { name: 'bomberman (text mode)', url: 'games/bomberman/game.html', config: { matchLength: { value: 3, name: 'Match length', min: 1, max: 100 }, bombs: { value: 1, name: 'Bombs', min: 1, max: 10 }, bombStrength: { value: 1, name: 'Bomb power', min: 1, max: 10 }, bombBurnFactor: { value: 5, name: 'Bomb burn time', min: 1, max: 20 }, speedFactor: { value: 5, name: 'Player walk delay', min: 1, max: 10 } }, code: './games/bomberman/bomberman_logic.js', minPlayers: 2, maxPlayers: 4 },
-    { name: 'N-in-a-row', url: 'games/3inarow/game.html', config: { size: { value: 3, name: 'Game size', min: 3, max: 20 }, numToWin: { value: 3, name: 'Win length', min: 3, max: 5 }, matchLength: { value: 3, name: 'Match length', min: 1, max: 100 } }, code: './games/3inarow/3inarow_logic.js', minPlayers: 2, maxPlayers: 2 },
-    { name: 'Repello', url: 'games/repo/game.html', code: './games/repo/repo_logic.js', minPlayers: 2, maxPlayers: 6, config: { matchLength: { value: 1, name: 'Match length', min: 1, max: 100 }, startMagnets: { value: 8, name: 'Start magnets', min: 1, max: 20 } } }
+    { name: 'N-in-a-row', url: 'games/3inarow/game.html', config: { size: { value: 3, name: 'Game size', min: 3, max: 20 }, numToWin: { value: 3, name: 'Win length', min: 3, max: 5 }, matchLength: { value: 3, name: 'Match length', min: 1, max: 100 } }, code: './games/3inarow/3inarow_logic.js', minPlayers: 2, maxPlayers: 2 }
 ];
+
+//TODO: REadd Repello later
+//{ name: 'Repello', url: 'games/repo/game.html', minPlayers: 2, maxPlayers: 6 }
 
 function getListItemByParam(param, paramName, list) {
     for (var i = 0; i < list.length; i++) {
@@ -49,14 +51,8 @@ function getGameByUser(user) {
 
 function sendGameUpdate(gameId) {
     var game = getGameById(gameId);
-    if (game) {
-        updateGameState(game);
-        listener.to(game.id).emit('server_game_update', game);
-    }
-    else {
-        console.log("sendGameUpdate: invalid game:" + gameId);
-    }
-
+    updateGameState(game);
+    listener.to(game.id).emit('server_game_update', game);
 }
 
 function sendGameChat(gameId, line, important) {
@@ -65,9 +61,6 @@ function sendGameChat(gameId, line, important) {
         var message = { user: "(Game)", fromGame: true, line: line, important: important === true }
         console.log('server_game_chat');
         listener.to(game.id).emit('server_game_chat', message);
-    }
-    else {
-        console.log("sendGameUpdate: invalid game:" + gameId);
     }
 }
 
@@ -141,7 +134,7 @@ function handleClientLeave(socket) {
 
             var internal_game = getListItemByParam(game.name, "name", internal_games);
             if (internal_game) {
-                var internalGameIndex = internal_games.indexOf(internal_game);
+                var internalGameIndex = internal_games.indexOf(internal_game); 
                 internal_games.splice(internalGameIndex, 1);
             }
         }
@@ -261,27 +254,25 @@ listener.sockets.on('connection', function (socket) {
 
     socket.on('client_game_start', function (clientConfig) {
         var game = getGameByUser(socket.nickname);
-        if (game) {
-            var player = getListItemByParam(socket.nickname, "name", game.players);
-            if (player && player.isAdmin && game && game.players.length <= game.gameType.maxPlayers && game.players.length >= game.gameType.minPlayers) {
-                var gameType = game.gameType;
-                console.log("client_game_start:" + gameType.name + " by: " + socket.nickname);
-                console.log("code url:" + gameType.code);
+        var player = getListItemByParam(socket.nickname, "name", game.players);
+        if (player && player.isAdmin && game && game.players.length <= game.gameType.maxPlayers && game.players.length >= game.gameType.minPlayers) {
+            var gameType = game.gameType;
+            console.log("client_game_start:" + gameType.name + " by: " + socket.nickname);
+            console.log("code url:" + gameType.code);
 
-                var gameEnviroment = require(gameType.code);
+            var gameEnviroment = require(gameType.code);
 
-                var controlledGameConfig = mapConfigValues(gameType.config, clientConfig);
+            var controlledGameConfig = mapConfigValues(gameType.config, clientConfig);
 
-                game.instance = new gameEnviroment.game(game.id, controlledGameConfig, game.players, sendGameEvent, sendGameUpdate, sendGameChat);
-                var result = game.instance.init();
+            game.instance = new gameEnviroment.game(game.id, controlledGameConfig, game.players, sendGameEvent, sendGameUpdate, sendGameChat);
+            var result = game.instance.init();
 
-                var response = { gameType: gameType, config: controlledGameConfig, result: result };
+            var response = { gameType: gameType, config: controlledGameConfig, result: result };
 
-                updateGameState(game);
-                listener.sockets.emit('server_games', games);
+            updateGameState(game);
+            listener.sockets.emit('server_games', games);
 
-                listener.to(game.id).emit('server_game_start', response);
-            }
+            listener.to(game.id).emit('server_game_start', response);
         }
     });
 

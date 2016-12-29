@@ -1,8 +1,4 @@
 ﻿
-h2{
-    margin-top:0px;
-}
-
 #createGameBox, #gameBox, #gamePlayersBox, #chatBox, #gameChatBox, #gameChatBoxInGame  {
     height: 250px;
     overflow-y: auto;
@@ -11,7 +7,6 @@ h2{
 #gamePlayersBoxInGame{
     height: 180px;
     overflow-y: auto;
-    margin-bottom:10px;
 }
 
 #gameWrapper {
