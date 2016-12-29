@@ -53,6 +53,8 @@ exports.game = function game(gameId, config, players, sendGameEvent, sendGameUpd
 
     var self = this;
 
+
+
     self.rows = 12;
     self.cols = 12;
 
@@ -95,6 +97,16 @@ exports.game = function game(gameId, config, players, sendGameEvent, sendGameUpd
 
     self.clone = function (data) {
         return JSON.parse(JSON.stringify(data));
+    };
+
+    self.customCloneList = function (list) {
+        var result = [];
+
+        for (var i = 0; i < list.length; i++) {
+            result.push(list[i].clone());
+        }
+
+        return result;
     };
 
     self.updateItemStatus = function (resetNew) {
@@ -152,10 +164,21 @@ exports.game = function game(gameId, config, players, sendGameEvent, sendGameUpd
         return list;
     }
 
+    //gets the player from the players array in the constructor
+    self.getRealPlayerByName = function (name) {
+        for (i = 0; i < players.length; i++) {
+            if (players[i].name === name) {
+                return players[i];
+            }
+        }
+
+        return null;
+    };
+
     self.init = function () {
         console.log('Init repello');
         self.players = self.getNewPlayers();
-        self.items = self.clone(self.originalItems);
+        self.items = self.customCloneList(self.originalItems);
         for (var i = 0; i < self.players.length; i++) {
             var p = self.players[i];
             self.items.push(p);
@@ -165,6 +188,8 @@ exports.game = function game(gameId, config, players, sendGameEvent, sendGameUpd
         self.selectUserByNum(num);
 
         self.nextTurn();
+
+        self.updateItemStatus(true);
 
         return self.getResult();
     }
@@ -177,14 +202,18 @@ exports.game = function game(gameId, config, players, sendGameEvent, sendGameUpd
             players: self.players,
             playerHasPlacedMovedTarget: self.playerHasPlacedMovedTarget,
             gameOver: self.gameOver(),
-            oldpos:self.oldpos
+            oldpos: self.oldpos
         };
         return result;
         // return self.clone(result);
     };
 
     self.move = function (event, player) {
-        //  console.log("try move");
+
+        if (self.gameOver()) {
+            self.init();
+            return { cancelEvent: true };
+        }
 
         if (self.currentPlayer.Name === player) {
             self.updateItemStatus(true);
@@ -247,20 +276,20 @@ exports.game = function game(gameId, config, players, sendGameEvent, sendGameUpd
     //uppdaterar spelstatustexten
     self.getStatus = function () {
 
-        var playerTitle = self.currentPlayer.Name + '´s tur: ';
+        var playerTitle = self.currentPlayer.Name + '´s turn: ';
 
         if (self.positionOutOfBounds(self.currentPlayer.Pos) && !self.playerHasMoved) {
-            return playerTitle + "Placera ut spelare på grön ruta";
+            return playerTitle + "Place piece on Green Cell";
         }
 
         else if (!self.gameOver()) {
 
             if (!self.playerHasMoved)
-                return playerTitle + "Gå med din spelare";
+                return playerTitle + "Move with your piece (click cell in wanted direction)";
             else if (!self.playerHasPlacedMovedTarget)
-                return playerTitle + "Välj det objekt som ska påverka ett annat objekt";
+                return playerTitle + "Choose object to start magnetic reaction";
             else
-                return playerTitle + "Välj det objekt som ska påverkas";
+                return playerTitle + "Choose target for magnetic reaction";
         }
         else {
             var winners = self.getWinners();
@@ -271,20 +300,34 @@ exports.game = function game(gameId, config, players, sendGameEvent, sendGameUpd
                 if (playerNames !== "" && i < winners.length - 1)
                     playerNames += ", ";
                 else if (playerNames !== "" && i === winners.length - 1)
-                    playerNames += " och ";
+                    playerNames += " and ";
 
-                playerNames += "<i>" + winners[i].Name + "</i>";
+                playerNames += winners[i].Name;
             }
 
             if (winners.length > 1) {
-                return "Spelet slut. Oavgjort mellan " + playerNames + "!";
-
+                var message = "Game over. Draw between " + playerNames + "!";
+                sendGameChat(gameId, message, true);
+                return message;
             }
             else {
-                return "Spelet slut. " + playerNames + " vann!";
+                var winner = self.getRealPlayerByName(playerNames);
+                winner.wins++;
+                var message;
+                if (winner.wins === config.matchLength.value) {
+                    message = playerNames + " Wins game!";
+                    sendGameChat(gameId, message, true);
+                    for (var i = 0; i < players.length; i++) {
+                        players[i].wins = 0;
+                    }
+                }
+                else {
+                    message = playerNames + " Wins set!";
+                    sendGameChat(gameId, message);
+                }
+                sendGameUpdate(gameId);
+                return message;
             }
-
-            // return "Spelet slut! " + playerName + " vann!";
         }
     }
 
