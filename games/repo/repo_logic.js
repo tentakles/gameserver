@@ -52,9 +52,6 @@ exports.game = function game(gameId, config, players, sendGameEvent, sendGameUpd
     }
 
     var self = this;
-
-
-
     self.rows = 12;
     self.cols = 12;
 
@@ -69,8 +66,6 @@ exports.game = function game(gameId, config, players, sendGameEvent, sendGameUpd
     new ItemModel("grey", 3, 121),
     new ItemModel("grey", 3, 130)];
 
-    // self.originalItems =[];
-
     self.board = [{ Num: 1, Color: "white" }, { Num: 3, Color: "white" }, { Num: 5, Color: "white" }, { Num: 2, Color: "white" }, { Num: 4, Color: "white" }, { Num: 6, Color: "white" }, { Num: 1, Color: "white" }, { Num: 3, Color: "white" }, { Num: 5, Color: "white" }, { Num: 2, Color: "white" }, { Num: 4, Color: "white" }, { Num: 6, Color: "white" },
     { Num: 2, Color: "white" }, { Num: 4, Color: "lightblue" }, { Num: 6, Color: "white" }, { Num: 3, Color: "white" }, { Num: 5, Color: "white" }, { Num: 1, Color: "white" }, { Num: 2, Color: "white" }, { Num: 4, Color: "white" }, { Num: 6, Color: "white" }, { Num: 3, Color: "white" }, { Num: 5, Color: "lightblue" }, { Num: 1, Color: "white" },
     { Num: 3, Color: "white" }, { Num: 5, Color: "white" }, { Num: 3, Color: "lightgreen" }, { Num: 4, Color: "lightgreen" }, { Num: 6, Color: "lightgreen" }, { Num: 2, Color: "lightgreen" }, { Num: 3, Color: "lightgreen" }, { Num: 5, Color: "lightgreen" }, { Num: 6, Color: "lightgreen" }, { Num: 4, Color: "lightgreen" }, { Num: 6, Color: "white" }, { Num: 2, Color: "white" },
@@ -84,9 +79,6 @@ exports.game = function game(gameId, config, players, sendGameEvent, sendGameUpd
     { Num: 5, Color: "white" }, { Num: 1, Color: "lightblue" }, { Num: 3, Color: "white" }, { Num: 6, Color: "white" }, { Num: 2, Color: "white" }, { Num: 4, Color: "white" }, { Num: 5, Color: "white" }, { Num: 1, Color: "white" }, { Num: 3, Color: "white" }, { Num: 6, Color: "white" }, { Num: 2, Color: "lightblue" }, { Num: 4, Color: "white" },
     { Num: 6, Color: "white" }, { Num: 2, Color: "white" }, { Num: 4, Color: "white" }, { Num: 1, Color: "white" }, { Num: 3, Color: "white" }, { Num: 5, Color: "white" }, { Num: 6, Color: "white" }, { Num: 2, Color: "white" }, { Num: 4, Color: "white" }, { Num: 1, Color: "white" }, { Num: 3, Color: "white" }, { Num: 5, Color: "white" },];
 
-    self.currentPlayerColor = "yellow";
-    self.activeObjectColor = "magenta";
-    self.errorColor = "red";
     self.okToPlacePlayerColor = "lightgreen";
     self.allowSuicide = true;
 
@@ -132,26 +124,18 @@ exports.game = function game(gameId, config, players, sendGameEvent, sendGameUpd
                     item.Size = item.Size * 3;
                 }
 
-
                 if (item.Reset) {
-                    //  console.log("reset");
-                    //skip animation
                     item.X = item.TargetX;
                     item.Y = item.TargetY;
-                    // item.Size = item.TargetSize;
-                    //   item.IsNew = false;
+                    item.Reset= false;
                 }
 
                 if (resetNew) {
-                    //skip animation
                     item.X = item.TargetX;
                     item.Y = item.TargetY;
                     item.Size = item.TargetSize;
-                    //   item.IsNew = false;
                 }
             }
-            //    item.Targeted = false;
-            //  item.Size = item.TargetSize;
         }
     };
 
@@ -211,8 +195,7 @@ exports.game = function game(gameId, config, players, sendGameEvent, sendGameUpd
     self.move = function (event, player) {
 
         if (self.gameOver()) {
-            self.init();
-            return { cancelEvent: true };
+            return self.init();
         }
 
         if (self.currentPlayer.Name === player) {
@@ -326,6 +309,9 @@ exports.game = function game(gameId, config, players, sendGameEvent, sendGameUpd
                     sendGameChat(gameId, message);
                 }
                 sendGameUpdate(gameId);
+
+                //add extra info for UI
+                message += " Click game to continue playing.";
                 return message;
             }
         }

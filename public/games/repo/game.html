@@ -5,7 +5,7 @@
 
         <h4 class="player selectedPlayer" data-bind="html:status"></h4>
 
-        <div class="float"  style="margin-bottom:10px;margin-right:10px;">
+        <div class="float canvasContainer">
             <canvas id="canvas" width="530" height="530"></canvas>
         </div>
 
@@ -14,7 +14,7 @@
 <div data-bind="foreach:players">
     <div class="player" data-bind="css:{selectedPlayer:IsCurrentPlayer}">
         <div class="circle float ball" data-bind="style:{backgroundColor:Color}">&nbsp;</div>
-        <div style="margin-left:5px;" class="" data-bind="text:Name +', Magneter:' +Drops+', Poäng:'+$parent.ItemSum(Items)"></div>
+        <div class="playerScore" data-bind="text:Name +', Magnets:' +Drops+', Score:'+$parent.ItemSum(Items)"></div>
 </div>
 </div>
 
