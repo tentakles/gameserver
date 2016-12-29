@@ -6,8 +6,10 @@ var ACTION_MOVE_DOWN = 2;
 var ACTION_MOVE_LEFT = 3;
 var ACTION_PLACE_BOMB = 4;
 
+
 var EVENT_TYPE_EXPLOSION = 0;
 var EVENT_TYPE_EXPLOSION_END = 1;
+var EVENT_TYPE_POSITIONS = 2;
 
 var OBJECT_EMPTY = ' ';
 var OBJECT_BOMB = '@';
@@ -48,68 +50,83 @@ function restart() {
 
 }
 
+
+function update_cell(r, c, char) {
+    i = (r * cols) + c;
+
+    var sprite = 'floor';
+    if (char == OBJECT_DESTRUCTIBLE_BLOCK)
+        sprite = "block";
+    else if (char == OBJECT_INDESTRUCTIBLE_BLOCK)
+        sprite = "hardblock";
+    else if (char.includes(OBJECT_BOMB)) {
+        sprite = "bomb";
+
+        if (char.includes(PLAYER_1)) {
+            sprite = "p1bomb";
+        }
+        else if (char.includes(PLAYER_2)) {
+            sprite = "p2bomb";
+        }
+        else if (char.includes(PLAYER_3)) {
+            sprite = "p3bomb";
+        }
+        else if (char.includes(PLAYER_4)) {
+            sprite = "p4bomb";
+        }
+    }
+    else if (char.includes(PLAYER_1))
+        sprite = "p1";
+    else if (char.includes(PLAYER_2))
+        sprite = "p2";
+    else if (char.includes(PLAYER_3))
+        sprite = "p3";
+    else if (char.includes(PLAYER_4))
+        sprite = "p4";
+    else if (char.includes(POWERUP_BOMBS))
+        sprite = "powerup-bombs";
+
+    else if (char.includes(POWERUP_STRENGTH))
+        sprite = "powerup-strength";
+
+    else if (char.includes(POWERUP_BURN))
+        sprite = "powerup-burn";
+
+    else if (char.includes(POWERUP_SPEED))
+        sprite = "powerup-speed";
+
+    $(columns[i]).removeClass().addClass("sprite sprite-" + sprite);
+
+}
+
 function game_event(event) {
     var i;
     if (event.type === EVENT_TYPE_EXPLOSION) {
         bombs[event.bombId] = event;
     }
-    if (event.type === EVENT_TYPE_EXPLOSION_END) {
+    else if (event.type === EVENT_TYPE_EXPLOSION_END) {
         delete bombs[event.bombId];
+    }
+    else if (event.type === EVENT_TYPE_POSITIONS) {
+        for (i = 0; i < event.pos.length; i++) {
+            var pos = event.pos[i];
+            update_cell(pos[0], pos[1], pos[2]);
+            oldGrid[pos[0]][pos[1]] = pos[2];
+        }
+
+        return;
     }
 
     for (var r = 0; r < rows; r++) {
         for (var c = 0; c < cols; c++) {
             if (oldGrid === null || oldGrid[r][c] !== event.grid[r][c] || event.type === EVENT_TYPE_EXPLOSION_END || event.type === EVENT_TYPE_EXPLOSION) {
-                i = (r * cols) + c;
                 var char = event.grid[r][c];
-
-                var sprite = 'floor';
-                if (char == OBJECT_DESTRUCTIBLE_BLOCK)
-                    sprite = "block";
-                else if (char == OBJECT_INDESTRUCTIBLE_BLOCK)
-                    sprite = "hardblock";
-                else if (char.includes(OBJECT_BOMB)) {
-                    sprite = "bomb";
-
-                    if (char.includes(PLAYER_1)) {
-                        sprite = "p1bomb";
-                    }
-                    else if (char.includes(PLAYER_2)) {
-                        sprite = "p2bomb";
-                    }
-                    else if (char.includes(PLAYER_3)) {
-                        sprite = "p3bomb";
-                    }
-                    else if (char.includes(PLAYER_4)) {
-                        sprite = "p4bomb";
-                    }
-                }
-                else if (char.includes(PLAYER_1))
-                    sprite = "p1";
-                else if (char.includes(PLAYER_2))
-                    sprite = "p2";
-                else if (char.includes(PLAYER_3))
-                    sprite = "p3";
-                else if (char.includes(PLAYER_4))
-                    sprite = "p4";
-                else if (char.includes(POWERUP_BOMBS))
-                    sprite = "powerup-bombs";
-
-                else if (char.includes(POWERUP_STRENGTH))
-                    sprite = "powerup-strength";
-
-                else if (char.includes(POWERUP_BURN))
-                    sprite = "powerup-burn";
-
-                else if (char.includes(POWERUP_SPEED))
-                    sprite = "powerup-speed";
-
-                $(columns[i]).removeClass().addClass("sprite sprite-" + sprite);
+                update_cell(r, c, char);
             }
         }
     }
 
-columns.removeClass('sprite-exp-center sprite-exp-down sprite-exp-hori sprite-exp-left sprite-exp-right sprite-exp-up sprite-exp-vert');
+    columns.removeClass('sprite-exp-center sprite-exp-down sprite-exp-hori sprite-exp-left sprite-exp-right sprite-exp-up sprite-exp-vert');
     for (var key in bombs) {
         if (bombs.hasOwnProperty(key)) {
             var bomb = bombs[key];
@@ -197,7 +214,7 @@ function setup_game(conf) {
     gameDiv.html(gamegrid);
 
     columns = gameDiv.find("td");
-    
+
     gameDiv.find("table").focus();
 
     gameDiv.focus();

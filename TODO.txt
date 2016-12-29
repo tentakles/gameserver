@@ -23,8 +23,6 @@ TODO nice to have (post 1.0)
 
 indikation av nya meddelanden i chatdialogerna
 
-scrolla chatten till botten vid inkommet meddelande
-
 Modularisera UI i "index.html" så att det inte är duplicerad html, kanske använda komponenter
 
 Maxgräns på chatmeddelande
@@ -32,8 +30,6 @@ Maxgräns på chatmeddelande
 kolla upp reconnect? is it real
 
 bomberman: 
-	optimisera uppritningen av explosioner etc.
-		tex, rita endast om ruta ifall den har en pagaende explosion.
 	dod gubbe sprite
 	segrare gubbe sprite
 	göra en bomberman_common.js, där allt som är gemensamt ligger. gärna namespacat
@@ -59,6 +55,16 @@ highlighta i "Players list"  vem som är nuvarande spelare
 ############
 DONE
 ############
+
+*bomberman: 
+*	optimisera uppritningen av explosioner etc.
+*	nytt protokoll med 25% data
+*	hantera uppritningen vid walk in to explosion:
+*		om det detecteras, skicka ej med den rutan 
+	
+*scrolla chatten till botten vid inkommet meddelande
+
+	
 
 *göra snyggare design
 	*kunna trycka enter + få rätt fokus i passsword dialog
