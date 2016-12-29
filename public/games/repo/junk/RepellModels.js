@@ -1,11 +1,11 @@
 ﻿
 function PlayerModel(name, c, drops) {
     var self = this;
-    self.Name = ko.observable(name);
-    self.Items = ko.observableArray([]);
+    self.Name = name;
+    self.Items = [];
     self.Pos = -1;
-    self.Drops = ko.observable(drops);
-    self.Color = ko.observable(c);
+    self.Drops =drops;
+    self.Color = c;
  	self.TargetSize=12;
 	
 	self.Targeted=true;
@@ -47,25 +47,25 @@ function PlayerModel(name, c, drops) {
 			self.Y-=yresize;					
 	};
 
-    self.ItemSum = ko.computed(function () {
+    self.ItemSum = function () {
         var sum = 0;
-        for (var i = 0; i < self.Items().length; i++) {
-            sum += self.Items()[i].Value;
+        for (var i = 0; i < self.Items.length; i++) {
+            sum += self.Items[i].Value;
         }
         return sum;
-    });
+    };
 }
 
 function ItemModel(c, v, p) {
 	var self = this;
-	self.Color = ko.observable(c);
+	self.Color = c;
     self.Value = v;
     self.Pos = p;
     self.Size = 7;
 	self.TargetSize = 7;
 	self.Targeted=true;
 	self.clone=function(){
-	return new ItemModel(self.Color(), self.Value, self.Pos);
+	return new ItemModel(self.Color, self.Value, self.Pos);
 	};
 	
 	self.TargetX=0;
