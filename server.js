@@ -261,25 +261,27 @@ listener.sockets.on('connection', function (socket) {
 
     socket.on('client_game_start', function (clientConfig) {
         var game = getGameByUser(socket.nickname);
-        var player = getListItemByParam(socket.nickname, "name", game.players);
-        if (player && player.isAdmin && game && game.players.length <= game.gameType.maxPlayers && game.players.length >= game.gameType.minPlayers) {
-            var gameType = game.gameType;
-            console.log("client_game_start:" + gameType.name + " by: " + socket.nickname);
-            console.log("code url:" + gameType.code);
+        if (game) {
+            var player = getListItemByParam(socket.nickname, "name", game.players);
+            if (player && player.isAdmin && game && game.players.length <= game.gameType.maxPlayers && game.players.length >= game.gameType.minPlayers) {
+                var gameType = game.gameType;
+                console.log("client_game_start:" + gameType.name + " by: " + socket.nickname);
+                console.log("code url:" + gameType.code);
 
-            var gameEnviroment = require(gameType.code);
+                var gameEnviroment = require(gameType.code);
 
-            var controlledGameConfig = mapConfigValues(gameType.config, clientConfig);
+                var controlledGameConfig = mapConfigValues(gameType.config, clientConfig);
 
-            game.instance = new gameEnviroment.game(game.id, controlledGameConfig, game.players, sendGameEvent, sendGameUpdate, sendGameChat);
-            var result = game.instance.init();
+                game.instance = new gameEnviroment.game(game.id, controlledGameConfig, game.players, sendGameEvent, sendGameUpdate, sendGameChat);
+                var result = game.instance.init();
 
-            var response = { gameType: gameType, config: controlledGameConfig, result: result };
+                var response = { gameType: gameType, config: controlledGameConfig, result: result };
 
-            updateGameState(game);
-            listener.sockets.emit('server_games', games);
+                updateGameState(game);
+                listener.sockets.emit('server_games', games);
 
-            listener.to(game.id).emit('server_game_start', response);
+                listener.to(game.id).emit('server_game_start', response);
+            }
         }
     });
 
