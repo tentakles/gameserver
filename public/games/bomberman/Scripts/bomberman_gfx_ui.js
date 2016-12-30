@@ -98,48 +98,38 @@ function sprite(options) {
 
 function update_cell(r, c, char) {
 
-    var sprite = locs.floor;
+    var s = [];
+    s.push(locs.floor);
     if (char == OBJECT_DESTRUCTIBLE_BLOCK)
-        sprite = locs.block;
+        s.push(locs.block);
     else if (char == OBJECT_INDESTRUCTIBLE_BLOCK)
-        sprite = locs.hardblock;
-    else if (char.includes(OBJECT_BOMB)) {
-        sprite = locs.bomb;
-
-        if (char.includes(PLAYER_1)) {
-            sprite = locs.p1bomb;
-        }
-        else if (char.includes(PLAYER_2)) {
-            sprite = locs.p2bomb;
-        }
-        else if (char.includes(PLAYER_3)) {
-            sprite = locs.p3bomb;
-        }
-        else if (char.includes(PLAYER_4)) {
-            sprite = locs.p4bomb;
-        }
+        s.push(locs.hardblock);
+    if (char.includes(PLAYER_1))
+        s.push(locs.p1);
+    if (char.includes(PLAYER_2))
+        s.push(locs.p2);
+    if (char.includes(PLAYER_3))
+        s.push(locs.p3);
+    if (char.includes(PLAYER_4))
+        s.push(locs.p4);
+    if (char.includes(OBJECT_BOMB)) {
+        s.push(locs.bomb);
     }
-    else if (char.includes(PLAYER_1))
-        sprite = locs.p1;
-    else if (char.includes(PLAYER_2))
-        sprite = locs.p2;
-    else if (char.includes(PLAYER_3))
-        sprite = locs.p3;
-    else if (char.includes(PLAYER_4))
-        sprite = locs.p4;
     else if (char.includes(POWERUP_BOMBS))
-        sprite = locs.powerup_bombs;
+        s.push(locs.powerup_bombs);
 
     else if (char.includes(POWERUP_STRENGTH))
-        sprite = locs.powerup_strength;
+        s.push(locs.powerup_strength);
 
     else if (char.includes(POWERUP_BURN))
-        sprite = locs.powerup_burn;
+        s.push(locs.powerup_burn);
 
     else if (char.includes(POWERUP_SPEED))
-        sprite = locs.powerup_speed;
+        s.push(locs.powerup_speed);
 
-    sprites.draw(sprite, r * h, c * w);
+    for (var i = 0; i < s.length; i++) {
+        sprites.draw(s[i], r * h, c * w);
+    }
 
 }
 
@@ -260,7 +250,7 @@ $(function () {
         gameLobby.registerGame(setup_game, game_event);
         console.log("img Load");
     });
-    spriteSheetImg.src = "games/bomberman/gfx/spritesheet2x.png";
+    spriteSheetImg.src = "games/bomberman/gfx/transpspritesheet2x.png";
     var canvas;
 
     canvas = gameDiv[0];
