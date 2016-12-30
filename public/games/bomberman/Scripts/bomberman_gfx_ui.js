@@ -135,8 +135,6 @@ function update_cell(r, c, char) {
 
 function game_event(event) {
     window.requestAnimationFrame(function () {
-
-        console.log("Bomberman game event");
         var i;
         if (event.type === EVENT_TYPE_EXPLOSION) {
             bombs[event.bombId] = event;
@@ -236,24 +234,17 @@ function try_move(action) {
 
 function setup_game(conf) {
     console.log("Setup_game: Bomberman");
-
 }
 
 $(function () {
-    console.log("Bomberman ONload");
-
-    gameDiv = $("#game");
-
     var spriteSheetImg = new Image();
-    //spriteSheetImg.src = "spritesheet.png";
     spriteSheetImg.addEventListener("load", function () {
         gameLobby.registerGame(setup_game, game_event);
-        console.log("img Load");
     });
     spriteSheetImg.src = "games/bomberman/gfx/transpspritesheet2x.png";
-    var canvas;
 
-    canvas = gameDiv[0];
+    gameDiv = $("#game");
+    var canvas = gameDiv[0];
     canvas.width = w * cols;
     canvas.height = h * rows;
 
@@ -278,21 +269,22 @@ $(function () {
             case 32:
                 try_move(ACTION_PLACE_BOMB);
                 break;
+            case 65:
             case 37:
                 try_move(ACTION_MOVE_LEFT);
                 break;
+            case 87:
             case 38:
                 try_move(ACTION_MOVE_UP);
                 break;
+            case 68:
             case 39:
                 try_move(ACTION_MOVE_RIGHT);
                 break;
+            case 83:
             case 40:
                 try_move(ACTION_MOVE_DOWN);
                 break;
         }
-
     });
-
-
 });
