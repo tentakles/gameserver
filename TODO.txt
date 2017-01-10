@@ -5,9 +5,6 @@ TODO server
 release 1.0
 deploya 1.0 till egen site
 
-Man kan joina samma spel flera gånger
-	kontrllera att player name inte finns i players-arrayen på spelet innan man tillåter Join
-
 Indikation på fel lösenord
 	vissa statustext inuti passwordialog
 
@@ -55,6 +52,11 @@ highlighta i "Players list"  vem som är nuvarande spelare
 ############
 DONE
 ############
+
+
+*Man kan joina samma spel flera gånger
+*	kontrllera att player name inte finns i players-arrayen på spelet innan man tillåter Join
+
 
 *bomberman: 
 *	optimisera uppritningen av explosioner etc.

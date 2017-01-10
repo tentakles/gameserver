@@ -166,7 +166,7 @@ listener.sockets.on('connection', function (socket) {
     });
 
     socket.on('client_game_leave', function () {
-        console.log("Player left game:" + socket.nickname);
+        console.log("Player leaves game:" + socket.nickname);
         handleClientLeave(socket);
     });
 
@@ -335,7 +335,9 @@ listener.sockets.on('connection', function (socket) {
             }
         }
 
-        if (game && game.joinable) {
+        var alreadyJoined = getListItemByParam(socket.nickname, "name", game.players) != null;
+        
+        if (game && game.joinable && !alreadyJoined) {
             game.players.push({ name: socket.nickname, wins: 0, isAdmin: false });
             socket.join(game.id);
             socket.emit('server_join_game_success', game);
