@@ -5,9 +5,6 @@ TODO server
 release 1.0
 deploya 1.0 till egen site
 
-Indikation på fel lösenord
-	vissa statustext inuti passwordialog
-
 ##############
 Todo bomberman
 ##############
@@ -53,6 +50,8 @@ highlighta i "Players list"  vem som är nuvarande spelare
 DONE
 ############
 
+* Indikation på fel lösenord
+	* vissa statustext inuti passwordialog
 
 *Man kan joina samma spel flera gånger
 *	kontrllera att player name inte finns i players-arrayen på spelet innan man tillåter Join

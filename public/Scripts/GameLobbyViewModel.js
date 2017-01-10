@@ -21,7 +21,7 @@ function GameLobbyViewModel(socket) {
     self.numConnectedClients = ko.observable(0);
 
     self.chatMode = ko.observable(0);
-    
+
     self.isAdmin = ko.observable(false);
     self.gameStarted = ko.observable(false);
 
@@ -29,6 +29,7 @@ function GameLobbyViewModel(socket) {
 
     self.createGameName = ko.observable("");
     self.createGamePassword = ko.observable("");
+    self.joinGameWithPasswordResult = ko.observable("");
 
     self.alertTitle = ko.observable("");
     self.alertText = ko.observable("");
@@ -122,7 +123,7 @@ function GameLobbyViewModel(socket) {
         socket.on('server_game_chat', function (data) {
             self.gameChats.push(data);
             $('#gameChatBox').animate({ scrollTop: $('#gameChatBox').prop("scrollHeight") }, 100);
-            $('#gameChatBoxInGame').animate({ scrollTop: $('#gameChatBoxInGame').prop("scrollHeight") }, 100); 
+            $('#gameChatBoxInGame').animate({ scrollTop: $('#gameChatBoxInGame').prop("scrollHeight") }, 100);
         });
 
         socket.on('server_games', function (data) {
@@ -158,7 +159,12 @@ function GameLobbyViewModel(socket) {
         });
 
         socket.on('server_join_game_success', function (game) {
+            $('#passwordModal').modal('hide');
             self.enterGame(game, false);
+        });
+
+        socket.on('server_join_game_fail', function () {
+            self.joinGameWithPasswordResult("Wrong password");
         });
 
         socket.on('server_game_update', function (game) {
@@ -212,12 +218,13 @@ function GameLobbyViewModel(socket) {
     };
 
     self.joinGame = function (game) {
+        self.joinGameWithPasswordResult("");
         if (game.needPassword) {
             self.lastGameId = game.id;
             self.gamePassword("");
             $('#passwordModal').modal();
 
-            $('#passwordModal').on('shown.bs.modal', function() {
+            $('#passwordModal').on('shown.bs.modal', function () {
                 $('#gamePasswordInput').focus();
             });
         }
@@ -262,7 +269,7 @@ function GameLobbyViewModel(socket) {
         socket.emit('client_game_chat', self.gameChatRow());
         self.gameChatRow("");
     };
-    
+
     self.submitPasswordModalKeyPress = function (d, e) {
         if (e.keyCode === 13) {
             self.joinGameWithPassword();
