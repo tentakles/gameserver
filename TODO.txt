@@ -1,9 +1,40 @@
-﻿############
+﻿##############
+Todo bomberman 3D
+##############
+
+tutorials:
+
+liten och enkel
+https://dinosaurscode.xyz/tutorials/2016/07/15/three-js-tutorial-for-beginners/
+
+http://blog.teamtreehouse.com/the-beginners-guide-to-three-js
+http://www.johannes-raida.de/tutorials/three.js/tutorial01/tutorial01.htm
+
+uppgifter:
+	följa tutorial
+	göra powerups, spelare, block, bomber, explosioner (?) i 3d.	
+	kunna rendera en enkel labyrint.
+	kunna gå runt i en labyrint
+	
+	implementera hela bomberman 3d
+		1
+		2
+		3
+				
+bygga mer på pocen
+	bygga en ram runt planene
+	bättre lampor
+	ändra kameraperspektiv
+	skapa ett golv
+	skapa lådtexturer
+	kunna gå runt
+	kunna modifiera listan på objekt, ta bort dem ur scenen etc.
+	FPS COUNTER!!! ZOMG
+		
+
+############
 TODO server
 ############
-
-release 1.0
-deploya 1.0 till egen site
 
 ##############
 Todo bomberman
@@ -50,12 +81,14 @@ highlighta i "Players list"  vem som är nuvarande spelare
 DONE
 ############
 
+*release 1.0
+*deploya 1.0 till egen site
+
 * Indikation på fel lösenord
 	* vissa statustext inuti passwordialog
 
 *Man kan joina samma spel flera gånger
 *	kontrllera att player name inte finns i players-arrayen på spelet innan man tillåter Join
-
 
 *bomberman: 
 *	optimisera uppritningen av explosioner etc.

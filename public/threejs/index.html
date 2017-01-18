@@ -1,0 +1,139 @@
+<!doctype html>
+<html>
+<head>
+</head>
+
+<body>
+    <!--Load three.js-->
+    <script src="three.min.js"></script>
+    <script src="OrbitControls.js"></script>
+
+    <script>
+
+        var scene = new THREE.Scene();
+        var camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
+        var renderer = new THREE.WebGLRenderer();
+
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        renderer.setClearColor(0x3399ff);
+        document.body.appendChild(renderer.domElement);
+
+     //   var mesh;
+        var monkeyMaterial;
+        var monkeyGeometry;
+        var monkeyScale = 0.4;
+        function init() {
+            var boxSize = .8;
+            var boxes = [];
+            var grid = [
+                        ['A', ' ', '$', '$', '$', '$', '$', ' ', ' '],
+                        [' ', '#', '$', '#', '$', '#', '$', '#', ' '],
+                        ['$', '$', '$', '$', '$', '$', '$', '$', '$'],
+                        ['$', '#', '$', '#', '$', '#', '$', '#', '$'],
+                        ['$', '$', '$', '$', '$', '$', '$', '$', '$'],
+                        [' ', '#', '$', '#', '$', '#', '$', '#', ' '],
+                        [' ', ' ', '$', '$', '$', '$', '$', ' ', ' ']];
+
+            var boxGeom = new THREE.BoxGeometry(boxSize, boxSize, boxSize);
+            var boxMaterial1 = new THREE.MeshLambertMaterial({ color: "#ff00ff" });
+            var boxMaterial2 = new THREE.MeshLambertMaterial({ color: "#ffff00" });
+
+            for (var y = 0; y < grid.length; y++) {
+                var row = grid[y];
+                for (var x = 0; x < row.length; x++) {
+                    var col = row[x];
+                    console.log(col);
+
+                    var obj;
+
+                    switch (col) {
+                        case  '$':
+                            obj = new THREE.Mesh(boxGeom, boxMaterial1);
+                            boxes.push(obj);
+                            break;
+                        case '#':
+                            obj = new THREE.Mesh(boxGeom, boxMaterial2);
+                            boxes.push(obj);
+                            break;
+                        case 'A':
+                            obj = new THREE.Mesh(monkeyGeometry, monkeyMaterial);
+                            obj.scale.x = monkeyScale;
+                            obj.scale.y = monkeyScale;
+                            obj.scale.z = monkeyScale;
+                         //   obj.position.y = -0.65;
+                            //boxes.push(obj);
+                            break;
+                    }
+
+               
+
+                    if (obj) {
+                        obj.position.x = x;
+                        obj.position.z = y;
+                        scene.add(obj);
+                    }
+                    obj = null;
+
+                }
+            }
+
+            // (color, intensity)
+            var light = new THREE.PointLight(0xff00ff, 5,15 );
+            // (x, y, z)
+            light.position.set(0, 0, 7);
+
+            // (color, intensity)
+            var light2 = new THREE.PointLight(0xffff00, 5,15 );
+            // (x, y, z)
+            light2.position.set(-7, 0, 0);
+
+            scene.add(light);
+            scene.add(light2);
+
+            // move the camera back
+            camera.position.z = 10;
+
+            render();
+        }
+
+      
+        // Load the object
+        var loader = new THREE.JSONLoader().load("mjukgubbe.json", function (geometry, materials) {
+             monkeyMaterial = new THREE.MultiMaterial(materials);
+            monkeyGeometry = geometry;
+            //    
+            init();
+        });
+
+        controls = new THREE.OrbitControls(camera, renderer.domElement);
+        /*
+          // (width, height, depth)
+        var geometry = new THREE.BoxGeometry(5, 5, 5);
+
+        var mesh;
+          var loader = new THREE.TextureLoader();
+        // URL of texture
+        loader.load("images/hest.jpg", function(texture){
+          var material = new THREE.MeshLambertMaterial({map: texture});
+          mesh = new THREE.Mesh(geometry, material);
+          scene.add(mesh);  });
+      */
+
+        function render() {
+            requestAnimationFrame(render);
+            var num = Math.random();
+            //console.log(num);
+            //  mesh.rotation.x += 0.005;
+
+            //light.rotation.x += 0.01;
+      //      mesh.scale.x = 1 + num / 50;
+
+       //     mesh.rotation.y += 0.005;
+            renderer.render(scene, camera);
+            controls.update();
+
+        }
+        
+    </script>
+</body>
+</html>
