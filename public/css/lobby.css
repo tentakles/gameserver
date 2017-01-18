@@ -1,29 +1,47 @@
 ﻿
-#createGameBox, #gameBox, #gamePlayersBox, #chatBox, #gameChatBox {
-    height: 300px;
+h2 {
+    margin-top: 0px;
+}
+
+#createGameBox, #gameBox, #gamePlayersBox, #chatBox, #gameChatBox, #gameChatBoxInGame {
+    height: 250px;
     overflow-y: auto;
+}
+
+#gamePlayersBoxInGame {
+    height: 180px;
+    overflow-y: auto;
+    margin-bottom: 10px;
 }
 
 #gameWrapper {
     margin-top: 10px;
 }
 
-.chatRow{
-    margin:2px;
-    padding:2px;
-    border-radius:5px; 
+.chatTabs {
+    margin-top: 20px;
 }
 
-.chatRowFromGame{
-    background-color:#ffff00;
+.chatRow {
+    margin: 2px;
+    padding: 2px;
+    border-radius: 5px;
 }
 
-.chatRowImportant{
-    background-color:#FF8000;
-    font-size:16px;
-    font-weight:bold;
+.chatRowFromGame {
+    background-color: #ffff00;
 }
 
-.bold{
-    font-weight:bold;
+.validation {
+    color: red;
+}
+
+.chatRowImportant {
+    background-color: #FF8000;
+    font-size: 16px;
+    font-weight: bold;
+}
+
+.bold {
+    font-weight: bold;
 }

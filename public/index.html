@@ -3,16 +3,15 @@
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <link href="Content/bootstrap.css" rel="stylesheet" />
-    <link href="Content/bootstrap-theme.css" rel="stylesheet" />
-
     <title data-bind="text: title"></title>
 
+    <link href="css/bootstrap.min.css" rel="stylesheet" />
+    <link href="css/bootstrap-theme.min.css" rel="stylesheet" />
     <link href="css/lobby.css" rel="stylesheet" />
-
+    
     <script src="Scripts/knockout-3.2.0.js"></script>
-    <script src="Scripts/jquery-2.1.1.js"></script>
-    <script src="Scripts/bootstrap.js"></script>
+    <script src="Scripts/jquery-2.1.1.min.js"></script>
+    <script src="Scripts/bootstrap.min.js"></script>
     <script src="/socket.io/socket.io.js"></script>
     <script src="Scripts/GameLobbyViewModel.js"></script>
 
@@ -55,7 +54,7 @@
             <div id="gameBox" class="well">
 
                 <div class="row">
-                    <div class="col-sm-3">
+                    <div class="col-sm-4 col-sm-offset-1">
                         <b>Game name</b>
                     </div>
 
@@ -67,25 +66,27 @@
                         <b>Players</b>
                     </div>
                     <div class="col-sm-2">
-                        <b>Password</b>
-                    </div>
-                    <div class="col-sm-2">
-                        <b></b>
                     </div>
                 </div>
 
                 <div data-bind="foreach:games" class="row">
-                    <div class="col-sm-3" data-bind="text:name"></div>
+
+                    <div class="col-sm-1">
+                        <span class="glyphicon glyphicon-lock" data-bind="visible:needPassword"></span>
+                    </div>
+
+                    <div class="col-sm-4" data-bind="text:name"></div>
                     <div class="col-sm-3" data-bind="text:gameType.name"></div>
                     <div class="col-sm-2" data-bind="text:players.length +'/'+ gameType.maxPlayers"></div>
-                    <div class="col-sm-2"><span class="glyphicon glyphicon-lock" data-bind="visible:needPassword"></span></div>
                     <div class="col-sm-2">
                         <button type="button" class="pull-right btn btn-default btn-sm" data-bind="click:$parent.joinGame,enable:joinable">Join</button>
                     </div>
                 </div>
             </div>
-            <div class="col-sm-4">
-                <button type="button" class="btn btn-default btn-lg" data-bind="click:createGame">Create</button>
+            <div class="row">
+                <div class="col-sm-4">
+                    <button type="button" class="btn btn-default btn-lg" data-bind="click:createGame">Create</button>
+                </div>
             </div>
         </div>
 
@@ -116,14 +117,20 @@
 
             </div>
 
-            <div class="col-sm-6 col-sm-offset-3">
-                <button type="button" class="btn btn-default btn-lg" data-bind="click:cancelCreateGame">Cancel</button>
-                <button type="button" class="btn btn-primary btn-lg" data-bind="click:doCreateGame">Create</button>
+            <div class="row">
+                <div class="col-sm-6">
+                    <button type="button" class="btn btn-default btn-lg" data-bind="click:cancelCreateGame">Cancel</button>
+                    <button type="button" class="btn btn-primary btn-lg" data-bind="click:doCreateGame">Create</button>
+                </div>
             </div>
         </div>
 
-        <div class="col-sm-8" data-bind="visible:gameLobbyMode">
-            <div class=" col-sm-6">
+        <div class="col-sm-8" data-bind="visible:gameStarted()">
+            <div id="gameWrapper"></div>
+        </div>
+
+        <div class="col-sm-8" data-bind="visible:gameLobbyMode() && !gameStarted()">
+            <div class="col-sm-6">
                 <h2>Players</h2>
                 <div id="gamePlayersBox" class="well">
                     <div class="row">
@@ -150,11 +157,8 @@
                 </div>
 
                 <div class="row">
-                    <div class="col-sm-4">
+                    <div class="col-sm-12">
                         <button type="button" class="btn btn-default btn-lg" data-bind="click:leaveGame">Leave</button>
-                    </div>
-
-                    <div class="col-sm-4">
                         <button type="button" class="btn btn-primary btn-lg" data-bind="click:startGame, visible:isAdmin() && !gameStarted() , enable:canStartGame">Start game</button>
                     </div>
                 </div>
@@ -173,7 +177,9 @@
 
                 <div data-bind="visible:isAdmin() && !gameStarted()">
                     <div class="row">
-                        <div class="col-sm-12"><b>Properties</b></div>
+                        <div class="col-sm-12">
+                            <b>Properties</b>
+                        </div>
                     </div>
 
                     <div data-bind="foreach:gameConfigList">
@@ -196,37 +202,110 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-sm-8">
-                    <input type="text" class="form-control" data-bind="textInput:gameChatRow, event: {keypress: submitGameChatKeyPress}"></input>
-                </div>
-                <div class="col-sm-4">
-                    <button type="button" class="btn btn-default btn-lg" data-bind="click:submitGameChat">Send</button>
+
+                <div class="row">
+                    <div class="col-sm-8">
+                        <input type="text" class="form-control" data-bind="textInput:gameChatRow, event: {keypress: submitGameChatKeyPress}"></input>
+                    </div>
+                    <div class="col-sm-4">
+                        <button type="button" class="btn btn-default btn-lg" data-bind="click:submitGameChat">Send</button>
+                    </div>
                 </div>
             </div>
         </div>
 
         <div class="col-sm-4">
-            <h2>Lobby Chat</h2>
-            <div id="chatBox" class="well" data-bind="foreach:chats">
-                <div class="row">
-                    <div class="col-sm-4 bold" data-bind="text:user"></div>
-                    <div class="col-sm-8">
-                        <div class="chatRow" data-bind="text:line"></div>
+
+            <div data-bind="visible:gameStarted()">
+
+                <h2>Players</h2>
+                <div id="gamePlayersBoxInGame" class="well">
+                    <div class="row">
+
+                        <div class="col-sm-5 col-sm-offset-1">
+                            <b>Name</b>
+                        </div>
+                        <div class="col-sm-6">
+                            <b>Wins</b>
+                        </div>
+                    </div>
+                    <div data-bind="foreach:gamePlayers">
+                        <div class="row">
+                            <div class="col-sm-1">
+                                <img src="img/admin.png" data-bind="visible:isAdmin" />
+                            </div>
+                            <div class="col-sm-5" data-bind="text:name">
+                            </div>
+                            <div class="col-sm-5" data-bind="text:wins + '/'+ $parent.gameMatchLength()">
+                            </div>
+                        </div>
                     </div>
                 </div>
-            </div>
-            <div class="col-sm-8">
-                <input type="text" class="form-control" data-bind="textInput:chatRow, event: {keypress: submitChatKeyPress}" />
-            </div>
-            <div class="col-sm-4">
-                <button type="button" class="btn btn-default btn-lg" data-bind="click:submitChat">Send</button>
+
+                <div class="row">
+                    <div class="col-sm-12">
+                        <button type="button" class="btn btn-default btn-lg" data-bind="click:leaveGame">Leave</button>
+                    </div>
+                </div>
+
             </div>
 
-            <div class="col-sm-12" data-bind="text:'Connected players: '+numConnectedClients()"></div>
+            <div id="chatWrapper">
+
+                <ul class="nav nav-tabs chatTabs" data-bind="visible:gameStarted()">
+                    <li role="presentation" data-bind="css:{active:(chatMode()===1)}"><a href="#" data-bind="click:function(){chatMode(1);}">Game chat</a></li>
+                    <li role="presentation" data-bind="css:{active:(chatMode()===0)}"><a href="#" data-bind="click:function(){chatMode(0);}">Lobby chat</a></li>
+                </ul>
+
+                <div id="lobbyChatWrapper" data-bind="visible:chatMode()===0">
+                    <h2 data-bind="visible:!gameStarted()">Lobby Chat</h2>
+                    <div id="chatBox" class="well" data-bind="foreach:chats">
+                        <div class="row">
+                            <div class="col-sm-4 bold" data-bind="text:user"></div>
+                            <div class="col-sm-8">
+                                <div class="chatRow" data-bind="text:line"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-sm-8">
+                            <input type="text" class="form-control" data-bind="textInput:chatRow, event: {keypress: submitChatKeyPress}" />
+                        </div>
+                        <div class="col-sm-4">
+                            <button type="button" class="btn btn-default btn-lg" data-bind="click:submitChat">Send</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="gameChatWrapper" data-bind="visible:gameStarted() && chatMode()===1">
+                    <div id="gameChatBoxInGame" class="well" data-bind="foreach:gameChats">
+                        <div class="row">
+                            <div class="col-sm-4 bold" data-bind="text:user"></div>
+                            <div class="col-sm-8">
+                                <div class="chatRow" data-bind="text:line,css:{'chatRowFromGame':fromGame, chatRowImportant:important}"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-sm-8">
+                            <input type="text" class="form-control" data-bind="textInput:gameChatRow, event: {keypress: submitGameChatKeyPress}"></input>
+                        </div>
+                        <div class="col-sm-4">
+                            <button type="button" class="btn btn-default btn-lg" data-bind="click:submitGameChat">Send</button>
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+
+            <div class="row">
+                <div class="col-sm-12" data-bind="text:'Players online: '+numConnectedClients()"></div>
+            </div>
         </div>
 
-        <div class="col-sm-12" id="gameWrapper" data-bind="visible:gameLobbyMode">
-        </div>
     </div>
 
     <div id="passwordModal" class="modal fade" role="dialog">
@@ -238,26 +317,29 @@
                 </div>
                 <div class="modal-body">
                     <p>Enter password to join game.</p>
-                    <p><input data-bind="value:gamePassword" type="text" class="form-control" /></p>
+                    <p>
+                        <input id="gamePasswordInput" data-bind="textInput:gamePassword, event: {keypress: submitPasswordModalKeyPress}" type="text"
+                               class="form-control" />
+                    </p>
+                    <div class="validation" data-bind="text: '&nbsp;'+joinGameWithPasswordResult()"></div>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
-                    <button type="button" class="btn btn-primary" data-dismiss="modal" data-bind="click:joinGameWithPassword">Join</button>
+                    <button type="button" class="btn btn-primary" data-bind="click:joinGameWithPassword">Join</button>
                 </div>
             </div>
         </div>
     </div>
 
-    <div id="gameCloseModal" class="modal fade" role="dialog">
+    <div id="alertModal" class="modal fade" role="dialog">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal">&times;</button>
-                    <h4 class="modal-title">Game closed</h4>
+                    <h4 class="modal-title" data-bind="text:alertTitle"></h4>
                 </div>
                 <div class="modal-body">
-                    <p>Game closed because:</p>
-                    <p data-bind="text:gameCloseReason"></p>
+                    <p data-bind="text:alertText"></p>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>

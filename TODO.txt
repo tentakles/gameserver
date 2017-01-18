@@ -5,40 +5,25 @@ TODO server
 release 1.0
 deploya 1.0 till egen site
 
-kolla om nickname är unikt vid join
-	loopa listener.sockets, om det finns en träff, sätta result till false, och break:a loopen.
-visa dialogruta om att nickname ej är godkänt om nickname ej är godkänt
-	imitera hur password dialog fungerar
-
-göra snyggare design
-	kunna trycka enter + få rätt fokus i passsword dialog
-	tydligare avgränsning i chattar mellan namn och meddelande
-	password behöver inte ta upp en kolumn, utan kan t.ex. stå framför game name eller nåt sådant
-	större box för spelet
-	fixa fokusgrejen
-	
-Gamelobby leaves
-	Server ska skicka med 'reason' om sådan finns vid server_game_close
-	Klient skall visa denna reason i en modal om reason finns
-		
 ##############
 Todo bomberman
 ##############
 
 Buggar: 
-	Powerups påverkar redan placerade bomber
-
+	
 ############
 TODO nice to have (post 1.0)
 ############
 
+indikation av nya meddelanden i chatdialogerna
+
+Modularisera UI i "index.html" så att det inte är duplicerad html, kanske använda komponenter
+
+Maxgräns på chatmeddelande
+
 kolla upp reconnect? is it real
 
-
-
 bomberman: 
-	optimisera uppritningen av explosioner etc.
-		tex, rita endast om ruta ifall den har en pagaende explosion.
 	dod gubbe sprite
 	segrare gubbe sprite
 	göra en bomberman_common.js, där allt som är gemensamt ligger. gärna namespacat
@@ -64,6 +49,41 @@ highlighta i "Players list"  vem som är nuvarande spelare
 ############
 DONE
 ############
+
+* Indikation på fel lösenord
+	* vissa statustext inuti passwordialog
+
+*Man kan joina samma spel flera gånger
+*	kontrllera att player name inte finns i players-arrayen på spelet innan man tillåter Join
+
+
+*bomberman: 
+*	optimisera uppritningen av explosioner etc.
+*	nytt protokoll med 25% data
+*	hantera uppritningen vid walk in to explosion:
+*		om det detecteras, skicka ej med den rutan 
+	
+*scrolla chatten till botten vid inkommet meddelande
+
+	
+
+*göra snyggare design
+	*kunna trycka enter + få rätt fokus i passsword dialog
+	*större box för spelet	
+	*password behöver inte ta upp en kolumn, utan kan t.ex. stå framför game name eller nåt sådant
+	
+* kolla om nickname är unikt vid join
+	* loopa listener.sockets, om det finns en träff, sätta result till false, och break:a loopen.
+* visa dialogruta om att nickname ej är godkänt
+	* imitera hur password dialog fungerar
+* visa dialogruta om att game name ej är godkänt
+	* imitera hur password dialog fungerar
+	
+*Bugg: Powerups påverkar redan placerade bomber
+
+* Gamelobby leaves
+	* Server ska skicka med 'reason' om sådan finns vid server_game_close
+	* Klient skall visa denna reason i en modal om reason finns
 
 *definera scope for 1.0
 

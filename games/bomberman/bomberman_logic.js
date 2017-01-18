@@ -17,6 +17,7 @@ exports.game = function game(gameId, config, players, sendGameEvent, sendGameUpd
 
     self.EVENT_TYPE_EXPLOSION = 0;
     self.EVENT_TYPE_EXPLOSION_END = 1;
+    self.EVENT_TYPE_POSITIONS = 2;
 
     self.OBJECT_EMPTY = ' ';
     self.OBJECT_BOMB = '@';
@@ -78,14 +79,12 @@ exports.game = function game(gameId, config, players, sendGameEvent, sendGameUpd
         return '';
     };
 
-    self.try_move = function (event, player) {
-        var result = false;
-
-        var playerObj = self.playerData[player];
+    self.try_move = function (event, playerObj) {
+        var result = { canMove: false, positions: [] };
 
         if (!playerObj.isAlive) {
             console.log(player + " is dead, cannot move");
-            return false;
+            return result;
         }
 
         var bombRow = playerObj.row;
@@ -134,7 +133,9 @@ exports.game = function game(gameId, config, players, sendGameEvent, sendGameUpd
 
             self.bombExplosions.push({ funcId: explosionId, func: explosionFunc, bombId: bombId, row: bombRow, col: bombCol });
 
-            return true;
+            result.canMove = true;
+            result.positions.push([bombRow, bombCol]);
+            return result;
         }
 
         if (playerObj.date) {
@@ -145,7 +146,7 @@ exports.game = function game(gameId, config, players, sendGameEvent, sendGameUpd
                 playerObj.date = now;
             }
             else {
-                return false;
+                return result;
             }
         }
         else {
@@ -155,26 +156,39 @@ exports.game = function game(gameId, config, players, sendGameEvent, sendGameUpd
         switch (event.action) {
             case self.ACTION_MOVE_UP:
                 if (playerObj.row > 0 && self.can_move_to_pos(playerObj.row - 1, playerObj.col)) {
-                    result = true;
+                    result.positions.push([playerObj.row, playerObj.col]);
                     self.update_pos_after_move(playerObj, -1, 0);
+                    result.positions.push([playerObj.row, playerObj.col]);
+                    result.canMove = true;
+                    return result;
                 }
                 break;
             case self.ACTION_MOVE_DOWN:
                 if (playerObj.row < self.rows - 1 && self.can_move_to_pos(playerObj.row + 1, playerObj.col)) {
-                    result = true;
+
+                    result.positions.push([playerObj.row, playerObj.col]);
                     self.update_pos_after_move(playerObj, 1, 0);
+                    result.positions.push([playerObj.row, playerObj.col]);
+                    result.canMove = true;
+                    return result;
                 }
                 break;
             case self.ACTION_MOVE_RIGHT:
                 if (playerObj.col < self.cols - 1 && self.can_move_to_pos(playerObj.row, playerObj.col + 1)) {
-                    result = true;
+                    result.positions.push([playerObj.row, playerObj.col]);
                     self.update_pos_after_move(playerObj, 0, 1);
+                    result.positions.push([playerObj.row, playerObj.col]);
+                    result.canMove = true;
+                    return result;
                 }
                 break;
             case self.ACTION_MOVE_LEFT:
                 if (playerObj.col > 0 && self.can_move_to_pos(playerObj.row, playerObj.col - 1)) {
-                    result = true;
+                    result.positions.push([playerObj.row, playerObj.col]);
                     self.update_pos_after_move(playerObj, 0, -1);
+                    result.positions.push([playerObj.row, playerObj.col]);
+                    result.canMove = true;
+                    return result;
                 }
                 break;
         }
@@ -261,33 +275,22 @@ exports.game = function game(gameId, config, players, sendGameEvent, sendGameUpd
                 goLeft = self.handleExplosionOnPosition(event.row, event.col - i, explosionPositions, false, self.EXP_TYPE_HORI);
                 lastLeft = [event.row, event.col - i];
             }
-            else if (lastLeft) {
-              //  self.updateExplosionDir(explosionPositions, lastLeft[0], lastLeft[1], self.EXP_TYPE_LEFT);
-            }
 
             if (goRight) {
                 goRight = self.handleExplosionOnPosition(event.row, event.col + i, explosionPositions, false, self.EXP_TYPE_HORI);
                 lastRight = [event.row, event.col + i];
-            }
-            else if (lastRight) {
-            //    self.updateExplosionDir(explosionPositions, lastLeft[0], lastLeft[1], self.EXP_TYPE_RIGHT);
             }
 
             if (goDown) {
                 goDown = self.handleExplosionOnPosition(event.row + i, event.col, explosionPositions, false, self.EXP_TYPE_VERT);
                 lastDown = [event.row + i, event.col];
             }
-            else if (lastDown) {
-            //    self.updateExplosionDir(explosionPositions, lastLeft[0], lastLeft[1], self.EXP_TYPE_DOWN);
-            }
 
             if (goUp) {
                 goUp = self.handleExplosionOnPosition(event.row - i, event.col, explosionPositions, false, self.EXP_TYPE_VERT);
                 lastUp = [event.row - i, event.col];
             }
-            else if (lastUp) {
-              //  self.updateExplosionDir(explosionPositions, lastLeft[0], lastLeft[1], self.EXP_TYPE_UP);
-            }
+
         }
 
         if (lastLeft) {
@@ -364,8 +367,7 @@ exports.game = function game(gameId, config, players, sendGameEvent, sendGameUpd
 
     }
 
-    self.checkIfPlayerWalkedInToPowerup = function (player) {
-        var playerObj = self.playerData[player];
+    self.checkIfPlayerWalkedInToPowerup = function (playerObj) {
         var row = playerObj.row;
         var col = playerObj.col;
 
@@ -390,24 +392,34 @@ exports.game = function game(gameId, config, players, sendGameEvent, sendGameUpd
     };
 
     self.move = function (event, player) {
-        // console.log(event.action);
+        if (!self.gameResettingState) {
 
-        if (self.gameResettingState)
-            return { cancelEvent: true };
+            var playerObj = self.playerData[player];
 
-        var canMove = self.try_move(event, player);
+            var tryMove = self.try_move(event, playerObj);
 
-        if (canMove) {
-            self.checkIfPlayerWalkedInToExplosion(player);
-            self.checkIfPlayerWalkedInToPowerup(player);
+            if (tryMove.canMove) {
+                var playerExploded = self.checkIfPlayerWalkedInToExplosion(playerObj);
+                self.checkIfPlayerWalkedInToPowerup(playerObj);
+
+                //add latest cell contents to affected cells...
+                for (var i = 0; i < tryMove.positions.length; i++) {
+                    var p = tryMove.positions[i];
+                    p.push(self.grid[p[0]][p[1]]);
+                }
+
+                //if not removed, an UI bug occurs where explosion tile is removed.
+                if(playerExploded)
+                    tryMove.positions.pop();
+
+                return { pos: tryMove.positions, type: self.EVENT_TYPE_POSITIONS };
+            }
         }
 
-        return { grid: self.grid, cancelEvent: !canMove };
+        return { cancelEvent: true };
     }
 
-    self.checkIfPlayerWalkedInToExplosion = function (player) {
-        var playerObj = self.playerData[player];
-
+    self.checkIfPlayerWalkedInToExplosion = function (playerObj) {
         for (var i = 0; i < self.bombExplosions.length; i++) {
             var bombExplosion = self.bombExplosions[i];
 
@@ -419,11 +431,12 @@ exports.game = function game(gameId, config, players, sendGameEvent, sendGameUpd
                         self.grid[playerObj.row][playerObj.col] = self.grid[playerObj.row][playerObj.col].replace(playerObj.char, ' ');
                         playerObj.isAlive = false;
                         self.checkWinStatus();
-                        break;
+                        return true;
                     }
                 }
             }
         }
+        return false;
     }
 
     self.init = function () {
