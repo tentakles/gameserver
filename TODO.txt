@@ -2,6 +2,10 @@
 Todo bomberman 3D
 ##############
 
+kunna flytta spelaren
+dit spelaren går, ta bort det objektet som finns där.
+rotera spelaren åt det håll han går.
+
 tutorials:
 
 liten och enkel
@@ -27,21 +31,23 @@ uppgifter:
 		explosioner (?) i 3d.	
 	kunna rendera en enkel labyrint.
 	kunna gå runt i en labyrint
-	
-
-	
+		
 	implementera hela bomberman 3d
 		1
 		2
 		3
 				
 bygga mer på pocen
-	bygga en ram runt planene
-	bättre lampor
+*	bygga en ram runt planene
+ändra skalan så att det är en fixed storlek box 
 	ändra kameraperspektiv
 	skapa ett golv
-	skapa lådtexturer
 	kunna gå runt
+	skapa lådtexturer
+	bättre lampor
+	
+
+	
 	kunna modifiera listan på objekt, ta bort dem ur scenen etc.
 	FPS COUNTER!!! ZOMG
 		

@@ -4,104 +4,210 @@
 </head>
 
 <body>
+
+    <script src="../Scripts/jquery-2.1.1.min.js"></script>
     <!--Load three.js-->
     <script src="three.min.js"></script>
     <script src="OrbitControls.js"></script>
 
     <script>
-
+        var width = 800;
+        var heigth = 600;
         var scene = new THREE.Scene();
-        var camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
+        var camera = new THREE.PerspectiveCamera(45, width / heigth, 0.1, 1000);
+        //		camera.position.z = 10;
         var renderer = new THREE.WebGLRenderer();
 
-        renderer.setSize(window.innerWidth, window.innerHeight);
-        renderer.setClearColor(0x3399ff);
+        renderer.setSize(width, heigth);
+        renderer.setClearColor(0x555555);
         document.body.appendChild(renderer.domElement);
 
-     //   var mesh;
         var monkeyMaterial;
         var monkeyGeometry;
-        var monkeyScale = 0.4;
+        var bombMaterial;
+        var bombGeometry;
+
+        var blenderScale = 0.4;
+
+        var modelsNum = 2;
+        var loadedModels = 0;
+
+        var player = {
+     
+        };
+
+
+        var grid;
+
         function init() {
+
+            if (loadedModels < modelsNum)
+                return;
+
             var boxSize = .8;
-            var boxes = [];
-            var grid = [
-                        ['A', ' ', '$', '$', '$', '$', '$', ' ', ' '],
-                        [' ', '#', '$', '#', '$', '#', '$', '#', ' '],
-                        ['$', '$', '$', '$', '$', '$', '$', '$', '$'],
-                        ['$', '#', '$', '#', '$', '#', '$', '#', '$'],
-                        ['$', '$', '$', '$', '$', '$', '$', '$', '$'],
-                        [' ', '#', '$', '#', '$', '#', '$', '#', ' '],
-                        [' ', ' ', '$', '$', '$', '$', '$', ' ', ' ']];
+            var boxSizeBorder = 1;
+            var xScale = 11;
+            var yScale = 9;
+            var borderHeight = boxSizeBorder / 2;
+            var gridObjects = {};
+            grid = [
+						['%', '%', '%', '%', '%', '%', '%', '%', '%', '%', '%'],
+                        ['%', 'A', '@', '$', '$', '$', '$', '$', ' ', 'B', '%'],
+                        ['%', ' ', '#', '$', '#', '$', '#', '$', '#', ' ', '%'],
+                        ['%', '$', '$', '$', '$', '$', '$', '$', '$', '$', '%'],
+                        ['%', '$', '#', '$', '#', '$', '#', '$', '#', '$', '%'],
+                        ['%', '$', '$', '$', '$', '$', '$', '$', '$', '$', '%'],
+                        ['%', ' ', '#', '$', '#', '$', '#', '$', '#', ' ', '%'],
+                        ['%', 'C', ' ', '$', '$', '$', '$', '$', ' ', 'D', '%'],
+						['%', '%', '%', '%', '%', '%', '%', '%', '%', '%', '%']
+            ];
 
             var boxGeom = new THREE.BoxGeometry(boxSize, boxSize, boxSize);
-            var boxMaterial1 = new THREE.MeshLambertMaterial({ color: "#ff00ff" });
-            var boxMaterial2 = new THREE.MeshLambertMaterial({ color: "#ffff00" });
+            var boxGeomBorder = new THREE.BoxGeometry(boxSizeBorder, borderHeight, boxSizeBorder);
+            var boxMaterial1 = new THREE.MeshLambertMaterial({ color: "#6f5ca8" });
+            var boxMaterialFixed = new THREE.MeshLambertMaterial({ color: "#ffff00" });
+            var borderMaterial = new THREE.MeshLambertMaterial({ color: "#ffff00", side: THREE.DoubleSide });
+            var floorGeom = new THREE.PlaneGeometry(xScale, yScale);
+            var floor = new THREE.Mesh(floorGeom, borderMaterial);
+            floor.rotation.x = Math.PI / 2;
+            floor.position.x = xScale / 2 - 0.5;
+            floor.position.z = yScale / 2 - 0.5;
+
+            floor.position.y = -boxSize/2;
+
+            scene.add(floor);
 
             for (var y = 0; y < grid.length; y++) {
                 var row = grid[y];
                 for (var x = 0; x < row.length; x++) {
                     var col = row[x];
-                    console.log(col);
+                 //   console.log(col);
 
                     var obj;
-
                     switch (col) {
-                        case  '$':
+                        case '$':
                             obj = new THREE.Mesh(boxGeom, boxMaterial1);
-                            boxes.push(obj);
                             break;
                         case '#':
-                            obj = new THREE.Mesh(boxGeom, boxMaterial2);
-                            boxes.push(obj);
+                            obj = new THREE.Mesh(boxGeom, boxMaterialFixed);
+                            break;
+                        case '@':
+                            obj = new THREE.Mesh(bombGeometry, bombMaterial);
+                            obj.scale.set(blenderScale, blenderScale, blenderScale);
+                            break;
+                        case '%':
+                            obj = new THREE.Mesh(boxGeomBorder, boxMaterialFixed);
+                            var yTrans = (boxSize - borderHeight) / 2;
+                            obj.position.y -= yTrans;
                             break;
                         case 'A':
+                            player.y = y;
+                            player.x = x;
                             obj = new THREE.Mesh(monkeyGeometry, monkeyMaterial);
-                            obj.scale.x = monkeyScale;
-                            obj.scale.y = monkeyScale;
-                            obj.scale.z = monkeyScale;
-                         //   obj.position.y = -0.65;
-                            //boxes.push(obj);
+                            player.obj = obj;
+                            obj.scale.set(blenderScale, blenderScale, blenderScale);
+                            row[x] = ' ';
+                            
                             break;
                     }
-
-               
-
+                    
                     if (obj) {
+                        gridObjects[y + "_" + x] = obj;
                         obj.position.x = x;
                         obj.position.z = y;
                         scene.add(obj);
                     }
                     obj = null;
-
                 }
             }
 
             // (color, intensity)
-            var light = new THREE.PointLight(0xff00ff, 5,15 );
+            var light = new THREE.PointLight(0xffffff, 0.9);
             // (x, y, z)
-            light.position.set(0, 0, 7);
-
-            // (color, intensity)
-            var light2 = new THREE.PointLight(0xffff00, 5,15 );
-            // (x, y, z)
-            light2.position.set(-7, 0, 0);
+            light.position.set(xScale / 2, 10, yScale / 2);
 
             scene.add(light);
-            scene.add(light2);
-
-            // move the camera back
-            camera.position.z = 10;
-
             render();
+
+            camera.position.set(5.026834384743997, 11.565823248616343, 8.10856187385891);
+            controls.target.set(5.026834384743997, -1.8699039169448395, 3.8555165223830943);
+
+            $("body").keypress(function (event) {
+                console.log(event.which);
+
+
+                var tempY = player.y;
+                var tempX = player.x;
+
+                switch (event.which) {
+                    case 119:
+                        console.log("upp");
+                        tempY--;
+                        player.obj.rotation.y = Math.PI ;
+                        break;
+                    case 115:
+                        console.log("ned");
+                        player.obj.rotation.y = 0;
+                        tempY++;
+                        break;
+                    case 97:
+                        console.log("vänster");
+
+                        player.obj.rotation.y =- Math.PI / 2;
+                        tempX--;
+                        break;
+                    case 100:
+                        console.log("höger");
+                        player.obj.rotation.y = Math.PI / 2;
+                        tempX++;
+                        break;
+                }
+
+           
+                var objOnPos = gridObjects[tempY + "_" + tempX];
+                var gridObj = grid[tempY][tempX];
+
+                if ((gridObj != '#' && gridObj != '%' )) {
+                    
+                    player.x = tempX;
+                    player.y = tempY;
+
+                    if (objOnPos) {
+                        scene.remove(objOnPos);
+                        gridObjects[player.y + "_" + player.x] = null;
+                    }
+                    
+                    grid[player.y][player.x] = " ";
+                    player.obj.position.z = player.y;
+                    player.obj.position.x = player.x;
+
+
+                }
+
+
+                //console.log(camera.position);
+                //console.log(controls.target);
+                //		camera.position.set(x,y,z);
+                //			controls.target.set(x,y,z);
+
+
+            });
         }
 
-      
         // Load the object
-        var loader = new THREE.JSONLoader().load("mjukgubbe.json", function (geometry, materials) {
-             monkeyMaterial = new THREE.MultiMaterial(materials);
+        var loader = new THREE.JSONLoader();
+
+        loader.load("Models/monkeyshaded.json", function (geometry, materials) {
+            monkeyMaterial = new THREE.MultiMaterial(materials);
             monkeyGeometry = geometry;
-            //    
+            loadedModels++;
+            init();
+        });
+
+        loader.load("Models/bomb.json", function (geometry, materials) {
+            bombMaterial = new THREE.MultiMaterial(materials);
+            bombGeometry = geometry;
+            loadedModels++;
             init();
         });
 
@@ -126,14 +232,14 @@
             //  mesh.rotation.x += 0.005;
 
             //light.rotation.x += 0.01;
-      //      mesh.scale.x = 1 + num / 50;
+            //      mesh.scale.x = 1 + num / 50;
 
-       //     mesh.rotation.y += 0.005;
+            //     mesh.rotation.y += 0.005;
             renderer.render(scene, camera);
             controls.update();
-
+            //	console.log(controls.target);
         }
-        
+
     </script>
 </body>
 </html>
