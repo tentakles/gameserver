@@ -26,19 +26,18 @@
         var monkeyGeometry;
         var bombMaterial;
         var bombGeometry;
-
         var blenderScale = 0.4;
-
-        var modelsNum = 2;
+        var modelsNum = 4;
         var loadedModels = 0;
 
         var player = {
      
         };
 
-
         var grid;
-
+		var powerUp1Material;
+		var powerUp2Material;			
+		
         function init() {
 
             if (loadedModels < modelsNum)
@@ -52,13 +51,13 @@
             var gridObjects = {};
             grid = [
 						['%', '%', '%', '%', '%', '%', '%', '%', '%', '%', '%'],
-                        ['%', 'A', '@', '$', '$', '$', '$', '$', ' ', 'B', '%'],
-                        ['%', ' ', '#', '$', '#', '$', '#', '$', '#', ' ', '%'],
+                        ['%', 'A', '@', '$', '$', '$', '$', '$', ' ', '2', '%'],
+                        ['%', ' ', '#', '$', '#', '$', '#', '$', '#', '2', '%'],
                         ['%', '$', '$', '$', '$', '$', '$', '$', '$', '$', '%'],
-                        ['%', '$', '#', '$', '#', '$', '#', '$', '#', '$', '%'],
+                        ['%', '$', '#', '$', '#', '2', '#', '$', '#', '$', '%'],
                         ['%', '$', '$', '$', '$', '$', '$', '$', '$', '$', '%'],
-                        ['%', ' ', '#', '$', '#', '$', '#', '$', '#', ' ', '%'],
-                        ['%', 'C', ' ', '$', '$', '$', '$', '$', ' ', 'D', '%'],
+                        ['%', '1', '#', '$', '#', '$', '#', '$', '#', '1', '%'],
+                        ['%', 'C', ' ', '$', '$', '$', '$', '$', '1', '1', '%'],
 						['%', '%', '%', '%', '%', '%', '%', '%', '%', '%', '%']
             ];
 
@@ -67,6 +66,7 @@
             var boxMaterial1 = new THREE.MeshLambertMaterial({ color: "#6f5ca8" });
             var boxMaterialFixed = new THREE.MeshLambertMaterial({ color: "#ffff00" });
             var borderMaterial = new THREE.MeshLambertMaterial({ color: "#ffff00", side: THREE.DoubleSide });
+		
             var floorGeom = new THREE.PlaneGeometry(xScale, yScale);
             var floor = new THREE.Mesh(floorGeom, borderMaterial);
             floor.rotation.x = Math.PI / 2;
@@ -100,6 +100,19 @@
                             var yTrans = (boxSize - borderHeight) / 2;
                             obj.position.y -= yTrans;
                             break;
+						  case '1':
+                            obj =  new THREE.Sprite( powerUp1Material );
+                           // var yTrans = (boxSize - borderHeight) / 2;
+                         //   obj.position.y -= yTrans;
+                            break;	
+						case '2':
+                            obj =  new THREE.Sprite( powerUp2Material );
+                           // var yTrans = (boxSize - borderHeight) / 2;
+                         //   obj.position.y -= yTrans;
+                            break;
+								//	var sprite = new THREE.Sprite( spriteMaterial );
+		//	scene.add( sprite ); 
+							
                         case 'A':
                             player.y = y;
                             player.x = x;
@@ -195,21 +208,42 @@
         }
 
         // Load the object
-        var loader = new THREE.JSONLoader();
+        var jsonLoader = new THREE.JSONLoader();
 
-        loader.load("Models/monkeyshaded.json", function (geometry, materials) {
+        jsonLoader.load("Models/monkeyshaded.json", function (geometry, materials) {
             monkeyMaterial = new THREE.MultiMaterial(materials);
             monkeyGeometry = geometry;
             loadedModels++;
             init();
         });
 
-        loader.load("Models/bomb.json", function (geometry, materials) {
+        jsonLoader.load("Models/bomb.json", function (geometry, materials) {
             bombMaterial = new THREE.MultiMaterial(materials);
             bombGeometry = geometry;
             loadedModels++;
             init();
         });
+		
+		
+			var textureLoader = new THREE.TextureLoader();
+			
+		textureLoader.load("images/powerup_power.png", function(texture){
+        	powerUp1Material = new THREE.SpriteMaterial( { map: texture, color: 0xffffff } );
+		//	var sprite = new THREE.Sprite( spriteMaterial );
+		//	scene.add( sprite );
+			loadedModels++;
+			init();
+		  });
+		  
+		  
+		 	textureLoader.load("images/powerup_bomb.png", function(texture){
+        	powerUp2Material = new THREE.SpriteMaterial( { map: texture, color: 0xffffff } );
+		//	var sprite = new THREE.Sprite( spriteMaterial );
+		//	scene.add( sprite );
+			loadedModels++;
+			init();
+		  });
+		
 
         controls = new THREE.OrbitControls(camera, renderer.domElement);
         /*
