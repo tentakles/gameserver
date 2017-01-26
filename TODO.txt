@@ -2,14 +2,16 @@
 Todo bomberman 3D
 ##############
 
+undvika att gubben äter sig själv
 animerade spritesen i höjdled, med t.ex. en sinuskurva
-streamlina laddningen
+*streamlina laddningen
 refaktorisera koden
 skapa spelarobjekten
 skapa explision
 skapa alla sprites
-streamlina modell-inladdningen (loopen med switch-sats)
 texturer på block
+säkerställ att init endast körs en gång.
+göra loader klass-baserad
 
 tutorials:
 
