@@ -225,10 +225,11 @@ bLoader.readyFunc = init;
 bLoader.loadAsync("@", "Models/bomb.json", "model", blenderScale);
 bLoader.loadAsync("1", "Images/powerup_power.png", "sprite");
 bLoader.loadAsync("2", "Images/powerup_bomb.png", "sprite");
-bLoader.loadAsync("A", "Models/monkeyshaded.json", "model", blenderScale, function (obj, x, y) {
+bLoader.loadAsync("A", "Models/playercharnewtest.json", "model", blenderScale, function (obj, x, y) {
     player.y = y;
     player.x = x;
     player.obj = obj.object;
+    //obj.object.rotation.y = -Math.PI/2;
 });
 
 
