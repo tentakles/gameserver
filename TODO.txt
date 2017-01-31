@@ -4,17 +4,30 @@ Todo bomberman 3D
 
 *streamlina laddningen
 
+skapa spelarobjekten
+	texturera spelarobjekten
+	texturera alla fyra objekten
+texturer på block
+	_>test
+	->riktig textur
+
+skapa explision
+	lägg till sfär
+	lägg till cylinders
+	lägg till endcaps
+	texturera
+	kunna göra olika storlekar
+		olika storlekar beroende vilken knappo man tryckt in, z = 3, x = 2, c = 1
+	ta slut åt olika håll, etc
+	*ta bort explosion efter en viss tid med en delay
+skapa alla sprites	
+	
+-----
+integrera med spelplattformen
+
 undvika att gubben äter sig själv
-animerade spritesen i höjdled, med t.ex. en sinuskurva
 
 refaktorisera koden
-skapa spelarobjekten
-skapa explision
-skapa alla sprites
-texturer på block
-säkerställ att init endast körs en gång.
-göra loader klass-baserad
-	kapsla in allt kring laddning, skicka in en ready-funktion som kör sedan
 
 tutorials:
 
@@ -304,3 +317,15 @@ DONE
 *Hantera joinable om spelet är startat
 	*server: enforca att det inte går att joina spel 
 	*klient: knappen utgråad
+	
+göra loader klass-baserad
+	kapsla in allt kring laddning, skicka in en ready-funktion som kör sedan
+	
+	
+säkerställ att init endast körs en gång.	
+
+
+animerade spritesen i höjdled, med t.ex. en sinuskurva
+	lägg till sprites i en lista
+	ha en animeringlängd, 
+	ha en direction
