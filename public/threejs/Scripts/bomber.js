@@ -16,12 +16,15 @@ var renderer = new THREE.WebGLRenderer();
 var controls = new THREE.OrbitControls(camera, renderer.domElement);
 var boxGeom = new THREE.BoxGeometry(boxSize, boxSize, boxSize);
 var boxGeomBorder = new THREE.BoxGeometry(boxSizeBorder, borderHeight, boxSizeBorder);
-var explosionSphereGeom = new THREE.SphereGeometry(1, 16, 16);
-var explosionSphereGeomEndCap = new THREE.SphereGeometry(0.5, 16, 16);
-var explosionSphereCylinder = new THREE.CylinderGeometry(0.5, 0.5, 1, 32);
 
-var explosionMaterial1 = new THREE.MeshLambertMaterial({ color: "#ffffff" });
-var explosionMaterial2 = new THREE.MeshLambertMaterial({ color: "#F4DA06" });
+var explosionCylinderSize = 0.57;
+
+var explosionSphereGeom = new THREE.SphereGeometry(1.2, 16, 16);
+var explosionSphereGeomEndCap = new THREE.SphereGeometry(explosionCylinderSize, 16, 16);
+var explosionSphereCylinder = new THREE.CylinderGeometry(explosionCylinderSize, explosionCylinderSize, 1, 32);
+
+var explosionMaterial1 = new THREE.MeshBasicMaterial({ color: "#ffffff" });
+var explosionMaterial2 = new THREE.MeshBasicMaterial({ color: "#F4DA06" });
 
 var explosionLength = 2000;
 var boxMaterial1 = new THREE.MeshLambertMaterial({ color: "#6CD81A" });
