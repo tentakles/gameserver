@@ -30,21 +30,16 @@ var explosionLength = 2000;
 var boxMaterial1 = new THREE.MeshLambertMaterial({ color: "#6CD81A" });
 var boxMaterialFixed = new THREE.MeshLambertMaterial({ color: "#aaaaaa" });
 var borderMaterial = new THREE.MeshLambertMaterial({ color: "#555555", side: THREE.DoubleSide });
-var grid = [
-	['%', '%', '%', '%', '%', '%', '%', '%', '%', '%', '%'],
-	['%', 'A', '@', '$', '$', '$', '$', '$', ' ', '2', '%'],
-	['%', ' ', '#', '$', '#', '$', '#', '$', '#', '2', '%'],
-	['%', '$', '$', '$', '$', '$', '$', '$', '$', '$', '%'],
-	['%', '$', '#', '$', '#', '2', '#', '$', '#', '$', '%'],
-	['%', '$', '$', '$', '$', '$', '$', '$', '$', '$', '%'],
-	['%', '1', '#', '$', '#', '$', '#', '$', '#', '1', '%'],
-	['%', 'C', '2', '3', '4', '$', '$', '$', '1', '1', '%'],
-	['%', '%', '%', '%', '%', '%', '%', '%', '%', '%', '%']
-];
+var grid = undefined;
 
 renderer.setSize(width, heigth);
 renderer.setClearColor(0x222222);
-document.body.appendChild(renderer.domElement);
+//document.body.appendChild(renderer.domElement);
+
+var container = document.getElementById('bombermanContainer');
+//document.body.appendChild(container);
+
+container.appendChild(renderer.domElement);
 
 var spriteAni = [125, 133, 141, 148, 156, 164, 171, 178, 185, 192, 198, 205, 211, 216, 221, 226, 231, 235, 238, 241, 244, 246, 248, 249, 250, 250, 250, 249, 248, 246, 244, 241, 238, 235, 231, 226, 221, 216, 211, 205, 198, 192, 185, 178, 171, 164, 156, 148, 141, 133, 125, 117, 109, 102, 94, 86, 79, 72, 65, 58, 52, 45, 39, 34, 29, 24, 19, 15, 12, 9, 6, 4, 2, 1, 0, 0, 0, 1, 2, 4, 6, 9, 12, 15, 19, 24, 29, 34, 39, 45, 52, 58, 65, 72, 79, 86, 94, 102, 109, 117, 125];
 
@@ -89,81 +84,64 @@ function explode(size) {
     cyl2.object.rotation.x = Math.PI / 2;
     cyl2.object.rotation.z = Math.PI / 2;
     cyl2.object.scale.y = size;
-    
+
     var ec1 = addObject(player.x, player.y, bLoader.loadedStuff["explosionSphereEndcap"]);
-    ec1.object.position.z+= size/2;
+    ec1.object.position.z += size / 2;
     var ec2 = addObject(player.x, player.y, bLoader.loadedStuff["explosionSphereEndcap"]);
     ec2.object.position.z -= size / 2;
     var ec3 = addObject(player.x, player.y, bLoader.loadedStuff["explosionSphereEndcap"]);
     ec3.object.position.x += size / 2;
     var ec4 = addObject(player.x, player.y, bLoader.loadedStuff["explosionSphereEndcap"]);
     ec4.object.position.x -= size / 2;
-    
-    var objs = [sphere, cyl1, cyl2, ec1,ec2,ec3,ec4];
+
+    var objs = [sphere, cyl1, cyl2, ec1, ec2, ec3, ec4];
 
     setTimeout(function () {
         remove(objs);
     }, explosionLength);
 }
 
-function move(event) {
-    console.log(event.which);
-    var tempY = player.y;
-    var tempX = player.x;
 
+function try_move(action) {
+    //alert("try move");
+    var data = { action: action };
+    gameLobby.gameEvent(data);
+}
+
+function setup_game(conf) {
+    console.log("Setup_game: Bomberman");
+}
+
+function move(event) {
     switch (event.which) {
-        case 119:
-            console.log("upp");
-            tempY--;
-            player.obj.rotation.y = Math.PI;
-            break;
-        case 115:
-            console.log("ned");
-            player.obj.rotation.y = 0;
-            tempY++;
+        case 122:
+        case 32:
+            try_move(ACTION_PLACE_BOMB);
             break;
         case 97:
-            console.log("vänster");
-            player.obj.rotation.y = -Math.PI / 2;
-            tempX--;
+        case 65:
+        case 37:
+            try_move(ACTION_MOVE_LEFT);
+            break;
+        case 119:
+        case 87:
+        case 38:
+            try_move(ACTION_MOVE_UP);
             break;
         case 100:
-            console.log("höger");
-            player.obj.rotation.y = Math.PI / 2;
-            tempX++;
+        case 68:
+        case 39:
+            try_move(ACTION_MOVE_RIGHT);
             break;
-        case 122:
-            explode(5);
-            return;
-        case 120:
-            explode(3);
-            return;
-        case 99:
-            explode(1);
-            return;
-        default:
-            return;
-    }
-
-    var objOnPos = gridObjects[tempY + "_" + tempX];
-    var gridObj = grid[tempY][tempX];
-
-    if ((gridObj != '#' && gridObj != '%')) {
-        player.x = tempX;
-        player.y = tempY;
-
-        if (objOnPos && objOnPos.object != player.obj) {
-            scene.remove(objOnPos.object);
-            gridObjects[player.y + "_" + player.x] = null;
-        }
-
-        grid[player.y][player.x] = " ";
-        player.obj.position.z = player.y;
-        player.obj.position.x = player.x;
+        case 115:
+        case 83:
+        case 40:
+            try_move(ACTION_MOVE_DOWN);
+            break;
     }
 }
 
-function addObject(x, y, loadedObj) {
+function addObject(x, y, loadedObj, char) {
     var obj;
 
     if (loadedObj.type == "model") {
@@ -178,7 +156,10 @@ function addObject(x, y, loadedObj) {
         obj.object.scale.set(loadedObj.scale, loadedObj.scale, loadedObj.scale);
     }
 
-    gridObjects[y + "_" + x] = obj
+    obj.char = char;
+
+    gridObjects[y + "_" + x] = obj;
+
     obj.object.position.x = x;
     obj.object.position.z = y;
     if (loadedObj.func)
@@ -189,9 +170,11 @@ function addObject(x, y, loadedObj) {
 }
 
 function init(loadedStuff) {
+    savedLoadedStuff = loadedStuff;
+    gameLobby.registerGame(setup_game, game_event);
 
-	bLoader.loadSync("$", { geometry: boxGeom, material: loadedStuff["boxTexture1"].material, type: "model" });
-	
+    bLoader.loadSync("$", { geometry: boxGeom, material: loadedStuff["boxTexture1"].material, type: "model" });
+
     var floorGeom = new THREE.PlaneGeometry(xScale, yScale);
     var floor = new THREE.Mesh(floorGeom, borderMaterial);
     floor.rotation.x = Math.PI / 2;
@@ -206,10 +189,12 @@ function init(loadedStuff) {
             var col = row[x];
             var loadedObj = loadedStuff[col];
             if (loadedObj != null) {
-                addObject(x, y, loadedObj);
+                addObject(x, y, loadedObj, col);
             }
         }
     }
+
+    oldGrid = grid;
 
     // (color, intensity)
     var light = new THREE.PointLight(0xffffff, 0.9);
@@ -226,22 +211,51 @@ function init(loadedStuff) {
 
 bLoader.readyFunc = init;
 
-bLoader.loadAsync("boxTexture1", "Images/brocks.png", "texture");
+bLoader.loadAsync("boxTexture1", "/games/bomberman/Images/brocks.png", "texture");
 
-bLoader.loadAsync("@", "Models/bomb.json", "model", blenderScale);
-bLoader.loadAsync("1", "Images/powerup_power.png", "sprite");
-bLoader.loadAsync("2", "Images/powerup_bomb.png", "sprite");
-bLoader.loadAsync("3", "Images/powerup_speed.png", "sprite");
-bLoader.loadAsync("4", "Images/powerup_burntime.png", "sprite");
-bLoader.loadAsync("A", "Models/playercharnewtest.json", "model", 0.3, function (obj, x, y, loadedObj) {
+bLoader.loadAsync("@", "/games/bomberman/Models/bomb.json", "model", blenderScale);
+bLoader.loadAsync("1", "/games/bomberman/Images/powerup_power.png", "sprite");
+bLoader.loadAsync("2", "/games/bomberman/Images/powerup_bomb.png", "sprite");
+bLoader.loadAsync("3", "/games/bomberman/Images/powerup_speed.png", "sprite");
+bLoader.loadAsync("4", "/games/bomberman/Images/powerup_burntime.png", "sprite");
+
+players = {};
+
+bLoader.loadAsync("A", "/games/bomberman/Models/playercharnewtest.json", "model", 0.3, function (obj, x, y, loadedObj) {
+    players["A"] = obj.object;
     player.y = y;
     player.x = x;
     player.obj = obj.object;
-	obj.object.position.y -= .4;
-
+    obj.object.position.y -= .4;
     //obj.object.rotation.y = -Math.PI/2;
 });
 
+bLoader.loadAsync("B", "/games/bomberman/Models/playercharnewtest.json", "model", 0.3, function (obj, x, y, loadedObj) {
+    players["B"] = obj.object;
+    player.y = y;
+    player.x = x;
+    player.obj = obj.object;
+    obj.object.position.y -= .4;
+    //obj.object.rotation.y = -Math.PI/2;
+});
+
+bLoader.loadAsync("C", "/games/bomberman/Models/playercharnewtest.json", "model", 0.3, function (obj, x, y, loadedObj) {
+    players["C"] = obj.object;
+    player.y = y;
+    player.x = x;
+    player.obj = obj.object;
+    obj.object.position.y -= .4;
+    //obj.object.rotation.y = -Math.PI/2;
+});
+
+bLoader.loadAsync("D", "/games/bomberman/Models/playercharnewtest.json", "model", 0.3, function (obj, x, y, loadedObj) {
+    players["D"] = obj.object;
+    player.y = y;
+    player.x = x;
+    player.obj = obj.object;
+    obj.object.position.y -= .4;
+    //obj.object.rotation.y = -Math.PI/2;
+});
 
 bLoader.loadSync("explosionSphere", { geometry: explosionSphereGeom, material: explosionMaterial1, type: "model" });
 bLoader.loadSync("explosionCylinder", { geometry: explosionSphereCylinder, material: explosionMaterial2, type: "model" });
@@ -254,3 +268,123 @@ bLoader.loadSync("%", {
         obj.object.position.y -= (boxSize - borderHeight) / 2;
     }
 });
+
+var ACTION_MOVE_UP = 0;
+var ACTION_MOVE_RIGHT = 1;
+var ACTION_MOVE_DOWN = 2;
+var ACTION_MOVE_LEFT = 3;
+var ACTION_PLACE_BOMB = 4;
+
+var EVENT_TYPE_EXPLOSION = 0;
+var EVENT_TYPE_EXPLOSION_END = 1;
+var EVENT_TYPE_POSITIONS = 2;
+
+var OBJECT_EMPTY = ' ';
+var OBJECT_BOMB = '@';
+var OBJECT_DESTRUCTIBLE_BLOCK = '$';
+var OBJECT_INDESTRUCTIBLE_BLOCK = '#';
+
+var POWERUP_BOMBS = '1';
+var POWERUP_BURN = '2';
+var POWERUP_STRENGTH = '3';
+var POWERUP_SPEED = '4';
+
+var PLAYER_1 = "A";
+var PLAYER_2 = "B";
+var PLAYER_3 = "C";
+var PLAYER_4 = "D";
+
+var EXP_TYPE_CENTER = 0;
+var EXP_TYPE_UP = 1;
+var EXP_TYPE_DOWN = 2;
+var EXP_TYPE_LEFT = 3;
+var EXP_TYPE_RIGHT = 4;
+var EXP_TYPE_VERT = 5;
+var EXP_TYPE_HORI = 6;
+
+var scale = 2;
+var w = 32 * scale;
+var h = 32 * scale;
+
+var rows = 7;
+var cols = 9;
+var sprites;
+
+var game;
+
+var oldGrid = null;
+var gameDiv = null;
+var bombs = {};
+var savedLoadedStuff = null;
+
+
+function update_cell(y, x, chars) {
+
+    // alert("update cell");
+
+    oldGrid[y][x] = chars;
+
+    chars = chars.trim();
+
+    var go = gridObjects[y + "_" + x];
+    if (chars == ''  && go && (go.char == '@' || go.char == '1' || go.char == '2' || go.char == '3' || go.char == '4' || go.char == '$')) {
+        scene.remove(go.object);
+        console.log("object deleted: " + go.char);
+        gridObjects[y + "_" + x] = undefined;
+        return;
+    }
+
+    for (var i = 0; i < chars.length; i++) {
+        var char = chars[i];
+      //  console.log("scanning char:" + char);
+        if (char == '@' || char == '1' || char == '2' || char == '3' || char == '4') {
+            var loadedObj = savedLoadedStuff[char];
+            if (loadedObj != null) {
+                addObject(x, y, loadedObj, char);
+            }
+        }
+
+        if (players[char]) {
+            players[char].position.z = y;
+            players[char].position.x = x;
+            //move player
+        }
+    }
+}
+
+function game_event(event) {
+
+    if (event.pos) {
+        for (var p = 0; p < event.pos.length; p++) {
+            var pos = event.pos[p];
+
+            update_cell(pos[0], pos[1], pos[2]);
+        }
+        return;
+    }
+
+    if (event.grid) {
+
+        if (grid == null) {
+            grid = event.grid;
+            oldGrid = event.grid;
+        }
+
+        for (var r = 0; r < rows; r++) {
+            for (var c = 0; c < cols; c++) {
+                //TODO: handle this stuff
+                //|| event.type === EVENT_TYPE_EXPLOSION_END || event.type === EVENT_TYPE_EXPLOSION
+
+                if (oldGrid === null || oldGrid[r][c] !== event.grid[r][c]) {
+                    var char = event.grid[r][c];
+                    update_cell(r, c, char);
+                }
+            }
+        }
+
+        return;
+    }
+    
+}
+
+

@@ -23,6 +23,7 @@ exports.game = function game(gameId, config, players, sendGameEvent, sendGameUpd
     self.OBJECT_BOMB = '@';
     self.OBJECT_DESTRUCTIBLE_BLOCK = '$';
     self.OBJECT_INDESTRUCTIBLE_BLOCK = '#';
+    self.OBJECT_BORDER = '%';
 
     self.EXP_TYPE_CENTER = 0;
     self.EXP_TYPE_UP = 1;
@@ -50,8 +51,8 @@ exports.game = function game(gameId, config, players, sendGameEvent, sendGameUpd
 
     self.gameResettingState = false;
 
-    self.rows = 7;
-    self.cols = 9;
+    self.rows = 9;
+    self.cols = 11;
 
     self.bombExplosions = [];
 
@@ -65,6 +66,7 @@ exports.game = function game(gameId, config, players, sendGameEvent, sendGameUpd
     self.can_move_to_pos = function (row, col) {
         if (self.grid[row][col].includes(self.OBJECT_BOMB) ||
             self.grid[row][col].includes(self.OBJECT_DESTRUCTIBLE_BLOCK) ||
+            self.grid[row][col].includes(self.OBJECT_BORDER) ||
             self.grid[row][col].includes(self.OBJECT_INDESTRUCTIBLE_BLOCK))
             return false;
         return true;
@@ -446,19 +448,21 @@ exports.game = function game(gameId, config, players, sendGameEvent, sendGameUpd
 
         //create internal state grid
         self.grid = [
-            [' ', ' ', '$', '$', '$', '$', '$', ' ', ' '],
-            [' ', '#', '$', '#', '$', '#', '$', '#', ' '],
-            ['$', '$', '$', '$', '$', '$', '$', '$', '$'],
-            ['$', '#', '$', '#', '$', '#', '$', '#', '$'],
-            ['$', '$', '$', '$', '$', '$', '$', '$', '$'],
-            [' ', '#', '$', '#', '$', '#', '$', '#', ' '],
-            [' ', ' ', '$', '$', '$', '$', '$', ' ', ' ']];
-
+            ['%', '%', '%', '%', '%', '%', '%', '%', '%', '%', '%'],
+            ['%', ' ', ' ', '$', '$', '$', '$', '$', ' ', ' ', '%'],
+            ['%', ' ', '#', '$', '#', '$', '#', '$', '#', ' ', '%'],
+            ['%', '$', '$', '$', '$', '$', '$', '$', '$', '$', '%'],
+            ['%', '$', '#', '$', '#', '$', '#', '$', '#', '$', '%'],
+            ['%', '$', '$', '$', '$', '$', '$', '$', '$', '$', '%'],
+            ['%', ' ', '#', '$', '#', '$', '#', '$', '#', ' ', '%'],
+            ['%', ' ', ' ', '$', '$', '$', '$', '$', ' ', ' ', '%'],
+            ['%', '%', '%', '%', '%', '%', '%', '%', '%', '%', '%']
+        ];
         var playerData = [
-            { char: 'A', startRow: 0, startCol: 0 },
-            { char: 'B', startRow: 6, startCol: 8 },
-            { char: 'C', startRow: 6, startCol: 0 },
-            { char: 'D', startRow: 0, startCol: 8 }
+            { char: 'A', startRow: 1, startCol: 1 },
+            { char: 'B', startRow: 7, startCol: 9 },
+            { char: 'C', startRow: 7, startCol: 1 },
+            { char: 'D', startRow: 1, startCol: 9 }
         ];
 
         //init player properties

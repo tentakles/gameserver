@@ -2,29 +2,13 @@
 Todo bomberman 3D
 ##############
 
-*streamlina laddningen
-
 skapa spelarobjekten
 	texturera spelarobjekten
 	texturera alla fyra objekten
-texturer på block
-	_>test
-	->riktig textur
 
-skapa explision
-	lägg till sfär
-	lägg till cylinders
-	lägg till endcaps
-	texturera
-	kunna göra olika storlekar
-		olika storlekar beroende vilken knappo man tryckt in, z = 3, x = 2, c = 1
-	ta slut åt olika håll, etc
-	*ta bort explosion efter en viss tid med en delay
-skapa alla sprites	
+integrera med spelmotor	
 	
------
-integrera med spelplattformen
-
+---------------
 undvika att gubben äter sig själv
 
 refaktorisera koden
@@ -96,6 +80,12 @@ highlighta i "Players list"  vem som är nuvarande spelare
 DONE
 ############
 
+*texturer på block
+	*_>test
+	*->riktig textur
+*skapa alla sprites	
+*justera storlek och offset på gubben
+	
 *release 1.0
 *deploya 1.0 till egen site
 
@@ -329,3 +319,19 @@ animerade spritesen i höjdled, med t.ex. en sinuskurva
 	lägg till sprites i en lista
 	ha en animeringlängd, 
 	ha en direction
+
+	
+
+skapa explision
+	lägg till sfär
+	lägg till cylinders
+	lägg till endcaps
+	texturera
+	kunna göra olika storlekar
+		olika storlekar beroende vilken knappo man tryckt in, z = 3, x = 2, c = 1
+	ta slut åt olika håll, etc
+	*ta bort explosion efter en viss tid med en delay
+		
+
+*streamlina laddningen
+	
