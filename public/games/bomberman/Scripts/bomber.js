@@ -371,10 +371,10 @@ function playerFunc(obj, x, y, loadedObj, char) {
     obj.object.position.y -= .4;
 }
 
-bLoader.loadAsync("A", "/games/bomberman/Models/greendude.json", "model", 0.3, playerFunc);
-bLoader.loadAsync("B", "/games/bomberman/Models/playercharnewtest.json", "model", 0.3, playerFunc);
-bLoader.loadAsync("C", "/games/bomberman/Models/playercharnewtest.json", "model", 0.3, playerFunc);
-bLoader.loadAsync("D", "/games/bomberman/Models/playercharnewtest.json", "model", 0.3, playerFunc);
+bLoader.loadAsync("A", "/games/bomberman/Models/p1.json", "model", 0.3, playerFunc);
+bLoader.loadAsync("B", "/games/bomberman/Models/p2.json", "model", 0.3, playerFunc);
+bLoader.loadAsync("C", "/games/bomberman/Models/p3.json", "model", 0.3, playerFunc);
+bLoader.loadAsync("D", "/games/bomberman/Models/p4.json", "model", 0.3, playerFunc);
 
 bLoader.loadSync("explosionSphere", { geometry: explosionSphereGeom, material: explosionMaterial1, type: "model" });
 bLoader.loadSync("explosionCylinder", { geometry: explosionSphereCylinder, material: explosionMaterial2, type: "model" });
