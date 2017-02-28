@@ -29,22 +29,25 @@ var explosionMaterial2 = new THREE.MeshBasicMaterial({ color: "#F4DA06" });
 var explosionLength = 2000;
 var boxMaterial1 = new THREE.MeshLambertMaterial({ color: "#6CD81A" });
 var boxMaterialFixed = new THREE.MeshLambertMaterial({ color: "#aaaaaa" });
-var borderMaterial = new THREE.MeshLambertMaterial({ color: "#555555", side: THREE.DoubleSide });
+var borderMaterial = new THREE.MeshLambertMaterial({ color: "#888888", side: THREE.DoubleSide });
 var grid = [
-	['%', '%', '%', '%', '%', '%', '%', '%', '%', '%', '%'],
-	['%', 'A', '@', '$', '$', '$', '$', '$', ' ', '2', '%'],
-	['%', ' ', '#', '$', '#', '$', '#', '$', '#', '2', '%'],
-	['%', '$', '$', '$', '$', '$', '$', '$', '$', '$', '%'],
-	['%', '$', '#', '$', '#', '2', '#', '$', '#', '$', '%'],
-	['%', '$', '$', '$', '$', '$', '$', '$', '$', '$', '%'],
-	['%', '1', '#', '$', '#', '$', '#', '$', '#', '1', '%'],
-	['%', 'C', '2', '3', '4', '$', '$', '$', '1', '1', '%'],
-	['%', '%', '%', '%', '%', '%', '%', '%', '%', '%', '%']
+    ['%', '%', '%', '%', '%', '%', '%', '%', '%', '%', '%'],
+    ['%', 'A', '@', '$', '$', '$', '$', '$', ' ', '2', '%'],
+    ['%', ' ', '#', '$', '#', '$', '#', '$', '#', '2', '%'],
+    ['%', '$', '$', '$', '$', '$', '$', '$', '$', '$', '%'],
+    ['%', '$', '#', '$', '#', '2', '#', '$', '#', '$', '%'],
+    ['%', '$', '$', '$', '$', '$', '$', '$', '$', '$', '%'],
+    ['%', '1', '#', '$', '#', '$', '#', '$', '#', '1', '%'],
+    ['%', 'C', '2', '3', '4', '$', '$', '$', '1', '1', '%'],
+    ['%', '%', '%', '%', '%', '%', '%', '%', '%', '%', '%']
 ];
 
 renderer.setSize(width, heigth);
 renderer.setClearColor(0x222222);
+renderer.shadowMap.enabled = true;
+renderer.shadowMap.soft = true;
 document.body.appendChild(renderer.domElement);
+
 
 var spriteAni = [125, 133, 141, 148, 156, 164, 171, 178, 185, 192, 198, 205, 211, 216, 221, 226, 231, 235, 238, 241, 244, 246, 248, 249, 250, 250, 250, 249, 248, 246, 244, 241, 238, 235, 231, 226, 221, 216, 211, 205, 198, 192, 185, 178, 171, 164, 156, 148, 141, 133, 125, 117, 109, 102, 94, 86, 79, 72, 65, 58, 52, 45, 39, 34, 29, 24, 19, 15, 12, 9, 6, 4, 2, 1, 0, 0, 0, 1, 2, 4, 6, 9, 12, 15, 19, 24, 29, 34, 39, 45, 52, 58, 65, 72, 79, 86, 94, 102, 109, 117, 125];
 
@@ -89,17 +92,17 @@ function explode(size) {
     cyl2.object.rotation.x = Math.PI / 2;
     cyl2.object.rotation.z = Math.PI / 2;
     cyl2.object.scale.y = size;
-    
+
     var ec1 = addObject(player.x, player.y, bLoader.loadedStuff["explosionSphereEndcap"]);
-    ec1.object.position.z+= size/2;
+    ec1.object.position.z += size / 2;
     var ec2 = addObject(player.x, player.y, bLoader.loadedStuff["explosionSphereEndcap"]);
     ec2.object.position.z -= size / 2;
     var ec3 = addObject(player.x, player.y, bLoader.loadedStuff["explosionSphereEndcap"]);
     ec3.object.position.x += size / 2;
     var ec4 = addObject(player.x, player.y, bLoader.loadedStuff["explosionSphereEndcap"]);
     ec4.object.position.x -= size / 2;
-    
-    var objs = [sphere, cyl1, cyl2, ec1,ec2,ec3,ec4];
+
+    var objs = [sphere, cyl1, cyl2, ec1, ec2, ec3, ec4];
 
     setTimeout(function () {
         remove(objs);
@@ -177,7 +180,8 @@ function addObject(x, y, loadedObj) {
     if (loadedObj.scale) {
         obj.object.scale.set(loadedObj.scale, loadedObj.scale, loadedObj.scale);
     }
-
+    obj.object.castShadow = true;
+    obj.object.receiveShadow = true;
     gridObjects[y + "_" + x] = obj
     obj.object.position.x = x;
     obj.object.position.z = y;
@@ -190,14 +194,15 @@ function addObject(x, y, loadedObj) {
 
 function init(loadedStuff) {
 
-	bLoader.loadSync("$", { geometry: boxGeom, material: loadedStuff["boxTexture1"].material, type: "model" });
-	
+    bLoader.loadSync("$", { geometry: boxGeom, material: loadedStuff["boxTexture1"].material, type: "model" });
+
     var floorGeom = new THREE.PlaneGeometry(xScale, yScale);
     var floor = new THREE.Mesh(floorGeom, borderMaterial);
     floor.rotation.x = Math.PI / 2;
     floor.position.x = xScale / 2 - 0.5;
     floor.position.z = yScale / 2 - 0.5;
     floor.position.y = -boxSize / 2;
+    floor.receiveShadow = true;
     scene.add(floor);
 
     for (var y = 0; y < grid.length; y++) {
@@ -212,9 +217,12 @@ function init(loadedStuff) {
     }
 
     // (color, intensity)
-    var light = new THREE.PointLight(0xffffff, 0.9);
+    var light = new THREE.DirectionalLight(0xffffff, 1);
+    light.castShadow = true;
+    light.shadowDarkness = 0.5;
+    light.shadowCameraVisible = true;
     // (x, y, z)
-    light.position.set(xScale / 2, 10, yScale / 2);
+    light.position.set( xScale / 2, 10, yScale / 2);
     scene.add(light);
 
     camera.position.set(5.026834384743997, 11.565823248616343, 8.10856187385891);
@@ -237,7 +245,9 @@ bLoader.loadAsync("A", "Models/greendude.json", "model", 0.3, function (obj, x, 
     player.y = y;
     player.x = x;
     player.obj = obj.object;
-	obj.object.position.y -= .4;
+    obj.object.position.y -= .4;
+    player.obj.receiveShadow = true;
+    player.obj.castShadow = true;
 
     //obj.object.rotation.y = -Math.PI/2;
 });
