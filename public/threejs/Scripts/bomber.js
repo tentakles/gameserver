@@ -233,7 +233,7 @@ bLoader.loadAsync("1", "Images/powerup_power.png", "sprite");
 bLoader.loadAsync("2", "Images/powerup_bomb.png", "sprite");
 bLoader.loadAsync("3", "Images/powerup_speed.png", "sprite");
 bLoader.loadAsync("4", "Images/powerup_burntime.png", "sprite");
-bLoader.loadAsync("A", "Models/playercharnewtest.json", "model", 0.3, function (obj, x, y, loadedObj) {
+bLoader.loadAsync("A", "Models/greendude.json", "model", 0.3, function (obj, x, y, loadedObj) {
     player.y = y;
     player.x = x;
     player.obj = obj.object;
