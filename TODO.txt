@@ -8,10 +8,15 @@ skapa spelarobjekten
 
 integrera med spelmotor	
 
+	*om man står på initial position försvinner man om man lägger bomb
+
 	ta bort block korrekt när en powerup skapas - 
 		*ändra koden så att powerupp alltid skapas
 		debugga
 		ändra tillbaka sannolikhetskod
+		
+	på nedersta raden är det rätt buggigt? :O
+		
 	explosioner
 	*	skapa explisioner
 	*	ta bort explosioner
@@ -20,7 +25,8 @@ integrera med spelmotor
 			minska storleken på mitten explisinen så man ser bättre
 			olika längd åt olika håll på explosioner
 
-	fixa så att det repaintas när man går in i en powerup - nu verkar den finnas tills man går
+	*fixa så att det repaintas när man går in i en powerup - nu verkar den finnas tills man går
+	
 	restart skall fungera korrekt, init bör köras?	
 		refaktoisera så att init kan köras om igen med en grid för att sätta upp allt.
 
