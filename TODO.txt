@@ -3,33 +3,34 @@ Todo bomberman 3D
 ##############
 
 skapa spelarobjekten
-	texturera spelarobjekten
 	texturera alla fyra objekten
+	integrera dem i koden
 
 integrera med spelmotor	
+
+	ta bort block korrekt när en powerup skapas - 
+		*ändra koden så att powerupp alltid skapas
+		debugga
+		ändra tillbaka sannolikhetskod
+	explosioner
+	*	skapa explisioner
+	*	ta bort explosioner
+	*	stoppa explosioner på rätt plats
+		korrekt längd på explosioner
+			minska storleken på mitten explisinen så man ser bättre
+			olika längd åt olika håll på explosioner
+
+	fixa så att det repaintas när man går in i en powerup - nu verkar den finnas tills man går
+	restart skall fungera korrekt, init bör köras?	
+		refaktoisera så att init kan köras om igen med en grid för att sätta upp allt.
+
+	rotera gubbarna när de går
+	rensa upp kod	
+		refaktorisera grid / oldgrid till att bara en finns kvar.
+		update_cell är förvirrad
 	
----------------
-undvika att gubben äter sig själv
-
-refaktorisera koden
-
-tutorials:
-
-liten och enkel
-https://dinosaurscode.xyz/tutorials/2016/07/15/three-js-tutorial-for-beginners/
-
-http://blog.teamtreehouse.com/the-beginners-guide-to-three-js
-http://www.johannes-raida.de/tutorials/three.js/tutorial01/tutorial01.htm
-
-uppgifter:
-	följa tutorial
-
-	implementera hela bomberman 3d
-		1
-		2
-		3
-				
-	FPS COUNTER!!! ZOMG
+uppdatera sprite-koden så den funkar igen	
+ta boert det gamla ascii-skiten
 
 ############
 TODO server
@@ -334,4 +335,28 @@ skapa explision
 		
 
 *streamlina laddningen
+
+---------------
+undvika att gubben äter sig själv
+
+refaktorisera koden
+
+tutorials:
+
+liten och enkel
+https://dinosaurscode.xyz/tutorials/2016/07/15/three-js-tutorial-for-beginners/
+
+http://blog.teamtreehouse.com/the-beginners-guide-to-three-js
+http://www.johannes-raida.de/tutorials/three.js/tutorial01/tutorial01.htm
+
+uppgifter:
+	följa tutorial
+
+	implementera hela bomberman 3d
+		1
+		2
+		3
+				
+	FPS COUNTER!!! ZOMG
+
 	
