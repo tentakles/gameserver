@@ -37,8 +37,8 @@ var scale = 2;
 var w = 32 * scale;
 var h = 32 * scale;
 
-var rows = 7;
-var cols = 9;
+var rows = 9;
+var cols = 11;
 var sprites;
 
 var game;
@@ -163,7 +163,7 @@ function setup_game(conf) {
 }
 
 function debugStuff() {
- //   alert("debugg stuff");
+    //   alert("debugg stuff");
     for (var key in gridObjects) {
         if (gridObjects.hasOwnProperty(key)) {
             var obj = gridObjects[key];
@@ -225,10 +225,10 @@ function addObject(x, y, loadedObj, char) {
     console.log(obj.object.uuid + " ADD");
 
     if (char) {
-    if (gridObjects[y + "_" + x] && gridObjects[y + "_" + x].object)
-        scene.remove(gridObjects[y + "_" + x].object);
+        if (gridObjects[y + "_" + x] && gridObjects[y + "_" + x].object && !isPlayer(gridObjects[y + "_" + x].char))
+            scene.remove(gridObjects[y + "_" + x].object);
 
-    gridObjects[y + "_" + x] = obj;
+        gridObjects[y + "_" + x] = obj;
     }
 
     obj.object.position.x = x;
@@ -293,19 +293,19 @@ function update_cell(y, x, chars) {
     oldGrid[y][x] = chars;
     chars = chars.trim();
     var go = gridObjects[y + "_" + x];
-    if (chars == ''  && go && isRemovableObject(go.char)) {
+    if ((chars == '' || isPlayer(chars)) && go && isRemovableObject(go.char)) {
         scene.remove(go.object);
         console.log(go.object.uuid + " REMOVE");
         console.log("object deleted: " + go.char);
         gridObjects[y + "_" + x] = undefined;
-        return;
+        // return;
     }
 
     for (var i = 0; i < chars.length; i++) {
         var char = chars[i];
-        if(isRemovableObject(char)) {
+        if (isRemovableObject(char)) {
             var loadedObj = savedLoadedStuff[char];
-            if (loadedObj != null &&  (!go  || go.char!=char)) {
+            if (loadedObj != null && (!go || go.char != char)) {
                 console.log("adding char:" + char + " " + chars);
                 addObject(x, y, loadedObj, char);
             }
@@ -323,6 +323,10 @@ function game_event(event) {
     console.log(event);
     if (event.type === EVENT_TYPE_EXPLOSION) {
         explode(event);
+
+        var gridString = JSON.stringify(event.grid);
+        console.log(gridString);
+
     }
     if (event.type === EVENT_TYPE_EXPLOSION_END) {
         removeExplosionById(event.bombId);
@@ -344,10 +348,7 @@ function game_event(event) {
 
         for (var r = 0; r < rows; r++) {
             for (var c = 0; c < cols; c++) {
-                //TODO: handle this stuff
-                //|| event.type === EVENT_TYPE_EXPLOSION_END || event.type === EVENT_TYPE_EXPLOSION
-
-                if (oldGrid === null || oldGrid[r][c] !== event.grid[r][c]) {
+                if (oldGrid === null || oldGrid[r][c] !== event.grid[r][c] || event.type === EVENT_TYPE_EXPLOSION_END || event.type === EVENT_TYPE_EXPLOSION) {
                     var char = event.grid[r][c];
                     update_cell(r, c, char);
                 }
@@ -365,12 +366,12 @@ bLoader.loadAsync("2", "/games/bomberman/Images/powerup_bomb.png", "sprite");
 bLoader.loadAsync("3", "/games/bomberman/Images/powerup_speed.png", "sprite");
 bLoader.loadAsync("4", "/games/bomberman/Images/powerup_burntime.png", "sprite");
 
-function playerFunc (obj, x, y, loadedObj, char) {
+function playerFunc(obj, x, y, loadedObj, char) {
     players[char] = obj.object;
     obj.object.position.y -= .4;
 }
 
-bLoader.loadAsync("A", "/games/bomberman/Models/playercharnewtest.json", "model", 0.3, playerFunc);
+bLoader.loadAsync("A", "/games/bomberman/Models/greendude.json", "model", 0.3, playerFunc);
 bLoader.loadAsync("B", "/games/bomberman/Models/playercharnewtest.json", "model", 0.3, playerFunc);
 bLoader.loadAsync("C", "/games/bomberman/Models/playercharnewtest.json", "model", 0.3, playerFunc);
 bLoader.loadAsync("D", "/games/bomberman/Models/playercharnewtest.json", "model", 0.3, playerFunc);
