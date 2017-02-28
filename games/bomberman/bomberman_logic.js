@@ -33,7 +33,9 @@ exports.game = function game(gameId, config, players, sendGameEvent, sendGameUpd
     self.EXP_TYPE_VERT = 5;
     self.EXP_TYPE_HORI = 6;
 
-    self.powerup_max_num = 15;
+//    self.powerup_max_num = 15;
+    //TODO REVERT THIS:
+    self.powerup_max_num = 5;
 
     self.POWERUP_BOMBS = '1';
     self.POWERUP_BURN = '2';
