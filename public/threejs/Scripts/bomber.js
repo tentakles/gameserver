@@ -46,8 +46,8 @@ renderer.setSize(width, heigth);
 renderer.setClearColor(0x222222);
 renderer.shadowMap.enabled = true;
 renderer.shadowMap.soft = true;
-document.body.appendChild(renderer.domElement);
 
+document.body.appendChild(renderer.domElement);
 
 var spriteAni = [125, 133, 141, 148, 156, 164, 171, 178, 185, 192, 198, 205, 211, 216, 221, 226, 231, 235, 238, 241, 244, 246, 248, 249, 250, 250, 250, 249, 248, 246, 244, 241, 238, 235, 231, 226, 221, 216, 211, 205, 198, 192, 185, 178, 171, 164, 156, 148, 141, 133, 125, 117, 109, 102, 94, 86, 79, 72, 65, 58, 52, 45, 39, 34, 29, 24, 19, 15, 12, 9, 6, 4, 2, 1, 0, 0, 0, 1, 2, 4, 6, 9, 12, 15, 19, 24, 29, 34, 39, 45, 52, 58, 65, 72, 79, 86, 94, 102, 109, 117, 125];
 
@@ -180,9 +180,11 @@ function addObject(x, y, loadedObj) {
     if (loadedObj.scale) {
         obj.object.scale.set(loadedObj.scale, loadedObj.scale, loadedObj.scale);
     }
+
     obj.object.castShadow = true;
     obj.object.receiveShadow = true;
-    gridObjects[y + "_" + x] = obj
+
+    gridObjects[y + "_" + x] = obj;
     obj.object.position.x = x;
     obj.object.position.z = y;
     if (loadedObj.func)
@@ -217,13 +219,23 @@ function init(loadedStuff) {
     }
 
     // (color, intensity)
-    var light = new THREE.DirectionalLight(0xffffff, 1);
+    var light = new THREE.DirectionalLight(0xffffff, 0.25);
     light.castShadow = true;
-    light.shadowDarkness = 0.5;
-    light.shadowCameraVisible = true;
+
+    light.shadow.mapSize.height = 1024;
+    light.shadow.mapSize.width = 1024;
     // (x, y, z)
-    light.position.set( xScale / 2, 10, yScale / 2);
+    light.position.set( -5+xScale / 2, 10, yScale / 2);
     scene.add(light);
+
+
+    scene.add(new THREE.AmbientLight(0xffffff, 0.5));
+
+    light.target.position.set(2+xScale / 2, -5, yScale / 2);
+    scene.add(light.target);
+
+    helper = new THREE.CameraHelper(light.shadow.camera);
+    scene.add(helper);
 
     camera.position.set(5.026834384743997, 11.565823248616343, 8.10856187385891);
     controls.target.set(5.026834384743997, -1.8699039169448395, 3.8555165223830943);
@@ -241,7 +253,7 @@ bLoader.loadAsync("1", "Images/powerup_power.png", "sprite");
 bLoader.loadAsync("2", "Images/powerup_bomb.png", "sprite");
 bLoader.loadAsync("3", "Images/powerup_speed.png", "sprite");
 bLoader.loadAsync("4", "Images/powerup_burntime.png", "sprite");
-bLoader.loadAsync("A", "Models/greendude.json", "model", 0.3, function (obj, x, y, loadedObj) {
+bLoader.loadAsync("A", "/games/bomberman/Models/p1.json", "model", 0.3, function (obj, x, y, loadedObj) {
     player.y = y;
     player.x = x;
     player.obj = obj.object;
