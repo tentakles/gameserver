@@ -46,6 +46,8 @@ renderer.setSize(width, heigth);
 renderer.setClearColor(0x222222);
 renderer.shadowMap.enabled = true;
 renderer.shadowMap.soft = true;
+renderer.gammaInput = true;
+renderer.gammaOutput = true;
 
 document.body.appendChild(renderer.domElement);
 

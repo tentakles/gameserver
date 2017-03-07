@@ -11,14 +11,13 @@
         "uvs":1
     },
     "materials":[{
-        "mapDiffuse":"p2.png",
-        "colorSpecular":[0.2,0.2,0.2],
+        "mapDiffuse":"p1.png",
+        "colorSpecular":[0.7,0.7,0.7],
         "depthTest":true,
         "shading":"phong",
         "transparent":false,
         "specularCoef":50,
-        "visible":true,
-        "colorDiffuse":[5,5,5],
+        "visible":true,   
         "DbgColor":15658734,
         "mapDiffuseAnisotropy":1,
         "depthWrite":true,
@@ -26,7 +25,7 @@
         "DbgIndex":0,
         "wireframe":false,
         "DbgName":"Material.002",
-        "colorEmissive":[0.2,0.2,0.2],
+ 
         "blending":"NormalBlending",
         "mapDiffuseRepeat":[1,1],
         "opacity":1

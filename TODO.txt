@@ -2,55 +2,47 @@
 Todo bomberman 3D
 ##############
 
-skapa spelarobjekten
-	texturera alla fyra objekten
-	integrera dem i koden
+integrera skugg koden från demot
+	
+mer korrekt perspektiv + avklippning av lådan på höjden
 
-integrera med spelmotor	
 
-	*om man står på initial position försvinner man om man lägger bomb
+------
+
+spelaren skall tas bort när den blivit dödad, inte stå kvar på planen :D
+	gubbarna rensas inte korrekt från spelplanen
+
+	rotera gubbarna när de går	
+	
+korrekt längd på explosioner
+	minska storleken på mitten explisinen så man ser bättre
+	olika längd åt olika håll på explosioner
+
 
 	ta bort block korrekt när en powerup skapas - 
 		*ändra koden så att powerupp alltid skapas
 		debugga
 		ändra tillbaka sannolikhetskod
-		
-	på nedersta raden är det rätt buggigt? :O
-		
-	explosioner
-	*	skapa explisioner
-	*	ta bort explosioner
-	*	stoppa explosioner på rätt plats
-		korrekt längd på explosioner
-			minska storleken på mitten explisinen så man ser bättre
-			olika längd åt olika håll på explosioner
 
-	*fixa så att det repaintas när man går in i en powerup - nu verkar den finnas tills man går
-	
-	restart skall fungera korrekt, init bör köras?	
-		refaktoisera så att init kan köras om igen med en grid för att sätta upp allt.
 
-	rotera gubbarna när de går
 	rensa upp kod	
 		refaktorisera grid / oldgrid till att bara en finns kvar.
 		update_cell är förvirrad
-	
-uppdatera sprite-koden så den funkar igen	
-ta boert det gamla ascii-skiten
-
-############
-TODO server
-############
 
 ##############
-Todo bomberman
+Todo bomberman 3d
 ##############
 
 Buggar: 
 	
 ############
-TODO nice to have (post 1.0)
+TODO nice to have (post 1.0 3d)
 ############
+
+uppdatera sprite-koden så den funkar igen	
+ta boert det gamla ascii-skiten
+
+
 
 indikation av nya meddelanden i chatdialogerna
 
@@ -86,6 +78,24 @@ highlighta i "Players list"  vem som är nuvarande spelare
 ############
 DONE
 ############
+
+*skapa spelarobjekten
+*	texturera alla fyra objekten
+*	integrera dem i koden
+	
+* om man står på initial position försvinner man om man lägger bomb
+
+*	på nedersta raden är det rätt buggigt? :O
+		
+	explosioner
+	*	skapa explisio wwwner
+	*	ta bort explosioner
+	*	stoppa explosioner på rätt plats
+	
+	*fixa så att det repaintas när man går in i en powerup - nu verkar den finnas tills man går
+	
+	restart skall fungera korrekt, init bör köras?	
+		refaktoisera så att init kan köras om igen med en grid för att sätta upp allt.
 
 *texturer på block
 	*_>test
