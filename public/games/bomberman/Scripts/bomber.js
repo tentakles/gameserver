@@ -229,9 +229,10 @@ function addObject(x, y, loadedObj, char) {
     obj.object.receiveShadow = true;
 
     obj.char = char;
-    console.log(obj.object.uuid + " ADD");
+   // console.log(obj.object.uuid + " ADD");
 
     if (char) {
+        console.log("addObject char:" + char);
         if (gridObjects[y + "_" + x] && gridObjects[y + "_" + x].object && !isPlayer(gridObjects[y + "_" + x].char))
             scene.remove(gridObjects[y + "_" + x].object);
 
@@ -312,8 +313,8 @@ function update_cell(y, x, chars) {
     var go = gridObjects[y + "_" + x];
     if ((chars == '' || isPlayer(chars)) && go && isRemovableObject(go.char)) {
         scene.remove(go.object);
-        console.log(go.object.uuid + " REMOVE");
-        console.log("object deleted: " + go.char);
+    //    console.log(go.object.uuid + " REMOVE");
+     //   console.log("object deleted: " + go.char);
         gridObjects[y + "_" + x] = undefined;
         // return;
     }
@@ -323,7 +324,7 @@ function update_cell(y, x, chars) {
         if (isRemovableObject(char)) {
             var loadedObj = savedLoadedStuff[char];
             if (loadedObj != null && (!go || go.char != char)) {
-                console.log("adding char:" + char + " " + chars);
+            //    console.log("adding char:" + char + " " + chars);
                 addObject(x, y, loadedObj, char);
             }
         }
@@ -331,22 +332,28 @@ function update_cell(y, x, chars) {
         if (players[char]) {
             players[char].position.z = y;
             players[char].position.x = x;
-            //move player
         }
     }
 }
 
 function game_event(event) {
-    console.log(event);
+ //   console.log(event);
     if (event.type === EVENT_TYPE_EXPLOSION) {
         explode(event);
 
         var gridString = JSON.stringify(event.grid);
-        console.log(gridString);
+    //    console.log(gridString);
 
     }
     if (event.type === EVENT_TYPE_EXPLOSION_END) {
         removeExplosionById(event.bombId);
+    }
+
+    if (event.killChars) {
+        for (var i = 0; i < event.killChars.length;i++) {
+            var player = players[event.killChars[i]];
+            player.visible = false;
+        }
     }
 
     if (event.pos) {
@@ -365,9 +372,13 @@ function game_event(event) {
 
         for (var r = 0; r < rows; r++) {
             for (var c = 0; c < cols; c++) {
+                var char = event.grid[r][c];
                 if (oldGrid === null || oldGrid[r][c] !== event.grid[r][c] || event.type === EVENT_TYPE_EXPLOSION_END || event.type === EVENT_TYPE_EXPLOSION) {
-                    var char = event.grid[r][c];
                     update_cell(r, c, char);
+                }
+
+                if (isPlayer(char) && players[char] && players[char].visible === false) {
+                    players[char].visible = true;
                 }
             }
         }
