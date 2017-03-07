@@ -53,7 +53,7 @@ var players = {};
 var explosions = {};
 
 var width = 800;
-var heigth = 600;
+var heigth = 400;
 var blenderScale = 0.4;
 var boxSize = .8;
 var boxSizeBorder = 1;
@@ -86,6 +86,10 @@ var grid = undefined;
 
 renderer.setSize(width, heigth);
 renderer.setClearColor(0x222222);
+renderer.shadowMap.enabled = true;
+renderer.shadowMap.soft = true;
+renderer.gammaInput = true;
+renderer.gammaOutput = true;
 
 var container = document.getElementById('bombermanContainer');
 container.appendChild(renderer.domElement);
@@ -221,6 +225,9 @@ function addObject(x, y, loadedObj, char) {
         obj.object.scale.set(loadedObj.scale, loadedObj.scale, loadedObj.scale);
     }
 
+    obj.object.castShadow = true;
+    obj.object.receiveShadow = true;
+
     obj.char = char;
     console.log(obj.object.uuid + " ADD");
 
@@ -252,6 +259,7 @@ function init(loadedStuff) {
     floor.position.x = xScale / 2 - 0.5;
     floor.position.z = yScale / 2 - 0.5;
     floor.position.y = -boxSize / 2;
+    floor.receiveShadow = true;
     scene.add(floor);
 
     for (var y = 0; y < grid.length; y++) {
@@ -268,13 +276,22 @@ function init(loadedStuff) {
     oldGrid = grid;
 
     // (color, intensity)
-    var light = new THREE.PointLight(0xffffff, 1);
+    var light = new THREE.DirectionalLight(0xffffff, 0.25);
+    light.castShadow = true;
+
+    light.shadow.mapSize.height = 1024;
+    light.shadow.mapSize.width = 1024;
     // (x, y, z)
-    light.position.set(xScale / 2, 10, yScale / 2);
+    light.position.set(-5 + xScale / 2, 10, yScale / 2);
     scene.add(light);
 
-    camera.position.set(5.026834384743997, 11.565823248616343, 8.10856187385891);
-    controls.target.set(5.026834384743997, -1.8699039169448395, 3.8555165223830943);
+    scene.add(new THREE.AmbientLight(0xffffff, 0.5));
+
+    light.target.position.set(2 + xScale / 2, -5, yScale / 2);
+    scene.add(light.target);
+
+    camera.position.set(5.025562701700849, 6.933992322090639, 12.179108170152428);
+    controls.target.set(5.02556270170085, -1.674462826559879, 3.70036934158493);
 
     $("body").keypress(move);
     render();
