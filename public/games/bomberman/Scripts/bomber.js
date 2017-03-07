@@ -290,8 +290,8 @@ function init(loadedStuff) {
     light.target.position.set(2 + xScale / 2, -5, yScale / 2);
     scene.add(light.target);
 
-    camera.position.set(5.025562701700849, 6.933992322090639, 12.179108170152428);
-    controls.target.set(5.02556270170085, -1.674462826559879, 3.70036934158493);
+    camera.position.set(5.026834384743997, 8.851088505051793, 9.42820291737039);
+    controls.target.set(5.026834384743997, -1.8699039169448395, 3.8555165223830943);
 
     $("body").keyup(move);
     render();
