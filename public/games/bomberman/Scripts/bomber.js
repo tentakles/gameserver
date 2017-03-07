@@ -293,7 +293,7 @@ function init(loadedStuff) {
     camera.position.set(5.025562701700849, 6.933992322090639, 12.179108170152428);
     controls.target.set(5.02556270170085, -1.674462826559879, 3.70036934158493);
 
-    $("body").keypress(move);
+    $("body").keyup(move);
     render();
 }
 
