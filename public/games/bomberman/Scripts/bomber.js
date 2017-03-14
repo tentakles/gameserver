@@ -229,7 +229,7 @@ function addObject(x, y, loadedObj, char) {
     obj.object.receiveShadow = true;
 
     obj.char = char;
-   // console.log(obj.object.uuid + " ADD");
+    // console.log(obj.object.uuid + " ADD");
 
     if (char) {
         console.log("addObject char:" + char);
@@ -313,8 +313,8 @@ function update_cell(y, x, chars) {
     var go = gridObjects[y + "_" + x];
     if ((chars == '' || isPlayer(chars)) && go && isRemovableObject(go.char)) {
         scene.remove(go.object);
-    //    console.log(go.object.uuid + " REMOVE");
-     //   console.log("object deleted: " + go.char);
+        //    console.log(go.object.uuid + " REMOVE");
+        //   console.log("object deleted: " + go.char);
         gridObjects[y + "_" + x] = undefined;
         // return;
     }
@@ -324,12 +324,28 @@ function update_cell(y, x, chars) {
         if (isRemovableObject(char)) {
             var loadedObj = savedLoadedStuff[char];
             if (loadedObj != null && (!go || go.char != char)) {
-            //    console.log("adding char:" + char + " " + chars);
+                //    console.log("adding char:" + char + " " + chars);
                 addObject(x, y, loadedObj, char);
             }
         }
 
         if (players[char]) {
+            var player = players[char];
+
+            if (player.position.z !== y) {
+                if (player.position.z < y)
+                    player.rotation.y = 0;
+                else
+                    player.rotation.y = Math.PI;
+            }
+
+            if (player.position.x !== x) {
+                if (player.position.x < x)
+                    player.rotation.y = Math.PI / 2;
+                else
+                    player.rotation.y = -Math.PI / 2;
+            }
+
             players[char].position.z = y;
             players[char].position.x = x;
         }
@@ -337,12 +353,12 @@ function update_cell(y, x, chars) {
 }
 
 function game_event(event) {
- //   console.log(event);
+    //   console.log(event);
     if (event.type === EVENT_TYPE_EXPLOSION) {
         explode(event);
 
         var gridString = JSON.stringify(event.grid);
-    //    console.log(gridString);
+        //    console.log(gridString);
 
     }
     if (event.type === EVENT_TYPE_EXPLOSION_END) {
@@ -350,7 +366,7 @@ function game_event(event) {
     }
 
     if (event.killChars) {
-        for (var i = 0; i < event.killChars.length;i++) {
+        for (var i = 0; i < event.killChars.length; i++) {
             var player = players[event.killChars[i]];
             player.visible = false;
         }
@@ -404,9 +420,20 @@ bLoader.loadAsync("B", "/games/bomberman/Models/p2.json", "model", 0.3, playerFu
 bLoader.loadAsync("C", "/games/bomberman/Models/p3.json", "model", 0.3, playerFunc);
 bLoader.loadAsync("D", "/games/bomberman/Models/p4.json", "model", 0.3, playerFunc);
 
-bLoader.loadSync("explosionSphere", { geometry: explosionSphereGeom, material: explosionMaterial1, type: "model" });
-bLoader.loadSync("explosionCylinder", { geometry: explosionSphereCylinder, material: explosionMaterial2, type: "model" });
-bLoader.loadSync("explosionSphereEndcap", { geometry: explosionSphereGeomEndCap, material: explosionMaterial2, type: "model" });
+function removeShadow(obj) {
+    obj.object.castShadow = false;
+    obj.object.receiveShadow = false;
+}
+
+bLoader.loadSync("explosionSphere", {
+    geometry: explosionSphereGeom, material: explosionMaterial1, type: "model", func: removeShadow
+});
+bLoader.loadSync("explosionCylinder", {
+    geometry: explosionSphereCylinder, material: explosionMaterial2, type: "model", func: removeShadow
+});
+bLoader.loadSync("explosionSphereEndcap", {
+    geometry: explosionSphereGeomEndCap, material: explosionMaterial2, type: "model", func: removeShadow
+});
 
 //bLoader.loadSync("$", { geometry: boxGeom, material: boxMaterial1, type: "model" });
 bLoader.loadSync("#", { geometry: boxGeom, material: boxMaterialFixed, type: "model" });
