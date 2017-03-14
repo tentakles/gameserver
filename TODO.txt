@@ -2,32 +2,15 @@
 Todo bomberman 3D
 ##############
 
-integrera skugg koden från demot
-	
-mer korrekt perspektiv + avklippning av lådan på höjden
-
-
-------
-
-spelaren skall tas bort när den blivit dödad, inte stå kvar på planen :D
-	gubbarna rensas inte korrekt från spelplanen
-
-	rotera gubbarna när de går	
+rotera gubbarna när de går	
 	
 korrekt längd på explosioner
 	minska storleken på mitten explisinen så man ser bättre
 	olika längd åt olika håll på explosioner
 
-
-	ta bort block korrekt när en powerup skapas - 
-		*ändra koden så att powerupp alltid skapas
-		debugga
-		ändra tillbaka sannolikhetskod
-
-
-	rensa upp kod	
-		refaktorisera grid / oldgrid till att bara en finns kvar.
-		update_cell är förvirrad
+rensa upp kod	
+	refaktorisera grid / oldgrid till att bara en finns kvar.
+	update_cell är förvirrad
 
 ##############
 Todo bomberman 3d
@@ -78,6 +61,16 @@ highlighta i "Players list"  vem som är nuvarande spelare
 ############
 DONE
 ############
+
+*ta bort block korrekt när en powerup skapas - 
+	*ändra koden så att powerupp alltid skapas
+	*debugga
+	*ändra tillbaka sannolikhetskod
+
+*integrera skugg koden från demot
+*mer korrekt perspektiv + avklippning av lådan på höjden
+*spelaren skall tas bort när den blivit dödad, inte stå kvar på planen :D
+*	gubbarna rensas inte korrekt från spelplanen
 
 *skapa spelarobjekten
 *	texturera alla fyra objekten
