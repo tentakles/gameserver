@@ -71,7 +71,7 @@ var boxGeomBorder = new THREE.BoxGeometry(boxSizeBorder, borderHeight, boxSizeBo
 
 var explosionCylinderSize = 0.57;
 
-var explosionSphereGeom = new THREE.SphereGeometry(1.2, 16, 16);
+var explosionSphereGeom = new THREE.SphereGeometry(1.1, 16, 16);
 var explosionSphereGeomEndCap = new THREE.SphereGeometry(explosionCylinderSize, 16, 16);
 var explosionSphereCylinder = new THREE.CylinderGeometry(explosionCylinderSize, explosionCylinderSize, 1, 32);
 
@@ -131,25 +131,60 @@ function remove(objs) {
 }
 
 function explode(event) {
+
+    var vertStart=undefined;
+    var vertStop = undefined;
+
+    var horiStart = undefined;
+    var horiStop = undefined;
+
+    for (var i = 0; i < event.explosionPositions.length; i++) {
+
+        var pos = event.explosionPositions[i];
+
+        //hori
+        if (pos[0] == event.row) {
+           // console.log("horisontal:" + pos[1]);
+            if (horiStart == undefined || horiStart > pos[1])
+                horiStart = pos[1];
+            if (horiStop == undefined || horiStop < pos[1])
+                horiStop = pos[1];
+        }
+
+        if (pos[1] == event.col) {
+            if (vertStart == undefined || vertStart > pos[0])
+                vertStart = pos[0];
+            if (vertStop == undefined || vertStop < pos[0])
+                vertStop = pos[0];
+        }
+    }
+
+    var vertSize = vertStop - vertStart;
+    var horiSize = horiStop - horiStart;
+
+    var horiCenter =(horiStart + horiStop) / 2;
+    var vertCenter = (vertStart + vertStop) / 2;
+
     var sphere = addObject(event.col, event.row, bLoader.loadedStuff["explosionSphere"]);
 
     var cyl1 = addObject(event.col, event.row, bLoader.loadedStuff["explosionCylinder"]);
     cyl1.object.rotation.x = Math.PI / 2;
-    cyl1.object.scale.y = event.size;
-
+    
+    cyl1.object.scale.y = vertSize;
+    cyl1.object.position.z -= event.row - vertCenter;
+    
     var cyl2 = addObject(event.col, event.row, bLoader.loadedStuff["explosionCylinder"]);
     cyl2.object.rotation.x = Math.PI / 2;
     cyl2.object.rotation.z = Math.PI / 2;
-    cyl2.object.scale.y = event.size;
+    cyl2.object.scale.y = horiSize;
 
-    var ec1 = addObject(event.col, event.row, bLoader.loadedStuff["explosionSphereEndcap"]);
-    ec1.object.position.z += event.size / 2;
-    var ec2 = addObject(event.col, event.row, bLoader.loadedStuff["explosionSphereEndcap"]);
-    ec2.object.position.z -= event.size / 2;
-    var ec3 = addObject(event.col, event.row, bLoader.loadedStuff["explosionSphereEndcap"]);
-    ec3.object.position.x += event.size / 2;
-    var ec4 = addObject(event.col, event.row, bLoader.loadedStuff["explosionSphereEndcap"]);
-    ec4.object.position.x -= event.size / 2;
+    cyl2.object.position.x -= event.col - horiCenter;
+
+    var ec1 = addObject(event.col, vertStart, bLoader.loadedStuff["explosionSphereEndcap"]);
+    var ec2 = addObject(event.col, vertStop, bLoader.loadedStuff["explosionSphereEndcap"]);
+
+    var ec3 = addObject(horiStart, event.row, bLoader.loadedStuff["explosionSphereEndcap"]);
+    var ec4 = addObject(horiStop, event.row, bLoader.loadedStuff["explosionSphereEndcap"]);
 
     var objs = [sphere, cyl1, cyl2, ec1, ec2, ec3, ec4];
 
@@ -232,7 +267,7 @@ function addObject(x, y, loadedObj, char) {
     // console.log(obj.object.uuid + " ADD");
 
     if (char) {
-        console.log("addObject char:" + char);
+      //  console.log("addObject char:" + char);
         if (gridObjects[y + "_" + x] && gridObjects[y + "_" + x].object && !isPlayer(gridObjects[y + "_" + x].char))
             scene.remove(gridObjects[y + "_" + x].object);
 

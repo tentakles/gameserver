@@ -232,7 +232,7 @@ exports.game = function game(gameId, config, players, sendGameEvent, sendGameUpd
                 killChars.push(player.char);
             }
         }
-        var isIndestructibleBlock = self.grid[row][col] === self.OBJECT_INDESTRUCTIBLE_BLOCK;
+        var isIndestructibleBlock = self.grid[row][col] === self.OBJECT_INDESTRUCTIBLE_BLOCK || self.grid[row][col] === self.OBJECT_BORDER;
         if (!isIndestructibleBlock && explosionPositions) {
             explosionPositions.push([row, col, exp_dir]);
         }

@@ -2,28 +2,31 @@
 Todo bomberman 3D
 ##############
 
-rotera gubbarna när de går	
-	
-korrekt längd på explosioner
-	minska storleken på mitten explisinen så man ser bättre
-	olika längd åt olika håll på explosioner
+ljus från explosioner
+
+THREE.Matrix3.getInverse(): can't invert matrix, determinant is 0	
 
 rensa upp kod	
 	refaktorisera grid / oldgrid till att bara en finns kvar.
 	update_cell är förvirrad
 
+merge back	
+
+uppdatera sprite-koden så den funkar igen	
+ta boert det gamla ascii-skiten
+
+password dialog bugg som crashar ui?
+	
 ##############
 Todo bomberman 3d
 ##############
 
 Buggar: 
+servercrash vid leave?
 	
 ############
 TODO nice to have (post 1.0 3d)
 ############
-
-uppdatera sprite-koden så den funkar igen	
-ta boert det gamla ascii-skiten
 
 
 
@@ -61,6 +64,17 @@ highlighta i "Players list"  vem som är nuvarande spelare
 ############
 DONE
 ############
+
+*rotera gubbarna när de går	
+
+
+*korrekt längd på explosioner
+*	endcapsen ritas ut på samma plats??
+*		logga endcapsens pos
+*	minska storleken på mitten explisinen så man ser bättre
+*	olika längd åt olika håll på explosioner
+*		kolla efter bugg som gör att ingen korrekt mittpunkt hittas?
+*	ändra tillbaka längd 
 
 *ta bort block korrekt när en powerup skapas - 
 	*ändra koden så att powerupp alltid skapas
