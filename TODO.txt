@@ -4,18 +4,14 @@ Todo bomberman 3D
 
 ljus från explosioner
 
-THREE.Matrix3.getInverse(): can't invert matrix, determinant is 0	
-
 rensa upp kod	
 	refaktorisera grid / oldgrid till att bara en finns kvar.
 	update_cell är förvirrad
 
-merge back	
-
 uppdatera sprite-koden så den funkar igen	
 ta boert det gamla ascii-skiten
 
-password dialog bugg som crashar ui?
+merga tillbaka till main
 	
 ##############
 Todo bomberman 3d
@@ -23,6 +19,8 @@ Todo bomberman 3d
 
 Buggar: 
 servercrash vid leave?
+
+password dialog bugg som crashar ui?
 	
 ############
 TODO nice to have (post 1.0 3d)
@@ -65,8 +63,11 @@ highlighta i "Players list"  vem som är nuvarande spelare
 DONE
 ############
 
-*rotera gubbarna när de går	
+*THREE.Matrix3.getInverse(): can't invert matrix, determinant is 0	
+	sker vid vissa explosioner?
+	nånting med scale(0) ?
 
+*rotera gubbarna när de går	
 
 *korrekt längd på explosioner
 *	endcapsen ritas ut på samma plats??

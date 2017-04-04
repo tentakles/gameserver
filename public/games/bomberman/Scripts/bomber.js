@@ -132,7 +132,7 @@ function remove(objs) {
 
 function explode(event) {
 
-    var vertStart=undefined;
+    var vertStart = undefined;
     var vertStop = undefined;
 
     var horiStart = undefined;
@@ -144,7 +144,7 @@ function explode(event) {
 
         //hori
         if (pos[0] == event.row) {
-           // console.log("horisontal:" + pos[1]);
+            // console.log("horisontal:" + pos[1]);
             if (horiStart == undefined || horiStart > pos[1])
                 horiStart = pos[1];
             if (horiStop == undefined || horiStop < pos[1])
@@ -162,31 +162,40 @@ function explode(event) {
     var vertSize = vertStop - vertStart;
     var horiSize = horiStop - horiStart;
 
-    var horiCenter =(horiStart + horiStop) / 2;
+    var horiCenter = (horiStart + horiStop) / 2;
     var vertCenter = (vertStart + vertStop) / 2;
 
+    var objs = [];
+
     var sphere = addObject(event.col, event.row, bLoader.loadedStuff["explosionSphere"]);
+    objs.push(sphere);
 
-    var cyl1 = addObject(event.col, event.row, bLoader.loadedStuff["explosionCylinder"]);
-    cyl1.object.rotation.x = Math.PI / 2;
-    
-    cyl1.object.scale.y = vertSize;
-    cyl1.object.position.z -= event.row - vertCenter;
-    
-    var cyl2 = addObject(event.col, event.row, bLoader.loadedStuff["explosionCylinder"]);
-    cyl2.object.rotation.x = Math.PI / 2;
-    cyl2.object.rotation.z = Math.PI / 2;
-    cyl2.object.scale.y = horiSize;
+    if (vertSize > 0) {
+        var cyl1 = addObject(event.col, event.row, bLoader.loadedStuff["explosionCylinder"]);
+        cyl1.object.rotation.x = Math.PI / 2;
+        cyl1.object.scale.y = vertSize;
+        cyl1.object.position.z -= event.row - vertCenter;
+        objs.push(cyl1);
 
-    cyl2.object.position.x -= event.col - horiCenter;
+        var ec1 = addObject(event.col, vertStart, bLoader.loadedStuff["explosionSphereEndcap"]);
+        objs.push(ec1);
+        var ec2 = addObject(event.col, vertStop, bLoader.loadedStuff["explosionSphereEndcap"]);
+        objs.push(ec2);
+    }
 
-    var ec1 = addObject(event.col, vertStart, bLoader.loadedStuff["explosionSphereEndcap"]);
-    var ec2 = addObject(event.col, vertStop, bLoader.loadedStuff["explosionSphereEndcap"]);
+    if (horiSize > 0) {
+        var cyl2 = addObject(event.col, event.row, bLoader.loadedStuff["explosionCylinder"]);
+        cyl2.object.rotation.x = Math.PI / 2;
+        cyl2.object.rotation.z = Math.PI / 2;
+        cyl2.object.scale.y = horiSize;
+        cyl2.object.position.x -= event.col - horiCenter;
+        objs.push(cyl2);
 
-    var ec3 = addObject(horiStart, event.row, bLoader.loadedStuff["explosionSphereEndcap"]);
-    var ec4 = addObject(horiStop, event.row, bLoader.loadedStuff["explosionSphereEndcap"]);
-
-    var objs = [sphere, cyl1, cyl2, ec1, ec2, ec3, ec4];
+        var ec3 = addObject(horiStart, event.row, bLoader.loadedStuff["explosionSphereEndcap"]);
+        objs.push(ec3);
+        var ec4 = addObject(horiStop, event.row, bLoader.loadedStuff["explosionSphereEndcap"]);
+        objs.push(ec4);
+    }
 
     explosions[event.bombId] = objs;
 }
@@ -267,7 +276,7 @@ function addObject(x, y, loadedObj, char) {
     // console.log(obj.object.uuid + " ADD");
 
     if (char) {
-      //  console.log("addObject char:" + char);
+        //  console.log("addObject char:" + char);
         if (gridObjects[y + "_" + x] && gridObjects[y + "_" + x].object && !isPlayer(gridObjects[y + "_" + x].char))
             scene.remove(gridObjects[y + "_" + x].object);
 
