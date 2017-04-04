@@ -1,17 +1,16 @@
 ﻿##############
-Todo bomberman 3D
+Todo 
 ##############
 
-merga tillbaka till main
-	
-##############
-Todo bomberman 3d
-##############
+############
+Buggar
+############
 
-Buggar: 
 servercrash vid leave?
 
 password dialog bugg som crashar ui?
+
+återimplementera minimum 2 players i bomberman
 	
 ############
 TODO nice to have (post 1.0 3d)
@@ -61,6 +60,8 @@ rensa upp kod
 ############
 DONE
 ############
+
+*merga tillbaka till main
 
 *uppdatera sprite-koden så den funkar igen	
 
