@@ -48,6 +48,7 @@ renderer.shadowMap.enabled = true;
 renderer.shadowMap.soft = true;
 renderer.gammaInput = true;
 renderer.gammaOutput = true;
+//renderer.toneMapping = THREE.ReinhardToneMapping;
 
 document.body.appendChild(renderer.domElement);
 
@@ -104,10 +105,26 @@ function explode(size) {
     var ec4 = addObject(player.x, player.y, bLoader.loadedStuff["explosionSphereEndcap"]);
     ec4.object.position.x -= size / 2;
 
+    //var bulbGeometry = new THREE.SphereGeometry(1, 16, 8);
+    var bulbLight = new THREE.PointLight(0xffee88, 4, 100, 2);
+
+    //var bulbMat = new THREE.MeshStandardMaterial({
+    //    emissive: 0xffffee,
+    //    emissiveIntensity: 1,
+    //    color: 0x000000
+    //});
+    //bulbLight.add(new THREE.Mesh(bulbGeometry, bulbMat));
+    bulbLight.position.set(player.x, 0.8, player.y);
+    bulbLight.castShadow = true;
+    scene.add(bulbLight);
     var objs = [sphere, cyl1, cyl2, ec1, ec2, ec3, ec4];
+
+
+
 
     setTimeout(function () {
         remove(objs);
+        //scene.remove(bulbLight);
     }, explosionLength);
 }
 
@@ -227,13 +244,13 @@ function init(loadedStuff) {
     light.shadow.mapSize.height = 1024;
     light.shadow.mapSize.width = 1024;
     // (x, y, z)
-    light.position.set( -5+xScale / 2, 10, yScale / 2);
+    light.position.set(-5 + xScale / 2, 10, yScale / 2);
     scene.add(light);
 
 
     scene.add(new THREE.AmbientLight(0xffffff, 0.5));
 
-    light.target.position.set(2+xScale / 2, -5, yScale / 2);
+    light.target.position.set(2 + xScale / 2, -5, yScale / 2);
     scene.add(light.target);
 
     helper = new THREE.CameraHelper(light.shadow.camera);
@@ -265,11 +282,14 @@ bLoader.loadAsync("A", "/games/bomberman/Models/p1.json", "model", 0.3, function
 
     //obj.object.rotation.y = -Math.PI/2;
 });
+function removeShadow(obj) {
+    obj.object.receiveShadow = false;
+    obj.object.castShadow = false;
+}
 
-
-bLoader.loadSync("explosionSphere", { geometry: explosionSphereGeom, material: explosionMaterial1, type: "model" });
-bLoader.loadSync("explosionCylinder", { geometry: explosionSphereCylinder, material: explosionMaterial2, type: "model" });
-bLoader.loadSync("explosionSphereEndcap", { geometry: explosionSphereGeomEndCap, material: explosionMaterial2, type: "model" });
+bLoader.loadSync("explosionSphere", { geometry: explosionSphereGeom, material: explosionMaterial1, type: "model", func: removeShadow });
+bLoader.loadSync("explosionCylinder", { geometry: explosionSphereCylinder, material: explosionMaterial2, type: "model", func: removeShadow });
+bLoader.loadSync("explosionSphereEndcap", { geometry: explosionSphereGeomEndCap, material: explosionMaterial2, type: "model", func: removeShadow });
 
 //bLoader.loadSync("$", { geometry: boxGeom, material: boxMaterial1, type: "model" });
 bLoader.loadSync("#", { geometry: boxGeom, material: boxMaterialFixed, type: "model" });
