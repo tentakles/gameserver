@@ -2,9 +2,6 @@
 Todo bomberman 3D
 ##############
 
-uppdatera sprite-koden så den funkar igen	
-ta boert det gamla ascii-skiten
-
 merga tillbaka till main
 	
 ##############
@@ -19,8 +16,6 @@ password dialog bugg som crashar ui?
 ############
 TODO nice to have (post 1.0 3d)
 ############
-
-
 
 indikation av nya meddelanden i chatdialogerna
 
@@ -67,8 +62,9 @@ rensa upp kod
 DONE
 ############
 
+*uppdatera sprite-koden så den funkar igen	
 
-
+*ta bort det gamla ascii-versionen
 
 *THREE.Matrix3.getInverse(): can't invert matrix, determinant is 0	
 	sker vid vissa explosioner?
