@@ -12,6 +12,7 @@ var OBJECT_EMPTY = ' ';
 var OBJECT_BOMB = '@';
 var OBJECT_DESTRUCTIBLE_BLOCK = '$';
 var OBJECT_INDESTRUCTIBLE_BLOCK = '#';
+var OBJECT_BORDER = '%';
 
 var POWERUP_BOMBS = '1';
 var POWERUP_BURN = '2';
@@ -35,8 +36,8 @@ var scale = 2;
 var w = 32 * scale;
 var h = 32 * scale;
 
-var rows = 7;
-var cols = 9;
+var rows = 9;
+var cols = 11;
 var sprites;
 
 var game;
@@ -103,6 +104,8 @@ function update_cell(r, c, char) {
     if (char == OBJECT_DESTRUCTIBLE_BLOCK)
         s.push(locs.block);
     else if (char == OBJECT_INDESTRUCTIBLE_BLOCK)
+        s.push(locs.hardblock);
+    else if (char == OBJECT_BORDER)
         s.push(locs.hardblock);
     if (char.includes(PLAYER_1))
         s.push(locs.p1);
