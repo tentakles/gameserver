@@ -23,6 +23,7 @@ exports.game = function game(gameId, config, players, sendGameEvent, sendGameUpd
     self.OBJECT_BOMB = '@';
     self.OBJECT_DESTRUCTIBLE_BLOCK = '$';
     self.OBJECT_INDESTRUCTIBLE_BLOCK = '#';
+    self.OBJECT_BORDER = '%';
 
     self.EXP_TYPE_CENTER = 0;
     self.EXP_TYPE_UP = 1;
@@ -50,8 +51,8 @@ exports.game = function game(gameId, config, players, sendGameEvent, sendGameUpd
 
     self.gameResettingState = false;
 
-    self.rows = 7;
-    self.cols = 9;
+    self.rows = 9;
+    self.cols = 11;
 
     self.bombExplosions = [];
 
@@ -65,6 +66,7 @@ exports.game = function game(gameId, config, players, sendGameEvent, sendGameUpd
     self.can_move_to_pos = function (row, col) {
         if (self.grid[row][col].includes(self.OBJECT_BOMB) ||
             self.grid[row][col].includes(self.OBJECT_DESTRUCTIBLE_BLOCK) ||
+            self.grid[row][col].includes(self.OBJECT_BORDER) ||
             self.grid[row][col].includes(self.OBJECT_INDESTRUCTIBLE_BLOCK))
             return false;
         return true;
@@ -98,8 +100,11 @@ exports.game = function game(gameId, config, players, sendGameEvent, sendGameUpd
             var bombStrength = playerObj.bombStrength;
             var explosionFunc = function () {
                 var event = { grid: self.grid, type: self.EVENT_TYPE_EXPLOSION, row: bombRow, col: bombCol, size: bombStrength, bombId: bombId };
-                event.explosionPositions = self.explosion(event);
 
+                event.killChars = [];
+
+                event.explosionPositions = self.explosion(event, event.killChars);
+               
                 //remove ourselves from coming explosions
                 for (var i = 0; i < self.bombExplosions.length; i++) {
                     var bombExplosion = self.bombExplosions[i];
@@ -195,7 +200,7 @@ exports.game = function game(gameId, config, players, sendGameEvent, sendGameUpd
         return result;
     }
 
-    self.handleExplosionOnPosition = function (row, col, explosionPositions, isBombOrigin, exp_dir) {
+    self.handleExplosionOnPosition = function (row, col, explosionPositions, isBombOrigin, exp_dir, killChars) {
         var foundDestructibleBlock = false;
 
         if (!self.grid[row] || self.grid[row][col] === undefined)
@@ -224,9 +229,10 @@ exports.game = function game(gameId, config, players, sendGameEvent, sendGameUpd
             if (self.grid[row][col].indexOf(player.char) > -1) {
                 self.grid[row][col] = self.grid[row][col].replace(player.char, ' ');
                 player.isAlive = false;
+                killChars.push(player.char);
             }
         }
-        var isIndestructibleBlock = self.grid[row][col] === self.OBJECT_INDESTRUCTIBLE_BLOCK;
+        var isIndestructibleBlock = self.grid[row][col] === self.OBJECT_INDESTRUCTIBLE_BLOCK || self.grid[row][col] === self.OBJECT_BORDER;
         if (!isIndestructibleBlock && explosionPositions) {
             explosionPositions.push([row, col, exp_dir]);
         }
@@ -256,7 +262,7 @@ exports.game = function game(gameId, config, players, sendGameEvent, sendGameUpd
         }
     };
 
-    self.explosion = function (event) {
+    self.explosion = function (event, killChars) {
         self.grid[event.row][event.col] = self.grid[event.row][event.col].replace(self.OBJECT_BOMB, ' ');
 
         var goLeft = true;
@@ -267,27 +273,27 @@ exports.game = function game(gameId, config, players, sendGameEvent, sendGameUpd
 
         var lastLeft, lastRight, lastUp, lastDown;
 
-        self.handleExplosionOnPosition(event.row, event.col, null, true, null);
+        self.handleExplosionOnPosition(event.row, event.col, null, true, null, killChars);
         var explosionPositions = [];
         explosionPositions.push([event.row, event.col, self.EXP_TYPE_CENTER]);
         for (i = 1; i <= event.size; i++) {
             if (goLeft) {
-                goLeft = self.handleExplosionOnPosition(event.row, event.col - i, explosionPositions, false, self.EXP_TYPE_HORI);
+                goLeft = self.handleExplosionOnPosition(event.row, event.col - i, explosionPositions, false, self.EXP_TYPE_HORI, killChars);
                 lastLeft = [event.row, event.col - i];
             }
 
             if (goRight) {
-                goRight = self.handleExplosionOnPosition(event.row, event.col + i, explosionPositions, false, self.EXP_TYPE_HORI);
+                goRight = self.handleExplosionOnPosition(event.row, event.col + i, explosionPositions, false, self.EXP_TYPE_HORI, killChars);
                 lastRight = [event.row, event.col + i];
             }
 
             if (goDown) {
-                goDown = self.handleExplosionOnPosition(event.row + i, event.col, explosionPositions, false, self.EXP_TYPE_VERT);
+                goDown = self.handleExplosionOnPosition(event.row + i, event.col, explosionPositions, false, self.EXP_TYPE_VERT, killChars);
                 lastDown = [event.row + i, event.col];
             }
 
             if (goUp) {
-                goUp = self.handleExplosionOnPosition(event.row - i, event.col, explosionPositions, false, self.EXP_TYPE_VERT);
+                goUp = self.handleExplosionOnPosition(event.row - i, event.col, explosionPositions, false, self.EXP_TYPE_VERT, killChars);
                 lastUp = [event.row - i, event.col];
             }
 
@@ -408,11 +414,16 @@ exports.game = function game(gameId, config, players, sendGameEvent, sendGameUpd
                     p.push(self.grid[p[0]][p[1]]);
                 }
 
-                //if not removed, an UI bug occurs where explosion tile is removed.
+                ////if not removed, an UI bug occurs where explosion tile is removed.
                 if(playerExploded)
                     tryMove.positions.pop();
 
-                return { pos: tryMove.positions, type: self.EVENT_TYPE_POSITIONS };
+                var result = { pos: tryMove.positions, type: self.EVENT_TYPE_POSITIONS};
+
+                if (playerExploded)
+                    result.killChars = [playerObj.char];
+
+                return result;
             }
         }
 
@@ -446,19 +457,21 @@ exports.game = function game(gameId, config, players, sendGameEvent, sendGameUpd
 
         //create internal state grid
         self.grid = [
-            [' ', ' ', '$', '$', '$', '$', '$', ' ', ' '],
-            [' ', '#', '$', '#', '$', '#', '$', '#', ' '],
-            ['$', '$', '$', '$', '$', '$', '$', '$', '$'],
-            ['$', '#', '$', '#', '$', '#', '$', '#', '$'],
-            ['$', '$', '$', '$', '$', '$', '$', '$', '$'],
-            [' ', '#', '$', '#', '$', '#', '$', '#', ' '],
-            [' ', ' ', '$', '$', '$', '$', '$', ' ', ' ']];
-
+            ['%', '%', '%', '%', '%', '%', '%', '%', '%', '%', '%'],
+            ['%', ' ', ' ', '$', '$', '$', '$', '$', ' ', ' ', '%'],
+            ['%', ' ', '#', '$', '#', '$', '#', '$', '#', ' ', '%'],
+            ['%', '$', '$', '$', '$', '$', '$', '$', '$', '$', '%'],
+            ['%', '$', '#', '$', '#', '$', '#', '$', '#', '$', '%'],
+            ['%', '$', '$', '$', '$', '$', '$', '$', '$', '$', '%'],
+            ['%', ' ', '#', '$', '#', '$', '#', '$', '#', ' ', '%'],
+            ['%', ' ', ' ', '$', '$', '$', '$', '$', ' ', ' ', '%'],
+            ['%', '%', '%', '%', '%', '%', '%', '%', '%', '%', '%']
+        ];
         var playerData = [
-            { char: 'A', startRow: 0, startCol: 0 },
-            { char: 'B', startRow: 6, startCol: 8 },
-            { char: 'C', startRow: 6, startCol: 0 },
-            { char: 'D', startRow: 0, startCol: 8 }
+            { char: 'A', startRow: 1, startCol: 1 },
+            { char: 'B', startRow: 7, startCol: 9 },
+            { char: 'C', startRow: 7, startCol: 1 },
+            { char: 'D', startRow: 1, startCol: 9 }
         ];
 
         //init player properties

@@ -1,18 +1,20 @@
-﻿############
-TODO server
-############
-
-release 1.0
-deploya 1.0 till egen site
-
+﻿##############
+Todo bomberman 3D
 ##############
-Todo bomberman
+
+merga tillbaka till main
+	
+##############
+Todo bomberman 3d
 ##############
 
 Buggar: 
+servercrash vid leave?
+
+password dialog bugg som crashar ui?
 	
 ############
-TODO nice to have (post 1.0)
+TODO nice to have (post 1.0 3d)
 ############
 
 indikation av nya meddelanden i chatdialogerna
@@ -47,15 +49,79 @@ inkapsla spelen sa att de ej pollutar global scope med losa variabler etc.
 highlighta i "Players list"  vem som är nuvarande spelare
 
 ############
+Feature cut
+############
+
+ljus från explosioner
+
+rensa upp kod	
+	refaktorisera grid / oldgrid till att bara en finns kvar.
+	update_cell är förvirrad
+
+############
 DONE
 ############
+
+*uppdatera sprite-koden så den funkar igen	
+
+*ta bort det gamla ascii-versionen
+
+*THREE.Matrix3.getInverse(): can't invert matrix, determinant is 0	
+	sker vid vissa explosioner?
+	nånting med scale(0) ?
+
+*rotera gubbarna när de går	
+
+*korrekt längd på explosioner
+*	endcapsen ritas ut på samma plats??
+*		logga endcapsens pos
+*	minska storleken på mitten explisinen så man ser bättre
+*	olika längd åt olika håll på explosioner
+*		kolla efter bugg som gör att ingen korrekt mittpunkt hittas?
+*	ändra tillbaka längd 
+
+*ta bort block korrekt när en powerup skapas - 
+	*ändra koden så att powerupp alltid skapas
+	*debugga
+	*ändra tillbaka sannolikhetskod
+
+*integrera skugg koden från demot
+*mer korrekt perspektiv + avklippning av lådan på höjden
+*spelaren skall tas bort när den blivit dödad, inte stå kvar på planen :D
+*	gubbarna rensas inte korrekt från spelplanen
+
+*skapa spelarobjekten
+*	texturera alla fyra objekten
+*	integrera dem i koden
+	
+* om man står på initial position försvinner man om man lägger bomb
+
+*	på nedersta raden är det rätt buggigt? :O
+		
+	explosioner
+	*	skapa explisio wwwner
+	*	ta bort explosioner
+	*	stoppa explosioner på rätt plats
+	
+	*fixa så att det repaintas när man går in i en powerup - nu verkar den finnas tills man går
+	
+	restart skall fungera korrekt, init bör köras?	
+		refaktoisera så att init kan köras om igen med en grid för att sätta upp allt.
+
+*texturer på block
+	*_>test
+	*->riktig textur
+*skapa alla sprites	
+*justera storlek och offset på gubben
+	
+*release 1.0
+*deploya 1.0 till egen site
 
 * Indikation på fel lösenord
 	* vissa statustext inuti passwordialog
 
 *Man kan joina samma spel flera gånger
 *	kontrllera att player name inte finns i players-arrayen på spelet innan man tillåter Join
-
 
 *bomberman: 
 *	optimisera uppritningen av explosioner etc.
@@ -269,3 +335,55 @@ DONE
 *Hantera joinable om spelet är startat
 	*server: enforca att det inte går att joina spel 
 	*klient: knappen utgråad
+	
+göra loader klass-baserad
+	kapsla in allt kring laddning, skicka in en ready-funktion som kör sedan
+	
+	
+säkerställ att init endast körs en gång.	
+
+
+animerade spritesen i höjdled, med t.ex. en sinuskurva
+	lägg till sprites i en lista
+	ha en animeringlängd, 
+	ha en direction
+
+	
+
+skapa explision
+	lägg till sfär
+	lägg till cylinders
+	lägg till endcaps
+	texturera
+	kunna göra olika storlekar
+		olika storlekar beroende vilken knappo man tryckt in, z = 3, x = 2, c = 1
+	ta slut åt olika håll, etc
+	*ta bort explosion efter en viss tid med en delay
+		
+
+*streamlina laddningen
+
+---------------
+undvika att gubben äter sig själv
+
+refaktorisera koden
+
+tutorials:
+
+liten och enkel
+https://dinosaurscode.xyz/tutorials/2016/07/15/three-js-tutorial-for-beginners/
+
+http://blog.teamtreehouse.com/the-beginners-guide-to-three-js
+http://www.johannes-raida.de/tutorials/three.js/tutorial01/tutorial01.htm
+
+uppgifter:
+	följa tutorial
+
+	implementera hela bomberman 3d
+		1
+		2
+		3
+				
+	FPS COUNTER!!! ZOMG
+
+	
