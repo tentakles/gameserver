@@ -52,6 +52,8 @@ renderer.gammaOutput = true;
 
 document.body.appendChild(renderer.domElement);
 
+var materials = [ explosionMaterial1,explosionMaterial2,boxMaterial1,boxMaterialFixed,borderMaterial];
+
 var spriteAni = [125, 133, 141, 148, 156, 164, 171, 178, 185, 192, 198, 205, 211, 216, 221, 226, 231, 235, 238, 241, 244, 246, 248, 249, 250, 250, 250, 249, 248, 246, 244, 241, 238, 235, 231, 226, 221, 216, 211, 205, 198, 192, 185, 178, 171, 164, 156, 148, 141, 133, 125, 117, 109, 102, 94, 86, 79, 72, 65, 58, 52, 45, 39, 34, 29, 24, 19, 15, 12, 9, 6, 4, 2, 1, 0, 0, 0, 1, 2, 4, 6, 9, 12, 15, 19, 24, 29, 34, 39, 45, 52, 58, 65, 72, 79, 86, 94, 102, 109, 117, 125];
 
 for (var i = 0; i < spriteAni.length; i++) {
@@ -106,7 +108,7 @@ function explode(size) {
     ec4.object.position.x -= size / 2;
 
     //var bulbGeometry = new THREE.SphereGeometry(1, 16, 8);
-    var bulbLight = new THREE.PointLight(0xffee88, 4, 100, 2);
+    var bulbLight = new THREE.PointLight(0xffee88, 5, 2, 1);
 
     //var bulbMat = new THREE.MeshStandardMaterial({
     //    emissive: 0xffffee,
@@ -115,16 +117,18 @@ function explode(size) {
     //});
     //bulbLight.add(new THREE.Mesh(bulbGeometry, bulbMat));
     bulbLight.position.set(player.x, 0.8, player.y);
-    bulbLight.castShadow = true;
+ //   bulbLight.castShadow = true;
     scene.add(bulbLight);
     var objs = [sphere, cyl1, cyl2, ec1, ec2, ec3, ec4];
 
-
-
+    for (var i=0;i<materials.length;i++) {
+        materials[i].needsUpdate = true;
+    }
 
     setTimeout(function () {
         remove(objs);
-        //scene.remove(bulbLight);
+        bulbLight.visible = false;
+        scene.remove(bulbLight);
     }, explosionLength);
 }
 

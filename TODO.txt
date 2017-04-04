@@ -2,12 +2,6 @@
 Todo bomberman 3D
 ##############
 
-ljus från explosioner
-
-rensa upp kod	
-	refaktorisera grid / oldgrid till att bara en finns kvar.
-	update_cell är förvirrad
-
 uppdatera sprite-koden så den funkar igen	
 ta boert det gamla ascii-skiten
 
@@ -60,8 +54,21 @@ inkapsla spelen sa att de ej pollutar global scope med losa variabler etc.
 highlighta i "Players list"  vem som är nuvarande spelare
 
 ############
+Feature cut
+############
+
+ljus från explosioner
+
+rensa upp kod	
+	refaktorisera grid / oldgrid till att bara en finns kvar.
+	update_cell är förvirrad
+
+############
 DONE
 ############
+
+
+
 
 *THREE.Matrix3.getInverse(): can't invert matrix, determinant is 0	
 	sker vid vissa explosioner?
