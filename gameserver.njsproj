@@ -19,7 +19,7 @@
   <PropertyGroup Condition="'$(Configuration)' == 'Release'" />
   <ItemGroup>
     <Content Include="gametypes.json" />
-    <Content Include="public\games\bomberman\game.html" />
+    <Content Include="public\games\bomberman\game3d.html" />
     <Content Include="public\games\bomberman\gamegfx.html" />
     <Content Include="public\games\bomberman\gfx\sprites.css" />
     <Content Include="public\games\bomberman\gfx\spritesheet.png" />

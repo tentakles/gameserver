@@ -7,10 +7,15 @@ Buggar
 ############
 
 servercrash vid leave?
-
-password dialog bugg som crashar ui?
-
-återimplementera minimum 2 players i bomberman
+	sista andra spelare leaver:
+		resultat
+	spelskaparen leavar
+		resultat
+		
+	testa med 2 spelare
+	testa med 3 spelare
+	
+skapa stabil release	
 	
 ############
 TODO nice to have (post 1.0 3d)
@@ -60,6 +65,9 @@ rensa upp kod
 ############
 DONE
 ############
+
+*password dialog bugg som crashar ui?
+*återimplementera minimum 2 players i bomberman
 
 *merga tillbaka till main
 
