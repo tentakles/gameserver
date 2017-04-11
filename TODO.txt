@@ -2,21 +2,16 @@
 Todo 
 ##############
 
+skapa stabil release	
+	
 ############
 Buggar
 ############
 
 servercrash vid leave?
-	sista andra spelare leaver:
-		resultat
-	spelskaparen leavar
-		resultat
-		
-	testa med 2 spelare
-	testa med 3 spelare
+	- kan ej återskapa?
 	
-skapa stabil release	
-	
+
 ############
 TODO nice to have (post 1.0 3d)
 ############
@@ -65,6 +60,8 @@ rensa upp kod
 ############
 DONE
 ############
+
+*disabla orbit controls
 
 *password dialog bugg som crashar ui?
 *återimplementera minimum 2 players i bomberman
