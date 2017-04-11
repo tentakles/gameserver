@@ -1,18 +1,17 @@
 ﻿##############
-Todo bomberman 3D
+Todo 
 ##############
 
-merga tillbaka till main
+skapa stabil release	
 	
-##############
-Todo bomberman 3d
-##############
+############
+Buggar
+############
 
-Buggar: 
 servercrash vid leave?
-
-password dialog bugg som crashar ui?
+	- kan ej återskapa?
 	
+
 ############
 TODO nice to have (post 1.0 3d)
 ############
@@ -61,6 +60,13 @@ rensa upp kod
 ############
 DONE
 ############
+
+*disabla orbit controls
+
+*password dialog bugg som crashar ui?
+*återimplementera minimum 2 players i bomberman
+
+*merga tillbaka till main
 
 *uppdatera sprite-koden så den funkar igen	
 
